@@ -1,0 +1,681 @@
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { api } from '@/lib/api'
+import {
+  Plane,
+  Shield,
+  ShieldCheck,
+  Award,
+  CheckCircle2,
+  Calendar,
+  Clock,
+  BookOpen,
+  ArrowRight,
+  ChevronRight,
+  Sparkles,
+  Users,
+  Search,
+  ExternalLink,
+  GraduationCap,
+  Briefcase,
+  Layers,
+  FileCheck,
+  Compass,
+  MessageSquare,
+  PhoneCall,
+  Mail
+} from 'lucide-react'
+
+import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
+import { CourseCard } from '@/components/course/CourseCard'
+import { AviationIcon } from '@/components/common/AviationIcon'
+import { usePageContent } from '@/hooks/usePageContent'
+
+// Standards Logos
+import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
+import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
+import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
+
+// Official Discipline Media
+import imgFlightDispatch from '@/assets/profile_media/portfolio-flight-dispatch.jpg'
+import imgGroundOps from '@/assets/profile_media/portfolio-ground-ops.jpg'
+import imgDgr from '@/assets/profile_media/portfolio-dangerous-goods.jpg'
+import imgTrainTrainer from '@/assets/profile_media/portfolio-train-trainer.jpg'
+import imgHumanFactors from '@/assets/profile_media/portfolio-human-factors.jpg'
+import imgCrewControl from '@/assets/profile_media/crew-scheduling-operations.jpg'
+import imgSustainability from '@/assets/services/Bsuiness-Jet-Flying-Small.jpg'
+import imgConsulting from '@/assets/common/aviation-consulting-support.jpg'
+import imgOccLarge from '@/assets/profile_media/occ-flight-dispatch-large.jpg'
+
+// Discipline card images stay bundled; matched to a discipline by its number.
+const DISCIPLINE_IMG_BY_ID = {
+  '01': imgFlightDispatch,
+  '02': imgGroundOps,
+  '03': imgDgr,
+  '04': imgTrainTrainer,
+  '05': imgHumanFactors,
+  '06': imgCrewControl,
+  '07': imgSustainability,
+  '08': imgConsulting
+}
+
+// Content the page ships with; editable at /admin/pages/services.
+const FALLBACK = {
+  hero: {
+    title: 'Built on competency, not just compliance.',
+    subtitle:
+      'Eight disciplines, one standard: training that prepares people to make the right call under pressure.',
+    primaryLabel: 'Book a Consultation',
+    image: null
+  },
+  pathways: {
+    eyebrow: 'START HERE',
+    title: 'Choose your certification path',
+    intro:
+      "The first decision for any individual dispatcher candidate: which regulatory certification matches where you'll work.",
+    cards: [
+      {
+        region: 'Europe / Worldwide',
+        title: 'EASA Standards Initial',
+        desc: 'Comprehensive initial flight dispatcher certification aligned with ICAO Doc 10106 and EASA ORO.GEN.110.',
+        badge1: '175 HOURS',
+        badge2: 'HYBRID',
+        action: 'Explore EASA'
+      },
+      {
+        region: 'United States & Worldwide',
+        title: 'FAA Part 65 Certification',
+        desc: 'Direct pathway to the FAA Aircraft Dispatcher license through IFOA USA with dedicated examiners.',
+        badge1: '200 HOURS',
+        badge2: 'USA ONSITE',
+        action: 'Explore FAA'
+      },
+      {
+        region: 'Worldwide Dual License',
+        title: 'EASA + FAA Combined',
+        desc: 'The only worldwide double-certification model: EASA-based knowledge plus a full FAA Part 65 license.',
+        badge1: 'HYBRID',
+        badge2: 'GLOBAL',
+        action: 'Explore Combined'
+      },
+      {
+        region: 'Working Dispatchers',
+        title: 'Recurrent & Advanced',
+        desc: 'Customized recurrent and advanced programs for dispatchers and OCC professionals already certified.',
+        badge1: 'CUSTOM',
+        badge2: 'ONGOING',
+        action: 'Explore Recurrent'
+      }
+    ]
+  },
+  cbta: {
+    eyebrow: 'Competency-Based Training & Assessment (CBTA)',
+    title: 'The CBTA Operational Approach',
+    intro:
+      "Competency-Based Training and Assessment isn't just a regulatory buzzword, it is the engineering foundation of every curriculum we design, ensuring flight dispatchers are prepared for 3am critical decisions.",
+    complianceTitle: 'Global Regulatory Standard Compliance',
+    complianceDesc: 'Every program adheres directly to worldwide civil aviation authority frameworks.',
+    pillars: [
+      {
+        idx: '01',
+        title: 'Customized Scenario-Based',
+        subtitle: 'Real OCC Context',
+        desc: "Every training is precisely tailored for your operation's needs, leveraging hands-on, high-impact scenario drills.",
+        iconName: 'flight-route'
+      },
+      {
+        idx: '02',
+        title: 'Certified Instructors Only',
+        subtitle: 'Active Industry Practitioners',
+        desc: 'We exclusively collaborate with ICAO and FAA certified instructors who possess active flight dispatch experience.',
+        iconName: 'instructor-board'
+      },
+      {
+        idx: '03',
+        title: 'Delivery Flexibility',
+        subtitle: 'Onsite, Virtual & Hybrid',
+        desc: 'Choose the training delivery method and global hub that best aligns with your team logistics and shift rosters.',
+        iconName: 'occ-console'
+      },
+      {
+        idx: '04',
+        title: 'Licenses, Properly Earned',
+        subtitle: 'Verified Competency',
+        desc: 'Flight Dispatch certificates with proper regulatory education and lifetime verification for civil aviation authorities.',
+        iconName: 'official-certificate'
+      }
+    ]
+  },
+  specialist: {
+    eyebrow: 'Specialized Operational Services',
+    title: 'Premium Services Tailored to Your Needs',
+    intro: 'We offer our customers a vast and unique customized services portfolio.',
+    note: 'Select the Service you need and access to more details',
+    moreTitle: 'More Information?',
+    moreDesc:
+      'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
+    categories: [
+      { id: 'all', label: 'All Services (8)' },
+      { id: 'flight-ops', label: 'Flight Operations & OCC' },
+      { id: 'ground-ops', label: 'Ground & Ramp' },
+      { id: 'safety', label: 'Safety & Compliance' },
+      { id: 'strategy', label: 'Consulting & Strategy' }
+    ],
+    disciplines: [
+      {
+        id: '01',
+        title: 'Flight Dispatch',
+        desc: 'Join the selected club of aviation industry Heroes working behind the scene',
+        audience: 'Individuals & Airline OCC Teams',
+        category: 'flight-ops',
+        tag: 'Flight Operations',
+        iconName: 'dispatcher-headset',
+        image: null
+      },
+      {
+        id: '02',
+        title: 'Ground Operations',
+        desc: 'Enhance your skills to contribute actively to enhancing Safety on the Ramp',
+        audience: 'Ramp & Ground Ops Staff',
+        category: 'ground-ops',
+        tag: 'Ramp & Turnaround Safety',
+        iconName: 'ramp-marshal',
+        image: null
+      },
+      {
+        id: '03',
+        title: 'Dangerous Goods',
+        desc: 'Because the Safety associated with the carriage of DGR by Air is more than just dry Law',
+        audience: 'Crew & Cargo Operators',
+        category: 'safety',
+        tag: 'DGR Compliance',
+        iconName: 'dgr-flame',
+        image: null
+      },
+      {
+        id: '04',
+        title: 'Train The trainer',
+        desc: 'Be inspired to become one of the Best-in-Class instructors in the aviation industry',
+        audience: 'Nominated Persons & Instructors',
+        category: 'instructional',
+        tag: 'Instructional Pedagogy',
+        iconName: 'instructor-board',
+        image: null
+      },
+      {
+        id: '05',
+        title: 'Human Factors',
+        desc: "Enhance essential resilience and develop your 'Soft Skills' in the Aviation industry.",
+        audience: 'OCC & Flight Ops Personnel',
+        category: 'safety',
+        tag: 'Resilience & CRM',
+        iconName: 'human-brain-crm',
+        image: null
+      },
+      {
+        id: '06',
+        title: 'Crew Control',
+        desc: 'Get the robust foundations to become a professional crew controller/scheduler',
+        audience: 'Crew Schedulers & Controllers',
+        category: 'flight-ops',
+        tag: 'Crew Scheduling',
+        iconName: 'crew-roster',
+        image: null
+      },
+      {
+        id: '07',
+        title: 'Aviation Sustainability',
+        desc: 'We develop sustainable solutions to mitigate aviation environmental impacts',
+        audience: 'Airlines & Environmental Leads',
+        category: 'strategy',
+        tag: 'Environmental Mitigation',
+        iconName: 'eco-aircraft',
+        image: null
+      },
+      {
+        id: '08',
+        title: 'Consulting Services',
+        desc: 'We support you to become more efficient and successful in the aviation industry',
+        audience: 'Airlines & Aviation Authorities',
+        category: 'strategy',
+        tag: 'Aviation Advisory',
+        iconName: 'airline-audit',
+        image: null
+      }
+    ]
+  }
+}
+
+export function ServicesPage() {
+  const navigate = useNavigate()
+  const { c } = usePageContent('services', FALLBACK)
+  const [selectedDiscipline, setSelectedDiscipline] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [liveCourses, setLiveCourses] = useState([])
+
+  useEffect(() => {
+    api
+      .listCourses()
+      .then((data) => setLiveCourses(data.courses || []))
+      .catch(() => setLiveCourses([]))
+  }, [])
+
+  const REG_LOGOS = [
+    { logo: logoEasa },
+    { logo: logoFaa },
+    { logo: logoEasa, secondLogo: logoFaa },
+    { logo: logoIcao }
+  ]
+  const certificationPathways = c.pathways.cards.map((card, i) => ({
+    ...card,
+    ...(REG_LOGOS[i] || {})
+  }))
+
+  const cbtaPillars = c.cbta.pillars
+
+  const disciplines = c.specialist.disciplines.map((d) => ({
+    ...d,
+    image: d.image?.url || DISCIPLINE_IMG_BY_ID[d.id] || imgConsulting
+  }))
+
+  const categories = c.specialist.categories
+
+  const filteredDisciplines = disciplines.filter((d) => {
+    if (selectedDiscipline !== 'all' && d.category !== selectedDiscipline) return false
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      return (
+        d.title.toLowerCase().includes(q) ||
+        d.desc.toLowerCase().includes(q) ||
+        d.audience.toLowerCase().includes(q) ||
+        d.tag.toLowerCase().includes(q)
+      )
+    }
+    return true
+  })
+
+  return (
+    <div className="bg-white text-rocket-dark selection:bg-[#38b58a] selection:text-white" data-purpose="services-page">
+      {/* 1. HERO SECTION */}
+      <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
+        {/* Ambient Aviation Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src={c.hero.image?.url || imgOccLarge}
+            alt="Aviation Flight Operations Training"
+            className="w-full h-full object-cover object-center opacity-40 scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/90 via-[#020617]/75 to-[#020617]" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl mx-auto leading-tight">
+            {c.hero.title}
+          </h1>
+
+          <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
+            {c.hero.subtitle}
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <button
+              onClick={() => navigate('/contact')}
+              className="bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold px-7 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-lg hover:shadow-emerald-500/25 hover:scale-105 cursor-pointer"
+            >
+              {c.hero.primaryLabel}
+            </button>
+            <a
+              href="https://wa.me/41782273103"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-[#38b58a]" />
+              <span>WhatsApp Us</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. CHOOSE YOUR CERTIFICATION PATH */}
+      <section className="py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200/80" data-purpose="certification-pathways">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-10">
+          <div className="max-w-2xl space-y-2">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#38b58a] block">
+              {c.pathways.eyebrow}
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
+              {c.pathways.title}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+              {c.pathways.intro}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {certificationPathways.map((card, idx) => (
+              <div
+                key={idx}
+                className="group rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#38b58a]/40 hover:-translate-y-1.5 p-7 flex flex-col justify-between space-y-6 transition-all duration-300"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                      {card.region}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#38b58a]">
+                      {card.badge2}
+                    </span>
+                  </div>
+
+                  <div className="h-10 flex items-center gap-3">
+                    {card.logo && (
+                      <img
+                        src={card.logo}
+                        alt="Regulator Logo"
+                        className="h-8 max-h-8 w-auto object-contain"
+                      />
+                    )}
+                    {card.secondLogo && (
+                      <img
+                        src={card.secondLogo}
+                        alt="Second Regulator Logo"
+                        className="h-8 max-h-8 w-auto object-contain"
+                      />
+                    )}
+                  </div>
+
+                  <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#38b58a] transition-colors">
+                    {card.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                    {card.desc}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                    {card.badge1}
+                  </span>
+                  <button
+                    onClick={() => navigate('/contact')}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-rocket-dark group-hover:text-[#38b58a] transition-colors cursor-pointer"
+                  >
+                    <span>{card.action}</span>
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. THE CBTA OPERATIONAL APPROACH (MODERN EXECUTIVE METHODOLOGY) */}
+      <section className="py-20 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="cbta-approach">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Header Row */}
+          <div className="max-w-3xl space-y-3">
+            <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+              {c.cbta.eyebrow}
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              {c.cbta.title}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
+              {c.cbta.intro}
+            </p>
+          </div>
+
+          {/* 4 CBTA Pillars Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {cbtaPillars.map((p, idx) => (
+              <div
+                key={idx}
+                className="group rounded-3xl bg-slate-50/70 border border-slate-200/90 hover:bg-white hover:border-[#38b58a]/50 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between space-y-5"
+              >
+                <div className="space-y-4">
+                  {/* Top Step & Icon */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="w-12 h-12 rounded-2xl bg-[#38b58a]/10 text-[#38b58a] group-hover:bg-[#38b58a] group-hover:text-white transition-colors flex items-center justify-center shadow-2xs">
+                      <AviationIcon name={p.iconName} className="w-6 h-6" />
+                    </div>
+                    <span className="text-xs font-mono font-bold text-slate-400 group-hover:text-[#38b58a] transition-colors">
+                      // {p.idx}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-semibold text-[#38b58a] uppercase tracking-wider block">
+                      {p.subtitle}
+                    </span>
+                    <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-snug">
+                      {p.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed pt-1">
+                    {p.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Integrated Standards & Compliance Bar */}
+          <div className="rounded-3xl bg-slate-50 border border-slate-200/90 p-6 sm:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
+              <div>
+                <h4 className="text-base font-bold text-slate-900">
+                  {c.cbta.complianceTitle}
+                </h4>
+                <p className="text-xs text-slate-500">
+                  {c.cbta.complianceDesc}
+                </p>
+              </div>
+              <span className="text-xs font-mono font-bold text-[#38b58a] bg-[#38b58a]/10 px-3 py-1 rounded-full w-fit">
+                Verified Global Curricula
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-[#38b58a]/40 transition-all">
+                <img src={logoFaa} alt="FAA" className="h-8 w-auto object-contain shrink-0" />
+                <div className="min-w-0">
+                  <strong className="text-xs sm:text-sm font-bold text-slate-900 block truncate">FAA Part 65</strong>
+                  <span className="text-[11px] text-slate-500 font-mono">Approved School #IPIN</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-[#38b58a]/40 transition-all">
+                <img src={logoEasa} alt="EASA" className="h-8 w-auto object-contain shrink-0" />
+                <div className="min-w-0">
+                  <strong className="text-xs sm:text-sm font-bold text-slate-900 block truncate">EASA Standards</strong>
+                  <span className="text-[11px] text-slate-500 font-mono">ORO.GEN 110 Aligned</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-[#38b58a]/40 transition-all">
+                <img src={logoIcao} alt="ICAO" className="h-8 w-auto object-contain shrink-0" />
+                <div className="min-w-0">
+                  <strong className="text-xs sm:text-sm font-bold text-slate-900 block truncate">ICAO Standards</strong>
+                  <span className="text-[11px] text-slate-500 font-mono">Doc 10106 Framework</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. SPECIALIST & OPERATIONAL SERVICES (MODERN 2-COLUMN LUXURY SHOWCASE) */}
+      <section className="py-20 sm:py-24 bg-slate-50/60 border-b border-slate-200/80" data-purpose="specialist-operational-training">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
+            <div className="max-w-2xl space-y-2.5">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+                {c.specialist.eyebrow}
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                {c.specialist.title}
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
+                {c.specialist.intro}
+              </p>
+              <p className="text-xs sm:text-sm text-[#38b58a] font-semibold italic">
+                {c.specialist.note}
+              </p>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative w-full md:w-80 shrink-0">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search disciplines..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] focus:ring-2 focus:ring-[#38b58a]/20 shadow-2xs transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Interactive Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-b border-slate-200/80 pb-4">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedDiscipline(cat.id)}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  selectedDiscipline === cat.id
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:bg-slate-50'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* 2-Column Luxury Horizontal Cards Grid (100% Clean Images without text overlays) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {filteredDisciplines.map((item) => (
+              <div
+                key={item.id}
+                className="group rounded-3xl bg-white border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:border-[#38b58a]/40 hover:-translate-y-1 transition-all duration-300 p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-stretch"
+              >
+                {/* Left Clean Image Thumbnail */}
+                <div className="w-full sm:w-48 h-48 sm:h-auto rounded-2xl overflow-hidden bg-slate-900 shrink-0 relative">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* Right Content Area */}
+                <div className="flex-1 flex flex-col justify-between space-y-3.5">
+                  <div className="space-y-2">
+                    {/* Top Status & Tag Indicator */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-mono font-bold text-[#38b58a] bg-[#38b58a]/10 px-2.5 py-1 rounded-md">
+                        {item.id}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                        {item.tag}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#38b58a] transition-colors">
+                      {item.title}
+                    </h3>
+
+                    <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  {/* Bottom Audience & Action */}
+                  <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3">
+                    <span className="text-xs sm:text-sm font-medium text-slate-600 truncate max-w-[220px]">
+                      {item.audience}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate('/contact')}
+                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-900 group-hover:text-[#38b58a] transition-colors cursor-pointer shrink-0"
+                    >
+                      <span>Inquire</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* More Information Callout matching Image 1 */}
+          <div className="rounded-3xl bg-[#020617] text-white p-8 sm:p-10 border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl mt-8">
+            <div className="space-y-2 text-center md:text-left">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                {c.specialist.moreTitle}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300">
+                {c.specialist.moreDesc}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 shrink-0">
+              <button
+                onClick={() => navigate('/contact')}
+                className="bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold px-7 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-lg hover:scale-105 cursor-pointer"
+              >
+                Contact Us Now
+              </button>
+              <a
+                href="mailto:info@theifoa.com"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
+              >
+                <Mail className="w-3.5 h-3.5 text-[#38b58a]" />
+                <span>info@theifoa.com</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Live Published Courses from Admin (if available) */}
+          {liveCourses.length > 0 && (
+            <div className="pt-10 space-y-8">
+              <div className="border-t border-slate-200 pt-8 flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#38b58a] block">
+                    ACTIVE ENROLLMENTS
+                  </span>
+                  <h3 className="text-xl font-bold text-rocket-dark">
+                    Scheduled Open Programs
+                  </h3>
+                </div>
+                <Link
+                  to="/events"
+                  className="text-xs font-bold uppercase tracking-wider text-rocket-dark hover:text-[#38b58a] transition-colors"
+                >
+                  View Training Calendar →
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {liveCourses.map((c) => (
+                  <CourseCard key={c.id || c.slug} course={c} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  )
+}
