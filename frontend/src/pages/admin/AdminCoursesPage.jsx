@@ -289,7 +289,7 @@ export function AdminCoursesPage() {
       {/* 3. COURSES TABLE */}
       {loading ? (
         <div className="bg-white rounded-2xl p-16 border border-slate-200/90 text-center flex flex-col items-center justify-center gap-3 shadow-xs">
-          <Loader2 className="w-8 h-8 animate-spin text-[#38b58a]" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#34E06E]" />
           <p className="text-sm font-bold text-slate-700">Loading Academic Catalog…</p>
           <p className="text-xs text-slate-400">Fetching courses and regulatory data</p>
         </div>
@@ -307,7 +307,7 @@ export function AdminCoursesPage() {
           <div className="pt-2">
             <Link
               to="/admin/courses/new"
-              className="inline-flex items-center gap-2 bg-[#020617] hover:bg-[#38b58a] text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+              className="inline-flex items-center gap-2 bg-[#020617] hover:bg-[#34E06E] text-white hover:text-black font-extrabold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
             >
               <Plus className="w-4 h-4 text-emerald-400" />
               <span>Create New Course</span>

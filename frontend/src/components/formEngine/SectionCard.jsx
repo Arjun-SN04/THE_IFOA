@@ -17,10 +17,10 @@ export function SectionCard({
           <div className="flex items-center gap-3">
             {stepNumber && (
               <span
-                className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold transition-colors ${
+                className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold transition-colors ${
                   isCompleted
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-ifoa-navy text-white'
+                    ? 'bg-emerald-400 text-black'
+                    : 'bg-ifoa-navy text-black'
                 }`}
               >
                 {isCompleted ? (
@@ -43,7 +43,7 @@ export function SectionCard({
           </div>
 
           {isCompleted && (
-            <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200/60">
+            <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-black border border-emerald-200/60">
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>

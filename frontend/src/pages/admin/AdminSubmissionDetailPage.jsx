@@ -166,7 +166,7 @@ export function AdminSubmissionDetailPage() {
                 <button
                   onClick={handleSaveAnswers}
                   disabled={saving}
-                  className="flex items-center gap-1.5 rounded-xl bg-ifoa-navy px-5 py-2 text-xs font-bold text-white hover:bg-ifoa-navy-light disabled:opacity-60 transition-all"
+                  className="flex items-center gap-1.5 rounded-xl bg-ifoa-navy px-5 py-2 text-xs font-extrabold text-slate-950 hover:bg-ifoa-navy-light disabled:opacity-60 transition-all"
                 >
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
                   {saving ? 'Saving…' : 'Save changes'}
@@ -175,7 +175,7 @@ export function AdminSubmissionDetailPage() {
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-ifoa-navy px-4 py-2 text-xs font-bold text-white hover:bg-ifoa-navy-light transition-all"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-ifoa-navy px-4 py-2 text-xs font-extrabold text-slate-950 hover:bg-ifoa-navy-light transition-all"
               >
                 <Pencil className="h-3.5 w-3.5" /> Edit answers
               </button>

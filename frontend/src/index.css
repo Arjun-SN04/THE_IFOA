@@ -9,14 +9,14 @@
 
   --color-rocket-dark: #020617;
   --color-rocket-gray: #f8f9fa;
-  --color-rocket-lime: #38b58a;
+  --color-rocket-lime: #34E06E;
 
   /* Enrollment form engine (ported from forms_ifoa) — themed to the site green */
-  --color-ifoa-navy: #38b58a;
-  --color-ifoa-navy-light: #2f9c77;
+  --color-ifoa-navy: #34E06E;
+  --color-ifoa-navy-light: #28c85e;
 
-  --color-electric-lime: #38b58a;
-  --color-brand-green: #38b58a;
+  --color-electric-lime: #34E06E;
+  --color-brand-green: #34E06E;
   --color-brand-dark: #020617;
   --color-brand-midnight: #020617;
   --color-deep-onyx: #020617;
@@ -51,12 +51,12 @@
     --secondary-foreground: #020617;
     --muted: #F8F9FA;
     --muted-foreground: #5A5A5A;
-    --accent: #38b58a;
+    --accent: #34E06E;
     --accent-foreground: #FFFFFF;
     --destructive: oklch(0.577 0.245 27.325);
     --border: rgba(2, 6, 23, 0.08);
     --input: rgba(2, 6, 23, 0.12);
-    --ring: #38b58a;
+    --ring: #34E06E;
     --radius: 1rem;
   }
 
@@ -88,7 +88,7 @@
 /* Simple star icon simulation for brand markers */
 .brand-star::before {
   content: '★';
-  color: #5CFF96;
+  color: #34E06E;
   font-size: 1.5rem;
 }
 
@@ -157,12 +157,12 @@
 
 .lime-glow,
 .brand-glow {
-  box-shadow: 0 0 25px rgba(92, 255, 150, 0.45);
+  box-shadow: 0 0 25px rgba(52, 224, 110, 0.45);
 }
 
 .lime-glow-subtle,
 .brand-glow-subtle {
-  box-shadow: 0 0 15px rgba(92, 255, 150, 0.25);
+  box-shadow: 0 0 15px rgba(52, 224, 110, 0.25);
 }
 
 @keyframes marquee {
@@ -278,4 +278,46 @@
   position: relative;
   z-index: 10;
   transition: color 0.4s ease;
+}
+
+/* ── Lenis Smooth Scrolling Optimizations ── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ── Hero Mockup Float Animation ── */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(0.6deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow {
+    animation: none;
+  }
 }

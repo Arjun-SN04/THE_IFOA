@@ -178,7 +178,7 @@ export function RegistrationForm({ slug, courseTitle }) {
           type="button"
           onClick={handleDownloadPdf}
           disabled={pdfBusy}
-          className="inline-flex items-center gap-2 bg-[#38b58a] hover:bg-[#2fa078] text-white font-bold text-sm px-6 py-3 rounded-xl shadow-md disabled:opacity-60 transition"
+          className="inline-flex items-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-sm px-6 py-3 rounded-xl shadow-md disabled:opacity-60 transition"
         >
           {pdfBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           {pdfBusy ? 'Preparing PDF…' : 'Download Official PDF'}
@@ -199,7 +199,7 @@ export function RegistrationForm({ slug, courseTitle }) {
       <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 px-6 sm:px-8 py-6 sm:py-7 text-white border-b border-slate-800">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#38b58a] inline-block">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-slate-400 inline-block">
               Candidate Registration Form
             </span>
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -209,7 +209,7 @@ export function RegistrationForm({ slug, courseTitle }) {
               Please complete all required fields marked with an asterisk (<span className="text-red-400 font-bold">*</span>)
             </p>
           </div>
-          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#38b58a]/20 text-[#38b58a] border border-[#38b58a]/30 shrink-0 mt-1">
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 shrink-0 mt-1">
             Official Intake Form
           </span>
         </div>
@@ -258,7 +258,7 @@ export function RegistrationForm({ slug, courseTitle }) {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#38b58a] hover:bg-[#2fa078] text-white font-bold text-sm px-8 py-4 rounded-xl shadow-[0_4px_20px_rgba(56,181,138,0.35)] disabled:opacity-60 disabled:cursor-not-allowed transition transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-sm px-8 py-4 rounded-xl shadow-[0_4px_20px_rgba(52, 224, 110,0.35)] disabled:opacity-60 disabled:cursor-not-allowed transition transform hover:-translate-y-0.5"
           >
             {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
             {submitting ? 'Submitting Application…' : 'Submit Application Now'}

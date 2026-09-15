@@ -67,11 +67,11 @@ export function FormProgressSidebar({ sections, currentActiveId, onSectionClick 
               >
                 {/* Step Indicator */}
                 <div
-                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-extrabold transition-all ${
                     isCompleted
-                      ? 'bg-emerald-600 text-white shadow-xs'
+                      ? 'bg-emerald-400 text-black shadow-xs'
                       : isActive
-                      ? 'bg-ifoa-navy text-white ring-2 ring-ifoa-navy/20'
+                      ? 'bg-ifoa-navy text-black ring-2 ring-ifoa-navy/20'
                       : 'border border-slate-300 bg-white text-slate-500 group-hover:border-slate-400'
                   }`}
                 >

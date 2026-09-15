@@ -86,7 +86,7 @@ export function CourseDetailView({ course, preview = false }) {
   const competencyIcons = [Compass, Activity, ShieldCheck, FileCheck]
 
   return (
-    <div className="w-full min-h-screen bg-[#f8fafc] text-rocket-dark selection:bg-[#38b58a] selection:text-white font-sans antialiased" data-purpose="course-detail-view">
+    <div className="w-full min-h-screen bg-[#f8fafc] text-rocket-dark selection:bg-slate-900 selection:text-white font-sans antialiased" data-purpose="course-detail-view">
       {/* ========================================================================= */}
       {/* 1. PROFESSIONAL EXECUTIVE HERO SECTION                                    */}
       {/* ========================================================================= */}
@@ -109,7 +109,7 @@ export function CourseDetailView({ course, preview = false }) {
                 to="/services"
                 className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition-colors"
               >
-                <ArrowLeft className="w-4 h-4 text-[#38b58a]" />
+                <ArrowLeft className="w-4 h-4 text-slate-500" />
                 <span>All Programs</span>
               </Link>
             ) : (
@@ -138,7 +138,7 @@ export function CourseDetailView({ course, preview = false }) {
 
           {/* Title & Eyebrow */}
           <div className="space-y-3.5 max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#38b58a]/15 border border-[#38b58a]/30 text-[#38b58a] text-xs font-semibold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/20 text-white text-xs font-semibold tracking-wide">
               <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
               <span>FAA Part 65 &amp; EASA Aligned Training</span>
             </div>
@@ -156,22 +156,22 @@ export function CourseDetailView({ course, preview = false }) {
           {/* Clean Quick Metric Chips */}
           <div className="flex flex-wrap items-center gap-2.5 pt-2">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300">
-              <Clock className="w-3.5 h-3.5 text-[#38b58a]" />
+              <Clock className="w-3.5 h-3.5 text-slate-500" />
               <span>Duration: <strong className="text-white font-semibold">{course.duration || '4 Weeks'}</strong></span>
             </div>
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300">
-              <Calendar className="w-3.5 h-3.5 text-[#38b58a]" />
+              <Calendar className="w-3.5 h-3.5 text-slate-500" />
               <span>Next Intake: <strong className="text-white font-semibold">{schedule.startDate ? formatDate(schedule.startDate) : '31/03/2026'}</strong></span>
             </div>
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300">
-              <MapPin className="w-3.5 h-3.5 text-[#38b58a]" />
+              <MapPin className="w-3.5 h-3.5 text-slate-500" />
               <span>Location: <strong className="text-white font-semibold">{course.location || (isIndiaProgram ? 'New Delhi' : 'Virtual OCC')}</strong></span>
             </div>
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300">
-              <Award className="w-3.5 h-3.5 text-[#38b58a]" />
+              <Award className="w-3.5 h-3.5 text-slate-500" />
               <span>Tuition: <strong className="text-white font-semibold">{formatPrice(course.price)}</strong></span>
             </div>
           </div>
@@ -193,7 +193,7 @@ export function CourseDetailView({ course, preview = false }) {
             {(course.whatYouWillLearn?.intro || course.whatYouWillLearn?.points?.length > 0) && (
               <section className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6">
                 <div className="space-y-1.5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#38b58a] block">
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500 block">
                     Competency Mastery
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
@@ -212,9 +212,9 @@ export function CourseDetailView({ course, preview = false }) {
                     return (
                       <div
                         key={idx}
-                        className="rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-white hover:border-[#38b58a]/40 hover:shadow-sm transition-all duration-200 p-5 flex items-start gap-4"
+                        className="rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-white hover:border-slate-300 hover:shadow-sm transition-all duration-200 p-5 flex items-start gap-4"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-[#38b58a]/10 text-[#38b58a] flex items-center justify-center shrink-0 mt-0.5">
+                        <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center shrink-0 mt-0.5">
                           <IconComponent className="w-4 h-4" />
                         </div>
                         <p className="text-sm font-medium text-slate-800 leading-snug">
@@ -232,7 +232,7 @@ export function CourseDetailView({ course, preview = false }) {
               <section className="bg-white rounded-3xl p-6 sm:p-8 lg:p-10 border border-slate-200/90 shadow-sm space-y-8">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-slate-100">
                   <div className="space-y-2">
-                    <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+                    <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                       Structured Syllabus
                     </span>
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -247,7 +247,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                   {hasModules && (
                     <span className="self-start sm:self-auto text-xs sm:text-sm font-bold text-slate-900 bg-slate-100 border border-slate-200 px-4 py-2 rounded-xl shrink-0">
-                      <span className="text-[#38b58a] font-mono">{modulesList.length}</span> Core Modules
+                      <span className="text-slate-900 font-mono">{modulesList.length}</span> Core Modules
                     </span>
                   )}
                 </div>
@@ -257,15 +257,15 @@ export function CourseDetailView({ course, preview = false }) {
                   {modulesList.map((module, idx) => (
                     <div
                       key={idx}
-                      className="group rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:bg-white hover:border-[#38b58a]/50 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-4.5 sm:p-5 flex items-center gap-4"
+                      className="group rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:bg-white hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-4.5 sm:p-5 flex items-center gap-4"
                     >
-                      <span className="w-9 h-9 rounded-xl bg-white border border-slate-200 group-hover:bg-[#38b58a] group-hover:border-[#38b58a] text-slate-800 group-hover:text-white font-mono font-bold text-xs sm:text-sm flex items-center justify-center shrink-0 transition-colors shadow-2xs">
+                      <span className="w-9 h-9 rounded-xl bg-white border border-slate-200 group-hover:bg-slate-900 group-hover:border-slate-900 text-slate-800 group-hover:text-white font-mono font-bold text-xs sm:text-sm flex items-center justify-center shrink-0 transition-colors shadow-2xs">
                         {String(idx + 1).padStart(2, '0')}
                       </span>
-                      <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug group-hover:text-[#38b58a] transition-colors flex-1">
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug group-hover:text-slate-900 transition-colors flex-1">
                         {module}
                       </h3>
-                      <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-[#38b58a] transition-colors shrink-0 opacity-0 group-hover:opacity-100" />
+                      <CheckCircle2 className="w-4 h-4 text-slate-300 group-hover:text-slate-900 transition-colors shrink-0 opacity-0 group-hover:opacity-100" />
                     </div>
                   ))}
                 </div>
@@ -283,7 +283,7 @@ export function CourseDetailView({ course, preview = false }) {
                     <div className="space-y-1.5 flex-1">
                       <h4 className="text-base sm:text-lg font-bold text-white flex items-center gap-2.5 flex-wrap">
                         <span>Practical Aircraft Flight Planning</span>
-                        <span className="text-xs font-semibold text-[#38b58a] bg-[#38b58a]/20 px-2.5 py-0.5 rounded-full uppercase">
+                        <span className="text-xs font-mono font-semibold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full uppercase">
                           Applied Workshop
                         </span>
                       </h4>
@@ -302,7 +302,7 @@ export function CourseDetailView({ course, preview = false }) {
               <section className="bg-white rounded-3xl p-6 sm:p-8 lg:p-9 border border-slate-200/90 shadow-sm space-y-6 flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+                    <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                       Candidate Profile
                     </span>
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 leading-snug">
@@ -320,9 +320,9 @@ export function CourseDetailView({ course, preview = false }) {
                       {course.whoShouldAttend.points.map((pt, i) => (
                         <div
                           key={i}
-                          className="group/pt p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:bg-white hover:border-[#38b58a]/40 hover:shadow-xs transition-all duration-200 flex items-center gap-3.5"
+                          className="group/pt p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all duration-200 flex items-center gap-3.5"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 group-hover/pt:bg-[#38b58a] group-hover/pt:border-[#38b58a] text-slate-600 group-hover/pt:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
+                          <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 group-hover/pt:bg-slate-900 group-hover/pt:border-slate-900 text-slate-600 group-hover/pt:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
                             <CheckCircle2 className="w-4 h-4" />
                           </div>
                           <span className="text-sm sm:text-base font-semibold text-slate-800 leading-snug group-hover/pt:text-slate-900 transition-colors">
@@ -339,7 +339,7 @@ export function CourseDetailView({ course, preview = false }) {
               <section className="bg-white rounded-3xl p-6 sm:p-8 lg:p-9 border border-slate-200/90 shadow-sm space-y-6 flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+                    <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                       Regulatory Compliance
                     </span>
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 leading-snug">
@@ -352,7 +352,7 @@ export function CourseDetailView({ course, preview = false }) {
                   </div>
 
                   <div className="space-y-3 pt-1">
-                    <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-4 hover:bg-white hover:border-[#38b58a]/40 hover:shadow-xs transition-all">
+                    <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-4 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all">
                       <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-2 flex items-center justify-center shrink-0 shadow-2xs">
                         <img src={logoFaa} alt="FAA" className="w-full h-full object-contain" />
                       </div>
@@ -362,7 +362,7 @@ export function CourseDetailView({ course, preview = false }) {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-4 hover:bg-white hover:border-[#38b58a]/40 hover:shadow-xs transition-all">
+                    <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-4 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all">
                       <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-2 flex items-center justify-center shrink-0 shadow-2xs">
                         <img src={logoEasa} alt="EASA" className="w-full h-full object-contain" />
                       </div>
@@ -372,7 +372,7 @@ export function CourseDetailView({ course, preview = false }) {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-4 hover:bg-white hover:border-[#38b58a]/40 hover:shadow-xs transition-all">
+                    <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex items-center gap-4 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all">
                       <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-2 flex items-center justify-center shrink-0 shadow-2xs">
                         <img src={logoIcao} alt="ICAO" className="w-full h-full object-contain" />
                       </div>
@@ -389,13 +389,13 @@ export function CourseDetailView({ course, preview = false }) {
             {/* 4. Certification & Delivery Format Highlights */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="rounded-3xl bg-white border border-slate-200/90 p-6 flex items-start gap-4 shadow-2xs">
-                <div className="w-12 h-12 rounded-2xl bg-[#38b58a]/15 text-[#38b58a] flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                   <Award className="w-6 h-6" />
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <h3 className="text-base sm:text-lg font-bold text-slate-900">Official Certification</h3>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#38b58a] bg-[#38b58a]/10 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full">
                       Lifetime
                     </span>
                   </div>
@@ -407,7 +407,7 @@ export function CourseDetailView({ course, preview = false }) {
               </div>
 
               <div className="rounded-3xl bg-white border border-slate-200/90 p-6 flex items-start gap-4 shadow-2xs">
-                <div className="w-12 h-12 rounded-2xl bg-[#38b58a]/15 text-[#38b58a] flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                   <Layers className="w-6 h-6" />
                 </div>
                 <div className="space-y-1.5">
@@ -423,7 +423,7 @@ export function CourseDetailView({ course, preview = false }) {
             {/* 5. Clean, Professional Application Callout Banner */}
             <section id="register" className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 rounded-3xl p-6 sm:p-8 lg:p-9 text-white shadow-md relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6" data-purpose="registration-portal">
               <div className="space-y-1.5 max-w-xl">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#38b58a] inline-block">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-slate-500 inline-block">
                   Candidate Enrollment
                 </span>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -437,7 +437,7 @@ export function CourseDetailView({ course, preview = false }) {
               <div className="flex flex-wrap items-center gap-3 shrink-0">
                 <Link
                   to={`/courses/${course.slug}/enroll`}
-                  className="inline-flex items-center justify-center gap-2 bg-[#38b58a] hover:bg-[#2fa078] text-white font-bold py-3.5 px-6 rounded-xl text-xs sm:text-sm tracking-wide transition shadow-sm hover:shadow hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-6 rounded-xl text-xs sm:text-sm tracking-wide transition shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:-translate-y-0.5"
                 >
                   <span>Apply Online</span>
                   <ArrowRight className="w-4 h-4" />
@@ -449,7 +449,7 @@ export function CourseDetailView({ course, preview = false }) {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold py-3.5 px-5 rounded-xl text-xs sm:text-sm transition"
                 >
-                  <MessageSquare className="w-4 h-4 text-[#38b58a]" />
+                  <MessageSquare className="w-4 h-4 text-slate-500" />
                   <span>Admissions Chat</span>
                 </a>
               </div>
@@ -472,7 +472,7 @@ export function CourseDetailView({ course, preview = false }) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded bg-[#38b58a] text-white shadow-xs">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded bg-[#34E06E] text-slate-950 font-bold shadow-xs">
                     Admissions Open
                   </span>
                   {course.refCode && (
@@ -502,7 +502,7 @@ export function CourseDetailView({ course, preview = false }) {
                 <div className="space-y-2.5">
                   <Link
                     to={`/courses/${course.slug}/enroll`}
-                    className="w-full bg-[#38b58a] hover:bg-[#2ea87c] text-white font-semibold py-3.5 px-5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow flex items-center justify-center gap-2"
+                    className="w-full bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] flex items-center justify-center gap-2"
                   >
                     <span>Enroll Now — Apply Online</span>
                     <ArrowRight className="w-4 h-4" />
@@ -514,7 +514,7 @@ export function CourseDetailView({ course, preview = false }) {
                     rel="noopener noreferrer"
                     className="w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-semibold py-3 px-5 rounded-xl text-xs uppercase tracking-wider transition-all duration-200"
                   >
-                    <MessageSquare className="w-4 h-4 text-[#38b58a]" />
+                    <MessageSquare className="w-4 h-4 text-slate-500" />
                     <span>Inquire on WhatsApp</span>
                   </a>
                 </div>
@@ -528,7 +528,7 @@ export function CourseDetailView({ course, preview = false }) {
                   <div className="space-y-2.5 text-xs sm:text-sm">
                     <div className="flex items-center justify-between gap-4 pb-2.5 border-b border-slate-100">
                       <span className="text-slate-500 flex items-center gap-2 shrink-0">
-                        <Clock className="w-3.5 h-3.5 text-[#38b58a]" />
+                        <Clock className="w-3.5 h-3.5 text-slate-500" />
                         <span>Duration</span>
                       </span>
                       <span className="font-semibold text-slate-900 text-right">
@@ -538,7 +538,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                     <div className="flex items-center justify-between gap-4 pb-2.5 border-b border-slate-100">
                       <span className="text-slate-500 flex items-center gap-2 shrink-0">
-                        <Calendar className="w-3.5 h-3.5 text-[#38b58a]" />
+                        <Calendar className="w-3.5 h-3.5 text-slate-500" />
                         <span>Next Intake</span>
                       </span>
                       <span className="font-semibold text-slate-900 text-right">
@@ -548,7 +548,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                     <div className="flex items-start justify-between gap-4 pb-2.5 border-b border-slate-100">
                       <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                        <MapPin className="w-3.5 h-3.5 text-[#38b58a]" />
+                        <MapPin className="w-3.5 h-3.5 text-slate-500" />
                         <span>Location</span>
                       </span>
                       <span className="font-semibold text-slate-900 text-right leading-snug">
@@ -558,7 +558,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                     <div className="flex items-start justify-between gap-4 pb-2.5 border-b border-slate-100">
                       <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                        <Layers className="w-3.5 h-3.5 text-[#38b58a]" />
+                        <Layers className="w-3.5 h-3.5 text-slate-500" />
                         <span>Delivery</span>
                       </span>
                       <span className="font-semibold text-slate-900 text-right leading-snug">
@@ -568,7 +568,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                     <div className="flex items-start justify-between gap-4">
                       <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                        <Award className="w-3.5 h-3.5 text-[#38b58a]" />
+                        <Award className="w-3.5 h-3.5 text-slate-500" />
                         <span>Certificate</span>
                       </span>
                       <span className="font-semibold text-slate-900 text-right leading-snug">
@@ -581,15 +581,15 @@ export function CourseDetailView({ course, preview = false }) {
                 {/* Key Benefits List */}
                 <div className="rounded-xl bg-slate-50 p-3.5 space-y-2 border border-slate-200/80 text-xs text-slate-700">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#38b58a] shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                     <span>Active Airline Dispatcher Instructors</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#38b58a] shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                     <span>Real-world OCC Scenario-Based Drills</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#38b58a] shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                     <span>Lifetime Certificate Verification</span>
                   </div>
                 </div>
@@ -599,7 +599,7 @@ export function CourseDetailView({ course, preview = false }) {
             {/* Secondary Admissions Assistance Card */}
             <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-xs space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#38b58a]/10 text-[#38b58a] flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                   <HelpCircle className="w-4 h-4" />
                 </div>
                 <div>
@@ -615,9 +615,9 @@ export function CourseDetailView({ course, preview = false }) {
               <div className="pt-1">
                 <a
                   href="mailto:info@theifoa.com"
-                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-lg border border-slate-200 hover:border-[#38b58a] text-xs font-medium text-slate-800 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 text-xs font-medium text-slate-800 transition-colors"
                 >
-                  <Mail className="w-3.5 h-3.5 text-[#38b58a]" />
+                  <Mail className="w-3.5 h-3.5 text-slate-500" />
                   <span>info@theifoa.com</span>
                 </a>
               </div>

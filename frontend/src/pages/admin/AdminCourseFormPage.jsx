@@ -557,7 +557,7 @@ export function AdminCourseFormPage() {
           </p>
           <Link
             to={`/admin/courses/${id}/form`}
-            className="inline-flex items-center gap-2 bg-ifoa-navy text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-ifoa-navy-light transition-colors w-fit"
+            className="inline-flex items-center gap-2 bg-ifoa-navy text-slate-950 font-extrabold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-ifoa-navy-light transition-colors w-fit"
           >
             <FileText className="w-4 h-4" /> Edit enrollment form
           </Link>

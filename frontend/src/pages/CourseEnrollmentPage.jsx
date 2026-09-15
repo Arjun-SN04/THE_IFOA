@@ -84,7 +84,7 @@ export function CourseEnrollmentPage() {
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <Loader2 className="w-10 h-10 animate-spin text-[#38b58a]" />
+        <Loader2 className="w-10 h-10 animate-spin text-[#34E06E]" />
         <p className="text-sm font-semibold text-slate-600">Loading Official Application Portal…</p>
       </div>
     )
@@ -97,7 +97,7 @@ export function CourseEnrollmentPage() {
         <p className="text-slate-600 max-w-md">{error || 'This program could not be loaded for enrollment.'}</p>
         <Link
           to="/events"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#38b58a] text-white font-bold text-sm shadow-sm hover:brightness-95 transition"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-sm shadow-sm hover:brightness-95 transition"
         >
           <ArrowLeft className="w-4 h-4" /> View All Open Programs
         </Link>
@@ -124,13 +124,13 @@ export function CourseEnrollmentPage() {
               {course.title?.replace(/[\u2013\u2014]/g, '-')}
             </Link>
             <span>/</span>
-            <span className="text-[#38b58a] font-semibold">Online Enrollment</span>
+            <span className="text-white font-semibold">Online Enrollment</span>
           </div>
 
           {/* Heading */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2 max-w-3xl">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-[#34E06E] border-b-2 border-[#34E06E] pb-1 inline-block">
                 Official Candidate Intake Portal
               </span>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
@@ -171,7 +171,7 @@ export function CourseEnrollmentPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-white bg-[#38b58a] px-2.5 py-0.5 rounded-full shadow-2xs">
+                    <span className="text-[11px] font-extrabold text-black bg-[#34E06E] px-2.5 py-0.5 rounded-full shadow-2xs">
                       Official Intake
                     </span>
                     <span className="text-[11px] font-mono text-slate-200 bg-black/60 px-2 py-0.5 rounded">
@@ -202,7 +202,7 @@ export function CourseEnrollmentPage() {
               <div className="space-y-2.5 text-xs sm:text-sm">
                 <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0">
-                    <Clock className="w-4 h-4 text-[#38b58a]" />
+                    <Clock className="w-4 h-4 text-slate-400" />
                     <span>Duration</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold">{course.duration || '4 Weeks'}</strong>
@@ -210,7 +210,7 @@ export function CourseEnrollmentPage() {
 
                 <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0">
-                    <Calendar className="w-4 h-4 text-[#38b58a]" />
+                    <Calendar className="w-4 h-4 text-slate-400" />
                     <span>Next Intake</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold">
@@ -220,7 +220,7 @@ export function CourseEnrollmentPage() {
 
                 <div className="flex items-start justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                    <MapPin className="w-4 h-4 text-[#38b58a]" />
+                    <MapPin className="w-4 h-4 text-slate-400" />
                     <span>Location</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold leading-snug">
@@ -230,7 +230,7 @@ export function CourseEnrollmentPage() {
 
                 <div className="flex items-start justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                    <Award className="w-4 h-4 text-[#38b58a]" />
+                    <Award className="w-4 h-4 text-slate-400" />
                     <span>Credential</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold leading-snug">

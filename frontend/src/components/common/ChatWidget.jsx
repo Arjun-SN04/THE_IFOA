@@ -129,7 +129,7 @@ function HelpView({ onAsk }) {
         {/* WhatsApp Card */}
         <div className="rounded-2xl border border-gray-200 p-5 bg-gradient-to-br from-emerald-50/50 to-emerald-100/50">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#38b58a] flex items-center justify-center shrink-0 text-white font-bold">
+            <div className="w-10 h-10 rounded-xl bg-[#34E06E] flex items-center justify-center shrink-0 text-black font-extrabold">
               WA
             </div>
             <div>
@@ -141,7 +141,7 @@ function HelpView({ onAsk }) {
             href="https://wa.me/41782273103"
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center rounded-xl bg-[#38b58a] hover:bg-[#2fa078] text-white text-sm font-bold py-2.5 transition-colors"
+            className="block w-full text-center rounded-xl bg-[#34E06E] hover:bg-[#28c85e] text-black text-sm font-extrabold py-2.5 transition-colors"
           >
             Message on WhatsApp
           </a>
@@ -229,34 +229,170 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
     }
   }
 
-  const renderText = (text) =>
-    text.split('\n').map((line, i, arr) => {
-      const segments = line.split(/(https?:\/\/[^\s]+|\/courses\/[a-z0-9/-]+)/gi)
-      return (
-        <span key={i}>
-          {segments.map((seg, j) => {
-            if (/^(https?:\/\/|\/courses\/)/i.test(seg)) {
-              return (
-                <a
-                  key={j}
-                  href={seg}
-                  target={seg.startsWith('http') ? '_blank' : '_self'}
-                  rel="noopener noreferrer"
-                  className="text-[#38b58a] font-semibold underline hover:text-[#2fa078] break-all"
-                >
-                  {seg}
-                </a>
-              )
-            }
-            const parts = seg.split(/\*\*(.*?)\*\*/g)
-            return parts.map((p, k) =>
-              k % 2 === 1 ? <strong key={k} className="font-semibold text-slate-900">{p}</strong> : p
-            )
-          })}
-          {i < arr.length - 1 && <br />}
-        </span>
+  // ── Rich text: links, bold, numbered steps, bullet lists, course chips ─────
+  const LINK_RE = /(https?:\/\/[^\s]+|\/courses\/[a-z0-9/-]+|\/events\b|\/contact\b)/gi
+  const COURSE_RE = /^(.{2,120}?)\s+[—–-]\s+((?:https?:\/\/[^\s]+)|(?:\/courses\/[a-z0-9/-]+))\s*$/i
+  const STEP_RE = /^\s*(\d{1,2})[.)]\s+(.*)$/
+  const BULLET_RE = /^\s*[-•*]\s+(.*)$/
+
+  const linkLabel = (href) => {
+    if (/^\/courses\/[a-z0-9-]+\/enroll$/i.test(href)) return 'enrollment page'
+    if (/^\/courses\/[a-z0-9-]+$/i.test(href)) return 'course page'
+    if (/^\/events\b/i.test(href)) return 'Events page'
+    if (/^\/contact\b/i.test(href)) return 'Contact page'
+    return href.replace(/^https?:\/\//, '')
+  }
+
+  const EMAIL_RE = /\b[\w.+-]+@[\w-]+\.[\w][\w.-]*\b/
+  const PHONE_RE = /\+?\d[\d ().-]{7,}\d/
+  const CONTACT_RE = new RegExp(`(${EMAIL_RE.source}|${PHONE_RE.source})`, 'g')
+
+  const renderInline = (text, kp = '') =>
+    text.split(LINK_RE).map((seg, j) => {
+      if (seg && /^(https?:\/\/|\/courses\/|\/events|\/contact)/i.test(seg)) {
+        return (
+          <a
+            key={`${kp}l${j}`}
+            href={seg}
+            target={seg.startsWith('http') ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+            className="text-[#34E06E] font-semibold underline decoration-1 underline-offset-2 hover:text-[#28c85e] break-words"
+          >
+            {linkLabel(seg)}
+          </a>
+        )
+      }
+      return seg.split(/\*\*(.*?)\*\*/g).map((p, k) =>
+        k % 2 === 1
+          ? <strong key={`${kp}b${j}-${k}`} className="font-semibold text-slate-900">{p}</strong>
+          : <React.Fragment key={`${kp}t${j}-${k}`}>{p}</React.Fragment>
       )
     })
+
+  // Pull emails / phone numbers out of a line into their own full-width chips.
+  const renderRich = (text, kp = '') =>
+    String(text).split(CONTACT_RE).map((seg, j) => {
+      if (seg && EMAIL_RE.test(seg)) {
+        return (
+          <a
+            key={`${kp}e${j}`}
+            href={`mailto:${seg}`}
+            className="my-1 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-[13px] font-semibold text-slate-900 no-underline transition-colors hover:border-[#34E06E] hover:bg-emerald-50/50"
+          >
+            <svg className="w-4 h-4 shrink-0 text-[#34E06E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span className="break-all">{seg}</span>
+          </a>
+        )
+      }
+      if (seg && PHONE_RE.test(seg) && seg.replace(/\D/g, '').length >= 8) {
+        return (
+          <a
+            key={`${kp}w${j}`}
+            href={`https://wa.me/${seg.replace(/\D/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="my-1 flex items-center gap-2 rounded-xl border border-gray-200 bg-emerald-50/50 px-3 py-2 text-[13px] font-semibold text-slate-900 no-underline transition-colors hover:border-[#34E06E] hover:bg-emerald-50"
+          >
+            <svg className="w-4 h-4 shrink-0 text-[#34E06E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+            </svg>
+            <span>{seg.trim()}</span>
+          </a>
+        )
+      }
+      return <React.Fragment key={`${kp}f${j}`}>{renderInline(seg, `${kp}${j}-`)}</React.Fragment>
+    })
+
+  const renderText = (text) => {
+    const blocks = []
+    let list = null // { type: 'ol' | 'ul', items: [] }
+    const flush = () => { if (list) { blocks.push(list); list = null } }
+
+    String(text).split('\n').forEach((line, i) => {
+      const course = line.match(COURSE_RE)
+      if (course) {
+        flush()
+        blocks.push({ type: 'course', label: course[1].trim(), href: course[2].trim(), key: i })
+        return
+      }
+      const step = line.match(STEP_RE)
+      if (step) {
+        if (!list || list.type !== 'ol') { flush(); list = { type: 'ol', items: [] } }
+        list.items.push(step[2])
+        return
+      }
+      const bullet = line.match(BULLET_RE)
+      if (bullet) {
+        if (!list || list.type !== 'ul') { flush(); list = { type: 'ul', items: [] } }
+        list.items.push(bullet[1])
+        return
+      }
+      flush()
+      if (line.trim() === '') { blocks.push({ type: 'gap', key: i }); return }
+      blocks.push({ type: 'p', text: line, key: i })
+    })
+    flush()
+
+    return blocks.map((b, bi) => {
+      if (b.type === 'gap') return <div key={`g${bi}`} className="h-1.5" />
+      if (b.type === 'p') {
+        return (
+          <div key={`p${bi}`} className="whitespace-pre-wrap">
+            {renderRich(b.text, `p${bi}-`)}
+          </div>
+        )
+      }
+      if (b.type === 'course') {
+        const external = b.href.startsWith('http')
+        return (
+          <a
+            key={`c${bi}`}
+            href={b.href}
+            target={external ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2.5 no-underline transition-colors hover:border-[#34E06E] hover:bg-emerald-50/50 group"
+          >
+            <span className="text-[13px] font-semibold text-slate-900 leading-snug">{b.label}</span>
+            <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-[#34E06E] group-hover:text-[#28c85e]">
+              Enroll
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          </a>
+        )
+      }
+      if (b.type === 'ol') {
+        return (
+          <ol key={`ol${bi}`} className="space-y-1.5">
+            {b.items.map((it, k) => (
+              <li key={k} className="flex gap-2.5">
+                <span className="shrink-0 mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-white text-[10px] font-bold">
+                  {k + 1}
+                </span>
+                <span className="flex-1 leading-relaxed">{renderRich(it, `ol${bi}-${k}-`)}</span>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+      if (b.type === 'ul') {
+        return (
+          <ul key={`ul${bi}`} className="space-y-1">
+            {b.items.map((it, k) => (
+              <li key={k} className="flex gap-2">
+                <span className="shrink-0 mt-2 h-1.5 w-1.5 rounded-full bg-[#34E06E]" />
+                <span className="flex-1 leading-relaxed">{renderRich(it, `ul${bi}-${k}-`)}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      return null
+    })
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -281,7 +417,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
                   : 'bg-white text-gray-800 rounded-2xl rounded-bl-sm border border-gray-200 shadow-sm'
               }`}
             >
-              {renderText(msg.content)}
+              <div className="space-y-1.5">{renderText(msg.content)}</div>
             </div>
           </motion.div>
         ))}
@@ -295,7 +431,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
               {[0, 1, 2].map((i) => (
                 <motion.span
                   key={i}
-                  className="block w-2 h-2 rounded-full bg-[#38b58a]"
+                  className="block w-2 h-2 rounded-full bg-[#34E06E]"
                   animate={{ y: [0, -5, 0], opacity: [0.4, 1, 0.4] }}
                   transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
                 />
@@ -327,7 +463,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
             className="flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition leading-relaxed"
             style={{ height: 44, maxHeight: 100 }}
             onFocus={(e) => {
-              e.target.style.borderColor = '#38b58a'
+              e.target.style.borderColor = '#34E06E'
               e.target.style.background = '#fff'
             }}
             onBlur={(e) => {
@@ -381,9 +517,16 @@ export function ChatWidget() {
   const isAdminPage = pathname.startsWith('/admin')
 
   useEffect(() => {
+    let ticking = false
     const handleScroll = () => {
-      const isPast = window.scrollY > Math.min(window.innerHeight * 0.7, 450)
-      setScrolledPastHero(isPast)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isPast = window.scrollY > Math.min(window.innerHeight * 0.7, 450)
+          setScrolledPastHero((prev) => (prev !== isPast ? isPast : prev))
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
     handleScroll()
@@ -475,7 +618,7 @@ export function ChatWidget() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-5l-4 4v-4z" />
           </svg>
           {unread > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#38b58a] text-white text-[10px] font-black flex items-center justify-center shadow-xs">
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#34E06E] text-black text-[10px] font-black flex items-center justify-center shadow-xs">
               {unread}
             </span>
           )}

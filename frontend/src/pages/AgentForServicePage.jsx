@@ -94,7 +94,7 @@ export function AgentForServicePage() {
         <div className="max-w-[1280px] mx-auto px-5 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-center">
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#5CFF96]/25 text-[#0d6833] text-xs font-bold uppercase tracking-widest">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#34E06E]/25 text-[#0d6833] text-xs font-bold uppercase tracking-widest">
                 <ShieldCheck className="w-3.5 h-3.5" /> 14 CFR Part 3 FAA Requirement
               </div>
               <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#000021] leading-tight">
@@ -106,7 +106,7 @@ export function AgentForServicePage() {
               <div className="pt-2 flex flex-col sm:flex-row gap-4">
                 <Button
                   onClick={() => navigate('/events-courses')}
-                  className="w-full sm:w-auto bg-[#5CFF96] text-[#000021] font-bold hover:bg-[#42f080] px-8 py-6 rounded-full text-xs uppercase tracking-wider shadow-lg flex items-center justify-center"
+                  className="w-full sm:w-auto bg-[#34E06E] text-[#000021] font-bold hover:bg-[#28c85e] px-8 py-6 rounded-full text-xs uppercase tracking-wider shadow-lg flex items-center justify-center"
                 >
                   Get Your Agent Now <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
@@ -118,12 +118,12 @@ export function AgentForServicePage() {
               <div className="p-6 sm:p-8 rounded-3xl bg-[#000021] text-white space-y-6 shadow-2xl relative">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-xs uppercase font-bold text-[#5CFF96] tracking-widest">
+                    <span className="text-xs uppercase font-bold text-[#34E06E] tracking-widest">
                       IFOA USA Compliance
                     </span>
                     <h3 className="font-display text-2xl font-bold mt-1">99.9% Success Rate</h3>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-[#5CFF96] text-[#000021] flex items-center justify-center font-bold">
+                  <div className="w-12 h-12 rounded-2xl bg-[#34E06E] text-[#000021] flex items-center justify-center font-bold">
                     <UserCheck className="w-6 h-6" />
                   </div>
                 </div>
@@ -131,11 +131,11 @@ export function AgentForServicePage() {
                   Thousands of international airmen in over 65 countries trust IFOA USA to maintain their FAA active certification status without regulatory interruption.
                 </p>
                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-[#5CFF96] font-bold">
+                  <div className="flex items-center gap-2 text-xs text-[#34E06E] font-bold">
                     <CheckCircle2 className="w-4 h-4 shrink-0" /> Official Registered Office in Miami, Florida
                   </div>
                   <div className="flex items-center gap-2 text-xs text-white/80">
-                    <CheckCircle2 className="w-4 h-4 text-[#5CFF96] shrink-0" /> Same-day digital dispatch for incoming legal notices
+                    <CheckCircle2 className="w-4 h-4 text-[#34E06E] shrink-0" /> Same-day digital dispatch for incoming legal notices
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ export function AgentForServicePage() {
       <section className="py-16 sm:py-24 bg-[#f9f9f9]">
         <div className="max-w-[1280px] mx-auto px-5 md:px-12">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#0d6833] bg-[#5CFF96]/25 px-3 py-1 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0d6833] bg-[#34E06E]/25 px-3 py-1 rounded-full">
               Regulatory Overview
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#000021]">
@@ -161,7 +161,7 @@ export function AgentForServicePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="p-6 sm:p-8 bg-white border border-[#000021]/5 shadow-sm rounded-2xl space-y-4 hover-lift">
-              <div className="w-12 h-12 rounded-xl bg-[#5CFF96] flex items-center justify-center text-[#000021]">
+              <div className="w-12 h-12 rounded-xl bg-[#34E06E] flex items-center justify-center text-[#000021]">
                 <FileText className="w-6 h-6" />
               </div>
               <h3 className="font-display text-xl font-bold text-[#000021]">Mandatory FAA Mandate</h3>
@@ -171,7 +171,7 @@ export function AgentForServicePage() {
             </Card>
 
             <Card className="p-6 sm:p-8 bg-white border border-[#000021]/5 shadow-sm rounded-2xl space-y-4 hover-lift">
-              <div className="w-12 h-12 rounded-xl bg-[#000021] flex items-center justify-center text-[#5CFF96]">
+              <div className="w-12 h-12 rounded-xl bg-[#000021] flex items-center justify-center text-[#34E06E]">
                 <Lock className="w-6 h-6" />
               </div>
               <h3 className="font-display text-xl font-bold text-[#000021]">Strict Confidentiality</h3>
@@ -197,7 +197,7 @@ export function AgentForServicePage() {
       <section className="py-16 sm:py-24 bg-[#EEEEEE]">
         <div className="max-w-[1280px] mx-auto px-5 md:px-12">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#0d6833] bg-[#5CFF96]/30 px-3 py-1 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0d6833] bg-[#34E06E]/30 px-3 py-1 rounded-full">
               Simple Onboarding
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#000021]">
@@ -223,7 +223,7 @@ export function AgentForServicePage() {
       <section className="py-16 sm:py-24 bg-white" id="pricing">
         <div className="max-w-[1280px] mx-auto px-5 md:px-12">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#5CFF96] bg-[#000021] px-4 py-1 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#34E06E] bg-[#000021] px-4 py-1 rounded-full">
               Transparent Pricing
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#000021]">
@@ -242,7 +242,7 @@ export function AgentForServicePage() {
                 }`}
               >
                 {p.popular && (
-                  <span className="absolute -top-3.5 right-6 sm:right-8 bg-[#5CFF96] text-[#000021] px-4 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider shadow-md">
+                  <span className="absolute -top-3.5 right-6 sm:right-8 bg-[#34E06E] text-[#000021] px-4 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider shadow-md">
                     Most Popular
                   </span>
                 )}
@@ -257,7 +257,7 @@ export function AgentForServicePage() {
 
                   <div className="flex items-baseline gap-1">
                     <span className="font-display text-4xl sm:text-5xl font-extrabold">{p.price}</span>
-                    <span className={`text-xs font-bold ${p.popular ? 'text-[#5CFF96]' : 'text-[#5A5A5A]'}`}>
+                    <span className={`text-xs font-bold ${p.popular ? 'text-[#34E06E]' : 'text-[#5A5A5A]'}`}>
                       {p.period}
                     </span>
                   </div>
@@ -267,7 +267,7 @@ export function AgentForServicePage() {
                       <li key={fidx} className="flex items-start gap-2.5 text-xs">
                         <CheckCircle2
                           className={`w-4 h-4 shrink-0 mt-0.5 ${
-                            p.popular ? 'text-[#5CFF96]' : 'text-[#0d6833]'
+                            p.popular ? 'text-[#34E06E]' : 'text-[#0d6833]'
                           }`}
                         />
                         <span>{feat}</span>
@@ -281,8 +281,8 @@ export function AgentForServicePage() {
                     onClick={() => navigate('/events-courses')}
                     className={`w-full py-6 rounded-full text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center ${
                       p.popular
-                        ? 'bg-[#5CFF96] text-[#000021] hover:bg-[#42f080] shadow-lg'
-                        : 'bg-[#000021] text-white hover:bg-[#5CFF96] hover:text-[#000021]'
+                        ? 'bg-[#34E06E] text-[#000021] hover:bg-[#28c85e] shadow-lg'
+                        : 'bg-[#000021] text-white hover:bg-[#34E06E] hover:text-[#000021]'
                     }`}
                   >
                     {p.ctaText}

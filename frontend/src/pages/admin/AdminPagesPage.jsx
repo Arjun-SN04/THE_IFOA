@@ -57,7 +57,7 @@ export function AdminPagesPage() {
             className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200/90 bg-white p-4 sm:p-5 shadow-xs hover:border-ifoa-navy/40 transition-colors"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#38b58a]/10 text-[#38b58a]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#34E06E]/10 text-[#34E06E]">
                 <FileText className="h-4 w-4" />
               </span>
               <div className="min-w-0">

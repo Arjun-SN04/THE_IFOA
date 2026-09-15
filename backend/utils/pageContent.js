@@ -582,17 +582,16 @@ const DEFAULTS = {
       moreDesc:
         'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
       categories: [
-        { id: 'all', label: 'All Services (8)' },
+        { id: 'all', label: 'All Services (6)' },
         { id: 'flight-ops', label: 'Flight Operations & OCC' },
-        { id: 'ground-ops', label: 'Ground & Ramp' },
-        { id: 'safety', label: 'Safety & Compliance' },
-        { id: 'strategy', label: 'Consulting & Strategy' }
+        { id: 'train-trainer', label: 'Train the Trainer' },
+        { id: 'consulting', label: 'Consulting' }
       ],
       disciplines: [
         {
           id: '01',
           title: 'Flight Dispatch',
-          desc: 'Join the selected club of aviation industry Heroes working behind the scene',
+          desc: 'Join the selected club of aviation industry heroes working behind the scenes in Airline Operations Control.',
           audience: 'Individuals & Airline OCC Teams',
           category: 'flight-ops',
           tag: 'Flight Operations',
@@ -601,48 +600,38 @@ const DEFAULTS = {
         },
         {
           id: '02',
-          title: 'Ground Operations',
-          desc: 'Enhance your skills to contribute actively to enhancing Safety on the Ramp',
-          audience: 'Ramp & Ground Ops Staff',
-          category: 'ground-ops',
-          tag: 'Ramp & Turnaround Safety',
-          iconName: 'ramp-marshal',
-          image: null
-        },
-        {
-          id: '03',
           title: 'Dangerous Goods',
-          desc: 'Because the Safety associated with the carriage of DGR by Air is more than just dry Law',
-          audience: 'Crew & Cargo Operators',
-          category: 'safety',
+          desc: 'Ensure absolute compliance and safety for dangerous goods air transport beyond textbook theory.',
+          audience: 'Airlines, Cargo & Handlers',
+          category: 'flight-ops',
           tag: 'DGR Compliance',
           iconName: 'dgr-flame',
           image: null
         },
         {
-          id: '04',
+          id: '03',
           title: 'Train The trainer',
-          desc: 'Be inspired to become one of the Best-in-Class instructors in the aviation industry',
+          desc: 'Master ICAO CBTA adult learning pedagogy to become a certified best-in-class aviation instructor.',
           audience: 'Nominated Persons & Instructors',
-          category: 'instructional',
+          category: 'train-trainer',
           tag: 'Instructional Pedagogy',
           iconName: 'instructor-board',
           image: null
         },
         {
-          id: '05',
+          id: '04',
           title: 'Human Factors',
-          desc: "Enhance essential resilience and develop your 'Soft Skills' in the Aviation industry.",
+          desc: 'Build vital operational resilience, stress inoculation, and CRM soft skills for high-stakes environments.',
           audience: 'OCC & Flight Ops Personnel',
-          category: 'safety',
+          category: 'flight-ops',
           tag: 'Resilience & CRM',
           iconName: 'human-brain-crm',
           image: null
         },
         {
-          id: '06',
+          id: '05',
           title: 'Crew Control',
-          desc: 'Get the robust foundations to become a professional crew controller/scheduler',
+          desc: 'Acquire robust operational skills to manage airline crew pairing, roster disruptions, and fatigue mitigation.',
           audience: 'Crew Schedulers & Controllers',
           category: 'flight-ops',
           tag: 'Crew Scheduling',
@@ -650,21 +639,11 @@ const DEFAULTS = {
           image: null
         },
         {
-          id: '07',
-          title: 'Aviation Sustainability',
-          desc: 'We develop sustainable solutions to mitigate aviation environmental impacts',
-          audience: 'Airlines & Environmental Leads',
-          category: 'strategy',
-          tag: 'Environmental Mitigation',
-          iconName: 'eco-aircraft',
-          image: null
-        },
-        {
-          id: '08',
+          id: '06',
           title: 'Consulting Services',
-          desc: 'We support you to become more efficient and successful in the aviation industry',
-          audience: 'Airlines & Aviation Authorities',
-          category: 'strategy',
+          desc: 'Transform airline operations with world-class OCC audits, regulatory alignment, and organizational efficiency.',
+          audience: 'Airlines & Authorities',
+          category: 'consulting',
           tag: 'Aviation Advisory',
           iconName: 'airline-audit',
           image: null

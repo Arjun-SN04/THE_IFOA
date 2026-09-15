@@ -16,6 +16,9 @@ import {
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import { CustomSelect } from '@/components/ui/CustomSelect'
 import { usePageContent } from '@/hooks/usePageContent'
+import flagSwitzerland from '@/assets/contact/flag-switzerland.png'
+import flagUsa from '@/assets/contact/flag-usa.png'
+import flagIndia from '@/assets/contact/flag-india.jpg'
 import bannerContactHero from '@/assets/partners/IOFA-banner_10@1920x1280.jpg'
 
 // Content the page ships with; the admin can override any of it via /admin/pages/contact.
@@ -117,7 +120,7 @@ export function ContactPage() {
   const offices = c.offices.items
 
   return (
-    <div className="bg-white text-rocket-dark selection:bg-[#38b58a] selection:text-white" data-purpose="contact-page">
+    <div className="bg-white text-rocket-dark selection:bg-slate-900 selection:text-white" data-purpose="contact-page">
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
         {/* Ambient Aviation Background */}
@@ -140,34 +143,114 @@ export function ContactPage() {
             </p>
           </div>
 
-          {/* Fork Cards (Airlines vs Individuals) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-            {c.hero.cards.map((card, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl bg-white/5 border border-white/10 hover:border-[#38b58a]/40 p-6 space-y-2 transition-all"
-              >
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#38b58a]">
-                  {card.eyebrow}
-                </span>
-                <h3 className="text-lg font-bold text-white tracking-tight">{card.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                  {card.desc}
-                </p>
-              </div>
-            ))}
+          {/* Fork Cards (Dark Frosted Glass Theme Matching Hero Background) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {c.hero.cards.map((card, idx) => {
+              const isAirline = idx === 0 || card.eyebrow?.toLowerCase().includes('airline')
+              return (
+                <div
+                  key={idx}
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      topic: isAirline
+                        ? 'Training my OCC / dispatch team'
+                        : 'Individual dispatcher certification'
+                    }))
+                    document.getElementById('contact-main-section')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  className="rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-7 sm:p-8 flex flex-col justify-between space-y-5 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1"
+                >
+                  <div className="space-y-3.5">
+                    {/* Badge Header */}
+                    <div className="flex items-center justify-between">
+                      {isAirline ? (
+                        <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-white border-b-2 border-[#34E06E] pb-0.5">
+                          <Building className="w-3.5 h-3.5 text-slate-300" />
+                          <span>For Airlines</span>
+                        </div>
+                      ) : (
+                        <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b-2 border-[#34E06E] pb-0.5">
+                          <User className="w-3.5 h-3.5 text-[#34E06E]" />
+                          <span>For Individuals</span>
+                        </div>
+                      )}
+
+                      <span className="text-[11px] text-slate-400 font-semibold tracking-wide uppercase font-mono">
+                        {isAirline ? 'Airlines & OCCs' : 'Career Pathway'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
+                      {card.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                      {card.desc}
+                    </p>
+
+                    {/* Feature Highlights */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3.5 border-t border-white/10 text-xs text-slate-200 font-medium">
+                      {isAirline ? (
+                        <>
+                          <div className="flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                            <span>Fleet-Customized</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                            <span>OCC Consulting</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
+                            <span>FAA &amp; EASA Path</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
+                            <span>Direct Guidance</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    {isAirline ? (
+                      <button
+                        type="button"
+                        className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
+                      >
+                        <span>Corporate Training</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit shadow-md hover:shadow-[0_0_15px_rgba(52,224,110,0.4)]"
+                      >
+                        <span>Explore Training</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* 2. MAIN CONTACT SECTION (FORM + REGIONAL OFFICES) */}
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="contact-main">
+      <section id="contact-main-section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80 scroll-mt-20" data-purpose="contact-main">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
             {/* Left: Contact Form */}
             <div className="lg:col-span-7 flex flex-col space-y-6 h-full">
               <div className="space-y-2">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#38b58a] block">
+                <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                   {c.form.eyebrow}
                 </span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark">
@@ -178,7 +261,7 @@ export function ContactPage() {
               <div className="rounded-3xl bg-slate-50/70 border border-slate-200/90 p-7 sm:p-9 shadow-sm flex-1 flex flex-col justify-between">
                 {submitted ? (
                   <div className="text-center py-12 space-y-4 animate-in fade-in duration-300 my-auto">
-                    <div className="w-16 h-16 rounded-full bg-[#38b58a]/10 text-[#38b58a] flex items-center justify-center mx-auto">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center mx-auto">
                       <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-rocket-dark">
@@ -189,7 +272,7 @@ export function ContactPage() {
                     </p>
                     <button
                       onClick={() => setSubmitted(false)}
-                      className="text-xs font-bold uppercase tracking-wider text-[#38b58a] hover:underline pt-2 cursor-pointer"
+                      className="text-xs font-bold uppercase tracking-wider text-[#34E06E] hover:underline pt-2 cursor-pointer"
                     >
                       Send Another Message
                     </button>
@@ -207,7 +290,7 @@ export function ContactPage() {
                           placeholder="Jane"
                           value={formData.firstName}
                           onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] transition-all"
+                          className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
                         />
                       </div>
 
@@ -221,7 +304,7 @@ export function ContactPage() {
                           placeholder="Doe"
                           value={formData.lastName}
                           onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                          className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] transition-all"
+                          className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
                         />
                       </div>
                     </div>
@@ -236,7 +319,7 @@ export function ContactPage() {
                         placeholder="jane.doe@airline.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] transition-all"
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
                       />
                     </div>
 
@@ -249,7 +332,7 @@ export function ContactPage() {
                         placeholder="Airline, operator, or 'individual'"
                         value={formData.organization}
                         onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                        className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] transition-all"
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
                       />
                     </div>
 
@@ -272,14 +355,14 @@ export function ContactPage() {
                         placeholder="Tell us about your fleet, your team size, or your timeline."
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full flex-1 min-h-[110px] px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] transition-all resize-y"
+                        className="w-full flex-1 min-h-[110px] px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all resize-y"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-emerald-500/20 cursor-pointer shrink-0"
+                      className="w-full bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-widest py-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] cursor-pointer shrink-0"
                     >
                       {loading ? 'Transmitting...' : c.form.submitLabel}
                     </button>
@@ -291,7 +374,7 @@ export function ContactPage() {
             {/* Right: Regional Offices */}
             <div className="lg:col-span-5 flex flex-col space-y-6 h-full">
               <div className="space-y-2">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#38b58a] block">
+                <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                   {c.offices.eyebrow}
                 </span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark">
@@ -300,45 +383,66 @@ export function ContactPage() {
               </div>
 
               <div className="flex-1 flex flex-col justify-between gap-4">
-                {offices.map((office, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded-3xl bg-slate-50/70 border border-slate-200/90 hover:bg-white hover:border-[#38b58a]/40 hover:shadow-lg transition-all duration-300 p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-3"
-                  >
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#38b58a] block">
-                        {office.region}
-                      </span>
-                      <h3 className="text-lg font-bold text-rocket-dark tracking-tight">
-                        {office.country}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed pt-1">
-                        {office.address}
-                      </p>
-                    </div>
+                {offices.map((office, idx) => {
+                  const name = (office.country || '').toLowerCase()
+                  const flagImg = name.includes('switzerland')
+                    ? flagSwitzerland
+                    : name.includes('united states') || name.includes('usa')
+                    ? flagUsa
+                    : name.includes('india')
+                    ? flagIndia
+                    : [flagSwitzerland, flagUsa, flagIndia][idx] || flagSwitzerland
 
-                    <div className="pt-3 border-t border-slate-200/70 space-y-2 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Phone:</span>
-                        <a
-                          href={`tel:${office.phone.replace(/[^0-9+]/g, '')}`}
-                          className="font-semibold text-rocket-dark hover:text-[#38b58a] transition-colors"
-                        >
-                          {office.phone}
-                        </a>
+                  return (
+                    <div
+                      key={idx}
+                      className="group rounded-3xl bg-[#020617] border border-white/10 hover:border-white/25 shadow-xl hover:shadow-2xl transition-all duration-300 p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4 relative overflow-hidden text-white min-h-[190px]"
+                    >
+                      {/* Ambient Flag Background Art */}
+                      <div className="absolute right-0 top-0 bottom-0 w-3/5 sm:w-1/2 overflow-hidden pointer-events-none z-0">
+                        <img
+                          src={flagImg}
+                          alt=""
+                          className="w-full h-full object-cover object-center opacity-25 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 select-none filter contrast-125"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/75 to-transparent" />
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Email:</span>
-                        <a
-                          href={`mailto:${office.email}`}
-                          className="font-semibold text-rocket-dark hover:text-[#38b58a] transition-colors"
-                        >
-                          {office.email}
-                        </a>
+
+                      <div className="relative z-10 space-y-1.5 max-w-sm">
+                        <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block">
+                          {office.region}
+                        </span>
+                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight pt-1">
+                          {office.country}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed pt-0.5">
+                          {office.address}
+                        </p>
+                      </div>
+
+                      <div className="relative z-10 pt-3.5 border-t border-white/10 space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-400 font-mono">Phone:</span>
+                          <a
+                            href={`tel:${office.phone.replace(/[^0-9+]/g, '')}`}
+                            className="font-semibold text-white hover:text-[#34E06E] transition-colors"
+                          >
+                            {office.phone}
+                          </a>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-400 font-mono">Email:</span>
+                          <a
+                            href={`mailto:${office.email}`}
+                            className="font-semibold text-white hover:text-[#34E06E] transition-colors"
+                          >
+                            {office.email}
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -359,7 +463,7 @@ export function ContactPage() {
             </div>
 
             {newsletterSuccess ? (
-              <div className="inline-flex items-center gap-2 text-[#38b58a] text-xs font-mono font-bold">
+              <div className="inline-flex items-center gap-2 text-[#34E06E] text-xs font-mono font-bold">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Subscribed! Check your inbox for confirmation.</span>
               </div>
@@ -371,11 +475,11 @@ export function ContactPage() {
                   placeholder="you@airline.com"
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="w-full sm:w-72 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] transition-all"
+                  className="w-full sm:w-72 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
                 />
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
+                  className="w-full sm:w-auto bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
                 >
                   Subscribe
                 </button>

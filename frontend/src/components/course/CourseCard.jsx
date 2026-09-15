@@ -51,7 +51,7 @@ export function CourseCard({ course, preview = false }) {
   )
 
   return (
-    <div className="group rounded-3xl overflow-hidden border border-slate-200/80 bg-white hover:border-[#38b58a]/40 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+    <div className="group rounded-3xl overflow-hidden border border-slate-200/80 bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
       {Banner}
 
       <div className="p-5 sm:p-6 text-left space-y-4 bg-white flex-1 flex flex-col justify-between">
@@ -59,7 +59,7 @@ export function CourseCard({ course, preview = false }) {
           {/* Top Scope / Tag & Duration row */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
             {v.badge ? (
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#2b8f6c] border-b-2 border-[#38b58a] pb-0.5 inline-block">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200 pb-0.5 inline-block">
                 {v.badge}
               </span>
             ) : <span />}
@@ -73,7 +73,7 @@ export function CourseCard({ course, preview = false }) {
             )}
           </div>
 
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug group-hover:text-[#38b58a] transition-colors line-clamp-2">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug group-hover:text-black transition-colors line-clamp-2">
             {title}
           </h3>
 
@@ -95,20 +95,20 @@ export function CourseCard({ course, preview = false }) {
 
         <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
           {preview ? (
-            <div className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#38b58a] transition-colors py-1">
+            <div className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 transition-colors py-1">
               <span>View Course Details</span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-[#38b58a]/15 flex items-center justify-center transition-colors shrink-0">
-                <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-[#38b58a] transition-all" />
+              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
+                <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-white transition-all" />
               </div>
             </div>
           ) : (
             <Link
               to={`/courses/${course.slug}`}
-              className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#38b58a] transition-colors py-1"
+              className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 transition-colors py-1"
             >
               <span>View Course Details</span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-[#38b58a]/15 flex items-center justify-center transition-colors shrink-0">
-                <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-[#38b58a] group-hover:translate-x-0.5 transition-all" />
+              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
+                <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
               </div>
             </Link>
           )}

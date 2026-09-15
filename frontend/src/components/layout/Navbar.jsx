@@ -111,11 +111,15 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
   }
 
   useEffect(() => {
+    let ticking = false
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true)
-      } else {
-        setIsScrolled(false)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const shouldScroll = window.scrollY > 20
+          setIsScrolled((prev) => (prev !== shouldScroll ? shouldScroll : prev))
+          ticking = false
+        })
+        ticking = true
       }
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -212,7 +216,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
             ) : (
               <Link
                 to="/events"
-                className="hidden sm:inline-flex bg-white text-black px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-rocket-lime hover:text-white transition-all hover:scale-105"
+                className="hidden sm:inline-flex bg-[#34E06E] text-slate-950 px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] hover:shadow-[0_0_20px_rgba(52,224,110,0.45)] transition-all hover:scale-105 shadow-md"
               >
                 Enroll Now
               </Link>
@@ -244,7 +248,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-rocket-lime transition-colors"
+                    className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
                   >
                     <span>{link.name}</span>
                     <ChevronRight className="w-4 h-4 opacity-50" />
@@ -258,8 +262,8 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                     active
-                      ? 'bg-white/10 text-rocket-lime font-bold'
-                      : 'text-white/90 hover:bg-white/10 hover:text-rocket-lime'
+                      ? 'bg-white/15 text-white font-bold'
+                      : 'text-white/90 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   <span>{link.name}</span>
@@ -278,7 +282,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                     key={item.name}
                     to={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-rocket-lime transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
                   >
                     <item.icon className="w-4 h-4 opacity-70" />
                     {item.name}
@@ -296,7 +300,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                 <Link
                   to="/events"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full block text-center bg-rocket-lime text-white py-3.5 rounded-full text-xs font-bold uppercase tracking-widest hover:brightness-110 active:scale-[0.99] transition-all shadow-lg"
+                  className="w-full block text-center bg-[#34E06E] text-slate-950 py-3.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] active:scale-[0.99] transition-all shadow-lg"
                 >
                   Enroll Now
                 </Link>

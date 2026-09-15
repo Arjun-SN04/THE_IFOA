@@ -25,6 +25,7 @@ import { AdminSubmissionDetailPage } from './pages/admin/AdminSubmissionDetailPa
 import { AdminFormBuilderPage } from './pages/admin/AdminFormBuilderPage'
 import { AdminPagesPage } from './pages/admin/AdminPagesPage'
 import { AdminPageEditorPage } from './pages/admin/AdminPageEditorPage'
+import { SmoothScroll } from './components/common/SmoothScroll'
 import { Loader2 } from 'lucide-react'
 
 // ScrollToTop helper on route change
@@ -102,46 +103,48 @@ function PublicSite() {
 function App() {
   return (
     <Router>
-      <ScrollToTop />
-      <RouteTitle />
-      <AdminAuthProvider>
-        <Routes>
-          {/* Admin console */}
-          <Route path="/admin/login" element={<AdminLoginPage />} />
-          {/* Full-screen course preview - outside the console shell */}
-          <Route
-            path="/admin/courses/:id/preview"
-            element={
-              <RequireAdmin>
-                <AdminCoursePreviewPage />
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <RequireAdmin>
-                <AdminLayout />
-              </RequireAdmin>
-            }
-          >
-            <Route index element={<Navigate to="/admin/courses" replace />} />
-            <Route path="courses" element={<AdminCoursesPage />} />
-            <Route path="courses/new" element={<AdminCourseFormPage />} />
-            <Route path="courses/:id" element={<AdminCourseFormPage />} />
-            <Route path="courses/:id/form" element={<AdminFormBuilderPage />} />
-            <Route path="form-template" element={<AdminFormBuilderPage />} />
-            <Route path="pages" element={<AdminPagesPage />} />
-            <Route path="pages/:page" element={<AdminPageEditorPage />} />
-            <Route path="submissions" element={<AdminSubmissionsPage />} />
-            <Route path="submissions/:id" element={<AdminSubmissionDetailPage />} />
-            <Route path="registrations" element={<Navigate to="/admin/submissions" replace />} />
-          </Route>
+      <SmoothScroll>
+        <ScrollToTop />
+        <RouteTitle />
+        <AdminAuthProvider>
+          <Routes>
+            {/* Admin console */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            {/* Full-screen course preview - outside the console shell */}
+            <Route
+              path="/admin/courses/:id/preview"
+              element={
+                <RequireAdmin>
+                  <AdminCoursePreviewPage />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <RequireAdmin>
+                  <AdminLayout />
+                </RequireAdmin>
+              }
+            >
+              <Route index element={<Navigate to="/admin/courses" replace />} />
+              <Route path="courses" element={<AdminCoursesPage />} />
+              <Route path="courses/new" element={<AdminCourseFormPage />} />
+              <Route path="courses/:id" element={<AdminCourseFormPage />} />
+              <Route path="courses/:id/form" element={<AdminFormBuilderPage />} />
+              <Route path="form-template" element={<AdminFormBuilderPage />} />
+              <Route path="pages" element={<AdminPagesPage />} />
+              <Route path="pages/:page" element={<AdminPageEditorPage />} />
+              <Route path="submissions" element={<AdminSubmissionsPage />} />
+              <Route path="submissions/:id" element={<AdminSubmissionDetailPage />} />
+              <Route path="registrations" element={<Navigate to="/admin/submissions" replace />} />
+            </Route>
 
-          {/* Public site */}
-          <Route path="/*" element={<PublicSite />} />
-        </Routes>
-      </AdminAuthProvider>
+            {/* Public site */}
+            <Route path="/*" element={<PublicSite />} />
+          </Routes>
+        </AdminAuthProvider>
+      </SmoothScroll>
     </Router>
   )
 }

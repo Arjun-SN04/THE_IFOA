@@ -33,7 +33,7 @@ export function Footer() {
                 href="https://www.linkedin.com/company/71556135/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#38b58a] flex items-center justify-center text-white transition-all shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all shadow-sm"
                 aria-label="LinkedIn"
                 title="LinkedIn"
               >
@@ -47,7 +47,7 @@ export function Footer() {
                 href="https://www.facebook.com/profile.php?id=100069215447113"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#38b58a] flex items-center justify-center text-white transition-all shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all shadow-sm"
                 aria-label="Facebook"
                 title="Facebook"
               >
@@ -61,7 +61,7 @@ export function Footer() {
                 href="https://www.instagram.com/theifoa/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#38b58a] flex items-center justify-center text-white transition-all shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all shadow-sm"
                 aria-label="Instagram"
                 title="Instagram"
               >
@@ -75,7 +75,7 @@ export function Footer() {
                 href="https://www.youtube.com/channel/UCH2vo2z3uLuPOTI1TwFaT7A"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#38b58a] flex items-center justify-center text-white transition-all shadow-sm"
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all shadow-sm"
                 aria-label="YouTube"
                 title="YouTube"
               >
@@ -93,22 +93,22 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <Link to="/services" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/services" className="hover:text-white transition-colors">
                   Initial
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/services" className="hover:text-white transition-colors">
                   Recurrent
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/services" className="hover:text-white transition-colors">
                   Advanced
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/services" className="hover:text-white transition-colors">
                   Specialist
                 </Link>
               </li>
@@ -122,22 +122,22 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <Link to="/about" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/about" className="hover:text-white transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/services" className="hover:text-white transition-colors">
                   Instructors
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/services" className="hover:text-white transition-colors">
                   Approvals
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-[#38b58a] transition-colors">
+                <Link to="/contact" className="hover:text-white transition-colors">
                   Locations
                 </Link>
               </li>
@@ -175,7 +175,7 @@ export function Footer() {
 
           <button
             onClick={scrollToTop}
-            className="p-2 bg-white/5 hover:bg-[#38b58a] hover:text-white rounded-md text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="p-2 bg-white/5 hover:bg-white/20 rounded-md text-slate-400 hover:text-white transition-colors cursor-pointer"
             title="Scroll to top"
             aria-label="Scroll to top"
           >

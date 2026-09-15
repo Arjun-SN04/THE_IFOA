@@ -23,7 +23,7 @@ function NavItem({ to, icon: Icon, children, end, badge }) {
       className={({ isActive }) =>
         `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
           isActive
-            ? 'bg-[#38b58a]/10 text-[#238b64] border border-[#38b58a]/30 shadow-xs'
+            ? 'bg-[#34E06E]/10 text-[#1c8b41] border border-[#34E06E]/30 shadow-xs'
             : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent'
         }`
       }
@@ -33,7 +33,7 @@ function NavItem({ to, icon: Icon, children, end, badge }) {
           <div className="flex items-center gap-3">
             <Icon
               className={`w-4 h-4 shrink-0 transition-colors ${
-                isActive ? 'text-[#238b64]' : 'text-slate-400 group-hover:text-slate-700'
+                isActive ? 'text-[#1c8b41]' : 'text-slate-400 group-hover:text-slate-700'
               }`}
             />
             <span>{children}</span>
@@ -42,7 +42,7 @@ function NavItem({ to, icon: Icon, children, end, badge }) {
             <span
               className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                 isActive
-                  ? 'bg-[#38b58a]/20 text-[#238b64]'
+                  ? 'bg-[#34E06E]/20 text-[#1c8b41]'
                   : 'bg-slate-100 text-slate-500 group-hover:text-slate-700'
               }`}
             >
@@ -116,9 +116,9 @@ export function AdminLayout() {
         <div className="flex items-center gap-3 px-6 sm:px-8">
           <Link
             to="/admin/courses/new"
-            className="inline-flex items-center gap-2 bg-[#38b58a] hover:bg-[#2fa078] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow-emerald-500/20 active:scale-[0.99] cursor-pointer"
+            className="inline-flex items-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow-emerald-500/20 active:scale-[0.99] cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5 text-white" />
+            <Plus className="w-3.5 h-3.5 text-slate-950" />
             <span>New Course</span>
           </Link>
 
@@ -141,7 +141,7 @@ export function AdminLayout() {
           {/* Navigation Links */}
           <div className="p-5 space-y-5 overflow-y-auto">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-[10px] font-bold uppercase tracking-wider text-slate-600">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#38b58a]" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#34E06E]" />
               <span>Admin Console</span>
             </div>
 
@@ -185,7 +185,7 @@ export function AdminLayout() {
           <div className="p-4 border-t border-slate-200/80 space-y-2.5 bg-slate-50/80 shrink-0">
             {/* Admin User Badge */}
             <div className="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#38b58a] to-[#207a57] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-8 h-8 rounded-lg bg-[#34E06E] text-black font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
                 {admin?.name ? admin.name.substring(0, 2).toUpperCase() : 'IA'}
               </div>
               <div className="min-w-0 flex-1">

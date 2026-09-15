@@ -47,7 +47,7 @@ export function CustomSelect({
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full px-4 py-3 rounded-2xl bg-white border text-sm text-left flex items-center justify-between transition-all duration-200 cursor-pointer ${
           isOpen
-            ? 'border-[#38b58a] ring-2 ring-[#38b58a]/20 shadow-sm'
+            ? 'border-[#34E06E] ring-2 ring-[#34E06E]/20 shadow-sm'
             : 'border-slate-200 hover:border-slate-300'
         }`}
         aria-haspopup="listbox"
@@ -62,7 +62,7 @@ export function CustomSelect({
         </span>
         <ChevronDown
           className={`w-4 h-4 text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-[#38b58a]' : ''
+            isOpen ? 'rotate-180 text-[#34E06E]' : ''
           }`}
         />
       </button>
@@ -84,12 +84,12 @@ export function CustomSelect({
                 onClick={() => handleSelect(opt.value)}
                 className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-left flex items-center justify-between transition-colors duration-150 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#38b58a]/10 text-[#38b58a] font-semibold'
+                    ? 'bg-[#34E06E]/15 text-slate-900 font-semibold'
                     : 'text-slate-700 hover:bg-slate-50 hover:text-rocket-dark font-normal'
                 }`}
               >
                 <span className="truncate">{opt.label}</span>
-                {isSelected && <Check className="w-4 h-4 text-[#38b58a] shrink-0 ml-2" />}
+                {isSelected && <Check className="w-4 h-4 text-[#16a34a] shrink-0 ml-2" />}
               </button>
             )
           })}

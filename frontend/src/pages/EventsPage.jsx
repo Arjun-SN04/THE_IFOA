@@ -174,7 +174,7 @@ export function EventsPage() {
   }
 
   return (
-    <div className="bg-white text-rocket-dark selection:bg-[#38b58a] selection:text-white" data-purpose="events-page">
+    <div className="bg-white text-rocket-dark selection:bg-slate-900 selection:text-white" data-purpose="events-page">
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
         {/* Ambient Aviation Background */}
@@ -199,7 +199,7 @@ export function EventsPage() {
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <a
               href="#open-enrollment-programs"
-              className="bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold px-7 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-lg hover:shadow-emerald-500/25 hover:scale-105 cursor-pointer"
+              className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-7 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-lg hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:scale-105 cursor-pointer"
             >
               {c.hero.primaryLabel}
             </a>
@@ -209,7 +209,7 @@ export function EventsPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#38b58a]" />
+              <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
               <span>Inquire on WhatsApp</span>
             </a>
           </div>
@@ -222,7 +222,7 @@ export function EventsPage() {
           {/* Header Row */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
             <div className="max-w-2xl space-y-2.5">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                 {c.programs.eyebrow}
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -264,7 +264,7 @@ export function EventsPage() {
                   {/* Left Info */}
                   <div className="space-y-2.5 min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500 font-medium">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#2b8f6c] border-b-2 border-[#38b58a] pb-0.5 inline-block mr-1">
+                      <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block mr-1">
                         {course.refCode || `INTAKE 0${idx + 1}`}
                       </span>
                       <span className="text-slate-300">•</span>
@@ -283,7 +283,7 @@ export function EventsPage() {
                       )}
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#2b8f6c] transition-colors">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#1c8b41] transition-colors">
                       {course.title}
                     </h3>
                   </div>
@@ -301,7 +301,7 @@ export function EventsPage() {
 
                     <Link
                       to={`/courses/${course.slug}/enroll`}
-                      className="inline-flex items-center justify-center gap-2 bg-[#020617] hover:bg-[#38b58a] text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-200 shadow-2xs hover:shadow-md cursor-pointer shrink-0"
+                      className="inline-flex items-center justify-center gap-2 bg-[#020617] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-200 shadow-2xs hover:shadow-md cursor-pointer shrink-0"
                     >
                       <span>Register Interest</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -315,7 +315,7 @@ export function EventsPage() {
           {/* Email Notification Bar */}
           <div className="rounded-3xl bg-[#020617] text-white p-8 sm:p-10 border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-xl">
             <div className="space-y-2 max-w-lg">
-              <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#38b58a] uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-mono font-semibold text-slate-400 uppercase tracking-wider">
                 <Bell className="w-4 h-4" />
                 <span>{c.alerts.eyebrow}</span>
               </div>
@@ -336,12 +336,12 @@ export function EventsPage() {
                   value={notifyEmail}
                   onChange={(e) => setNotifyEmail(e.target.value)}
                   placeholder="you@airline.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-[#38b58a] focus:ring-2 focus:ring-[#38b58a]/20 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-white focus:ring-2 focus:ring-white/20 transition-all"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold text-xs uppercase tracking-wider px-7 py-3 rounded-xl transition-all duration-200 shadow-md hover:scale-105 cursor-pointer shrink-0"
+                className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-wider px-7 py-3 rounded-xl transition-all duration-200 shadow-md hover:scale-105 cursor-pointer shrink-0"
               >
                 {notifySuccess ? 'Notified!' : c.alerts.buttonLabel}
               </button>
@@ -350,11 +350,76 @@ export function EventsPage() {
         </div>
       </section>
 
-      {/* 3. CURRICULUM OVERVIEW */}
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="curriculum-overview">
+      {/* 3. WHAT YOU DEVELOP */}
+      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="what-you-develop">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-12">
+          {/* Header Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end justify-between">
+            <div className="lg:col-span-7 space-y-3">
+              <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#15803d] border-b border-[#34E06E] pb-0.5 inline-block">
+                What You Develop
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                Knowledge is only useful when you can apply it operationally.
+              </h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
+                The program develops the technical knowledge, situational awareness and operational judgment required to support safe and efficient flight operations.
+              </p>
+            </div>
+          </div>
+
+          {/* 4 Pillars Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                num: '01',
+                title: 'Anticipate',
+                desc: 'Identify developing operational constraints and understand their potential impact before they affect the flight.'
+              },
+              {
+                num: '02',
+                title: 'Decide',
+                desc: 'Build situational awareness and make structured operational decisions using available information.'
+              },
+              {
+                num: '03',
+                title: 'Coordinate',
+                desc: "Understand the dispatcher's role within the wider operation and coordinate effectively with operational stakeholders."
+              },
+              {
+                num: '04',
+                title: 'Optimize',
+                desc: 'Balance safety, compliance, operational constraints and available resources rather than simply following predefined tasks.'
+              }
+            ].map((pillar, idx) => (
+              <div
+                key={idx}
+                className="group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
+              >
+                <div className="space-y-4">
+                  <span className="text-xs font-mono font-bold text-[#15803d] block">
+                    {pillar.num}
+                  </span>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#15803d] transition-colors">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                    {pillar.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. CURRICULUM OVERVIEW */}
+      <section className="py-16 sm:py-24 bg-slate-50/60 border-b border-slate-200/80" data-purpose="curriculum-overview">
         <div className="max-w-[1280px] mx-auto px-6 space-y-12">
           <div className="max-w-2xl space-y-2.5">
-            <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
               {c.curriculum.eyebrow}
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
@@ -369,12 +434,12 @@ export function EventsPage() {
             {curriculumModules.map((mod, idx) => (
               <div
                 key={idx}
-                className="group rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#38b58a]/40 hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between space-y-4"
+                className="group rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3.5">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#0d6833] flex items-center justify-center border border-emerald-200/60 shadow-2xs group-hover:bg-[#38b58a] group-hover:text-white group-hover:border-[#38b58a] transition-colors">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200 shadow-2xs group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900 transition-colors">
                         <AviationIcon name={mod.iconName} className="w-4 h-4" />
                       </div>
                       <span className="text-xs font-mono font-bold text-slate-700">
@@ -385,7 +450,7 @@ export function EventsPage() {
                       PHASE {mod.num}
                     </span>
                   </div>
-                  <h3 className="text-base font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#38b58a] transition-colors min-h-[42px] flex items-center">
+                  <h3 className="text-base font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-slate-900 transition-colors min-h-[42px] flex items-center">
                     {mod.title}
                   </h3>
                   <div className="space-y-1.5 pt-3 border-t border-slate-100">
@@ -409,11 +474,73 @@ export function EventsPage() {
         </div>
       </section>
 
+      {/* 5. FROM THEORY TO THE AIRCRAFT (B737-NG OPERATIONAL TRAINING) */}
+      <section className="py-16 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left Content */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="space-y-3">
+                <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#34E06E] inline-block">
+                  From Theory to the Aircraft
+                </span>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                  Learn the operation through the B737-NG.
+                </h2>
+              </div>
+
+              <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl">
+                Aircraft knowledge is integrated into operational training rather than treated as an isolated academic subject. Participants work through B737-NG systems, performance, mass and balance, limitations and manual flight-planning exercises.
+              </p>
+
+              {/* Module Tags */}
+              <div className="flex flex-wrap items-center gap-2.5 pt-2">
+                {[
+                  'AIRCRAFT SYSTEMS',
+                  'PERFORMANCE',
+                  'MASS & BALANCE',
+                  'FLIGHT PLANNING',
+                  'LIMITATIONS'
+                ].map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center px-4 py-2 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-slate-200 bg-white/5 border border-white/15 transition-all cursor-default"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Card: Minimal B737-NG Aircraft Visual Card */}
+            <div className="lg:col-span-5">
+              <div className="w-full rounded-3xl bg-[#0f172a] border border-slate-800 p-8 sm:p-12 flex flex-col justify-between min-h-[300px] aspect-4/3 shadow-xl relative group">
+                {/* Center Stylized Aircraft Silhouette */}
+                <div className="my-auto py-6 flex items-center justify-center">
+                  <svg
+                    className="w-24 h-24 sm:w-28 sm:h-28 text-white drop-shadow-md transform -rotate-45 transition-transform duration-500 group-hover:scale-105"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+                  </svg>
+                </div>
+
+                {/* Bottom Left Minimalist Label */}
+                <div className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#34E06E]">
+                  B737-NG · Operational Training
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 4. RECENT COHORTS */}
       <section className="py-16 sm:py-24 bg-slate-50/60 border-b border-slate-200/80" data-purpose="recent-cohorts">
         <div className="max-w-[1280px] mx-auto px-6 space-y-12">
           <div className="max-w-2xl space-y-2.5">
-            <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#38b58a] border-b-2 border-[#38b58a] pb-1 inline-block">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
               {c.recent.eyebrow}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -428,22 +555,22 @@ export function EventsPage() {
             {recentCohorts.map((cohort, idx) => (
               <div
                 key={idx}
-                className="group rounded-3xl bg-white border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] hover:border-[#38b58a]/40 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
+                className="group rounded-3xl bg-white border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-4">
                   {/* Top Bar: Code & Delivered status */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-mono font-bold text-[#38b58a] bg-[#38b58a]/10 border border-[#38b58a]/20 px-3 py-1 rounded-lg">
+                    <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
                       {cohort.code}
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#38b58a]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-slate-600" />
                       <span>Completed</span>
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#38b58a] transition-colors">
+                  <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-slate-900 transition-colors">
                     {cohort.title}
                   </h3>
 
@@ -473,7 +600,7 @@ export function EventsPage() {
                   <button
                     type="button"
                     onClick={() => navigate('/contact')}
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#38b58a] hover:text-[#2ea87c] transition-colors cursor-pointer group/btn shrink-0"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 hover:text-slate-700 transition-colors cursor-pointer group/btn shrink-0"
                   >
                     <span>Inquire dates</span>
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -498,7 +625,7 @@ export function EventsPage() {
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <button
               onClick={() => navigate('/contact')}
-              className="bg-[#38b58a] hover:bg-[#2ea87c] text-white font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:scale-105 cursor-pointer"
+              className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:scale-105 cursor-pointer"
             >
               {c.finalCta.primaryLabel}
             </button>
