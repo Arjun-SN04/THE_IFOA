@@ -36,6 +36,9 @@ export const api = {
   // ---- Website chat bot ----
   chat: (messages) => request('/chat', { method: 'POST', body: { messages } }),
 
+  // ---- Contact page enquiry form ----
+  sendContact: (payload) => request('/contact', { method: 'POST', body: payload }),
+
   // ---- Public enrollment form ----
   getCourseForm: (slug) => request(`/courses/${slug}/form`),
   submitCourseForm: (slug, answers) =>

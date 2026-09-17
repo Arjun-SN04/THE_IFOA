@@ -5,6 +5,7 @@ const formSchema = require('../controllers/formSchemaController')
 const submissions = require('../controllers/submissionController')
 const pageContent = require('../controllers/pageContentController')
 const chat = require('../controllers/chatController')
+const contact = require('../controllers/contactController')
 
 const router = express.Router()
 
@@ -26,6 +27,15 @@ const registerLimiter = rateLimit({
   message: { message: 'Too many registrations from this address. Try again later.' }
 })
 
+// Contact form — cap messages per IP.
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { message: 'Too many messages from this address. Try again later.' }
+})
+
 router.get('/courses', courses.listPublic)
 router.get('/courses/:slug', courses.getBySlug)
 
@@ -34,6 +44,9 @@ router.get('/pages/:page', pageContent.getPublicPage)
 
 // Website chat bot.
 router.post('/chat', chatLimiter, chat.ask)
+
+// Contact page enquiry form.
+router.post('/contact', contactLimiter, contact.send)
 
 // Dynamic enrollment form for a course + submission intake.
 router.get('/courses/:slug/form', formSchema.getPublicCourseForm)

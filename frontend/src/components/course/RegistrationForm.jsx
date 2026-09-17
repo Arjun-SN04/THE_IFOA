@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { CheckCircle2, Loader2, Download, AlertTriangle } from 'lucide-react'
+import {
+  RiCheckboxCircleFill,
+  RiLoader4Line,
+  RiDownload2Line,
+  RiAlertFill
+} from 'react-icons/ri'
 import { api } from '@/lib/api'
 import { DynamicSection } from '@/components/formEngine/DynamicSection'
 import {
@@ -58,6 +63,27 @@ export function RegistrationForm({ slug, courseTitle }) {
       }
       return next
     })
+  }
+
+  async function handleDownloadPdf() {
+    if (!done || !sections || !answers) return
+    setPdfBusy(true)
+    try {
+      await downloadEnrollmentPdf({
+        courseTitle: courseTitle || course?.title || 'IFOA Course',
+        submissionId: done.submissionId || done._id || '',
+        referenceCode: done.referenceCode || '',
+        submittedAt: done.createdAt || new Date().toISOString(),
+        sections,
+        answers,
+        intakes
+      })
+    } catch (err) {
+      console.error('PDF export failed:', err)
+      alert('Could not generate PDF: ' + (err.message || 'unknown error'))
+    } finally {
+      setPdfBusy(false)
+    }
   }
 
   async function handleSubmit(e) {
@@ -134,7 +160,7 @@ export function RegistrationForm({ slug, courseTitle }) {
   if (loading) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center flex flex-col items-center gap-3">
-        <Loader2 className="w-7 h-7 animate-spin text-rocket-dark" />
+        <RiLoader4Line className="w-7 h-7 animate-spin text-rocket-dark" />
         <p className="text-sm font-medium text-gray-500">Loading enrollment form…</p>
       </div>
     )
@@ -157,7 +183,7 @@ export function RegistrationForm({ slug, courseTitle }) {
         <p className="text-base font-bold text-amber-900">Registration is not open yet</p>
         <p className="text-sm text-amber-700">
           The application form for this program has not been published. Contact{' '}
-          <a className="underline font-semibold" href="mailto:info@theIFOA.com">info@theIFOA.com</a> to be
+          <a className="underline font-semibold" href="mailto:info@theifoa.com">info@theifoa.com</a> to be
           notified when the next intake opens.
         </p>
       </div>
@@ -171,7 +197,7 @@ export function RegistrationForm({ slug, courseTitle }) {
         <h2 className="text-2xl font-bold text-rocket-dark">Enrollment submitted</h2>
         <p className="text-gray-700 max-w-lg mx-auto text-sm">
           Download your completed enrollment form, sign it, and email the signed copy plus two ID copies to{' '}
-          <a className="font-semibold underline" href="mailto:info@theIFOA.com">info@theIFOA.com</a>. Our
+          <a className="font-semibold underline" href="mailto:info@theifoa.com">info@theifoa.com</a>. Our
           admissions team will confirm your place and issue the invoice.
         </p>
         <button
@@ -260,7 +286,7 @@ export function RegistrationForm({ slug, courseTitle }) {
             disabled={submitting}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-sm px-8 py-4 rounded-xl shadow-[0_4px_20px_rgba(52, 224, 110,0.35)] disabled:opacity-60 disabled:cursor-not-allowed transition transform hover:-translate-y-0.5"
           >
-            {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+            {submitting && <RiLoader4Line className="w-4 h-4 animate-spin" />}
             {submitting ? 'Submitting Application…' : 'Submit Application Now'}
           </button>
         </div>

@@ -69,6 +69,16 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
+
+  ::selection {
+    background-color: #34E06E !important;
+    color: #020617 !important;
+  }
+
+  ::-moz-selection {
+    background-color: #34E06E !important;
+    color: #020617 !important;
+  }
 }
 
 /* Custom rounded corners matching the UI */
@@ -280,25 +290,22 @@
   transition: color 0.4s ease;
 }
 
-/* ── Lenis Smooth Scrolling Optimizations ── */
-html.lenis, html.lenis body {
-  height: auto;
+/* ── High-Performance Native Scrolling & Layer Isolation ── */
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
 }
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: clip;
-}
-
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
+/* Ensure hardware-accelerated rendering on scrolling sections */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* ── Hero Mockup Float Animation ── */

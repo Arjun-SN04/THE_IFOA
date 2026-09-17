@@ -3,34 +3,36 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import {
-  Plane,
-  Shield,
-  ShieldCheck,
-  Award,
-  CheckCircle2,
-  Calendar,
-  Clock,
-  BookOpen,
-  ArrowRight,
-  ChevronRight,
-  Sparkles,
-  Users,
-  Search,
-  ExternalLink,
-  GraduationCap,
-  Briefcase,
-  Layers,
-  FileCheck,
-  Compass,
-  MessageSquare,
-  PhoneCall,
-  Mail
-} from 'lucide-react'
+  RiWhatsappFill,
+  RiSearchLine,
+  RiGroupLine,
+  RiShieldCheckFill,
+  RiAwardFill,
+  RiCheckboxCircleFill
+} from 'react-icons/ri'
+import {
+  PiAirplaneTiltFill,
+  PiAirplaneTakeoffFill
+} from 'react-icons/pi'
+import {
+  TbClockHour4,
+  TbCertificate
+} from 'react-icons/tb'
+import {
+  HiArrowUpRight,
+  HiArrowRight,
+  HiSparkles
+} from 'react-icons/hi2'
+import {
+  MdOutlineMail
+} from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import { CourseCard } from '@/components/course/CourseCard'
 import { AviationIcon } from '@/components/common/AviationIcon'
 import { usePageContent } from '@/hooks/usePageContent'
+import { Seo } from '@/components/common/Seo'
+import { graph, organizationSchema, breadcrumbSchema } from '@/lib/seo'
 
 // Standards Logos
 import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
@@ -38,14 +40,12 @@ import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
 import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
 
 // Official Discipline Media
-import imgFlightDispatch from '@/assets/profile_media/portfolio-flight-dispatch.jpg'
-import imgGroundOps from '@/assets/profile_media/portfolio-ground-ops.jpg'
-import imgDgr from '@/assets/profile_media/portfolio-dangerous-goods.jpg'
-import imgTrainTrainer from '@/assets/profile_media/portfolio-train-trainer.jpg'
-import imgHumanFactors from '@/assets/profile_media/portfolio-human-factors.jpg'
-import imgCrewControl from '@/assets/profile_media/crew-scheduling-operations.jpg'
-import imgSustainability from '@/assets/services/Bsuiness-Jet-Flying-Small.jpg'
-import imgConsulting from '@/assets/common/aviation-consulting-support.jpg'
+import imgFlightDispatch from '@/assets/services/01_flight_dispatch.png'
+import imgDgr from '@/assets/services/02_dangerous_goods.png'
+import imgTrainTrainer from '@/assets/services/03_train_trainer.png'
+import imgHumanFactors from '@/assets/services/04_human_factors.png'
+import imgCrewControl from '@/assets/services/05_crew_control.png'
+import imgConsulting from '@/assets/services/06_consulting.png'
 import imgOccLarge from '@/assets/profile_media/occ-flight-dispatch-large.jpg'
 
 // Discipline card images stay bundled; matched to a discipline by its number.
@@ -77,7 +77,7 @@ const FALLBACK = {
         region: 'Europe / Worldwide',
         title: 'EASA Standards Initial',
         desc: 'Comprehensive initial flight dispatcher certification aligned with ICAO Doc 10106 and EASA ORO.GEN.110.',
-        badge1: '175 HOURS',
+        badge1: '200 HOURS',
         badge2: 'HYBRID',
         action: 'Explore EASA'
       },
@@ -117,39 +117,40 @@ const FALLBACK = {
     pillars: [
       {
         idx: '01',
-        title: 'Customized Scenario-Based',
-        subtitle: 'Real OCC Context',
-        desc: "Every training is precisely tailored for your operation's needs, leveraging hands-on, high-impact scenario drills.",
+        title: 'Training That Reflects the Operation',
+        subtitle: 'REAL-WORLD OCC CONTEXT',
+        desc: 'Every program is built around realistic operational scenarios, helping learners apply knowledge, make decisions, and respond to the challenges of a modern OCC.',
         iconName: 'flight-route'
       },
       {
         idx: '02',
-        title: 'Certified Instructors Only',
-        subtitle: 'Active Industry Practitioners',
-        desc: 'We exclusively collaborate with ICAO and FAA certified instructors who possess active flight dispatch experience.',
+        title: 'Learn From Those Who Operate',
+        subtitle: 'ACTIVE INDUSTRY PRACTITIONERS',
+        desc: 'Train with experienced aviation professionals who bring current operational knowledge and real-world experience into every session.',
         iconName: 'instructor-board'
       },
       {
         idx: '03',
-        title: 'Delivery Flexibility',
-        subtitle: 'Onsite, Virtual & Hybrid',
-        desc: 'Choose the training delivery method and global hub that best aligns with your team logistics and shift rosters.',
+        title: 'Training That Fits Your Operation',
+        subtitle: 'ONSITE, VIRTUAL & HYBRID',
+        desc: 'Choose the delivery format that works for you—onsite, virtual, or hybrid—without compromising the quality or practical focus of the training.',
         iconName: 'occ-console'
       },
       {
         idx: '04',
-        title: 'Licenses, Properly Earned',
-        subtitle: 'Verified Competency',
-        desc: 'Flight Dispatch certificates with proper regulatory education and lifetime verification for civil aviation authorities.',
+        title: 'Demonstrate What You Can Do',
+        subtitle: 'COMPETENCY-FOCUSED ASSESSMENT',
+        desc: 'Go beyond completing a course. Build and demonstrate the knowledge, skills, and behaviours required to perform effectively in real operational environments.',
         iconName: 'official-certificate'
       }
     ]
   },
   specialist: {
-    eyebrow: 'Specialized Operational Services',
-    title: 'Premium Services Tailored to Your Needs',
-    intro: 'We offer our customers a vast and unique customized services portfolio.',
-    note: 'Select the Service you need and access to more details',
+    eyebrow: 'Aviation Expertise, Your Way',
+    title: 'From Career Growth to Operational Excellence',
+    intro:
+      "Build your career with specialized aviation services or strengthen your organization's capabilities with tailored operational solutions. Training, consulting, and expertise designed around what you need.",
+    note: '',
     moreTitle: 'More Information?',
     moreDesc:
       'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
@@ -163,7 +164,8 @@ const FALLBACK = {
       {
         id: '01',
         title: 'Flight Dispatch',
-        desc: 'Join the selected club of aviation industry heroes working behind the scenes in Airline Operations Control.',
+        subtitle: 'Own the operation from the ground.',
+        desc: 'Build the skills to plan, monitor, and coordinate flights while making informed operational decisions in a modern airline OCC.',
         audience: 'Individuals & Airline OCC Teams',
         category: 'flight-ops',
         tag: 'Flight Operations',
@@ -173,8 +175,9 @@ const FALLBACK = {
       {
         id: '02',
         title: 'Dangerous Goods',
-        desc: 'Ensure absolute compliance and safety for dangerous goods air transport beyond textbook theory.',
-        audience: 'Airlines, Cargo & Handlers',
+        subtitle: 'Know the risks. Move with confidence.',
+        desc: 'Develop the practical expertise to identify, handle, document, and manage dangerous goods throughout the air transport process.',
+        audience: 'Airlines, Cargo & Ground Handlers',
         category: 'flight-ops',
         tag: 'DGR Compliance',
         iconName: 'dgr-flame',
@@ -182,9 +185,10 @@ const FALLBACK = {
       },
       {
         id: '03',
-        title: 'Train The trainer',
-        desc: 'Master ICAO CBTA adult learning pedagogy to become a certified best-in-class aviation instructor.',
-        audience: 'Nominated Persons & Instructors',
+        title: 'Train the Trainer',
+        subtitle: 'Turn expertise into exceptional training.',
+        desc: 'Develop the skills to engage aviation professionals, build competency, and deliver training that translates into real operational performance.',
+        audience: 'Nominated Trainers & Instructors',
         category: 'train-trainer',
         tag: 'Instructional Pedagogy',
         iconName: 'instructor-board',
@@ -193,8 +197,9 @@ const FALLBACK = {
       {
         id: '04',
         title: 'Human Factors',
-        desc: 'Build vital operational resilience, stress inoculation, and CRM soft skills for high-stakes environments.',
-        audience: 'OCC & Flight Ops Personnel',
+        subtitle: 'Performance under pressure starts with people.',
+        desc: 'Strengthen decision-making, communication, teamwork, and resilience for demanding aviation environments.',
+        audience: 'OCC & Flight Operations Personnel',
         category: 'flight-ops',
         tag: 'Resilience & CRM',
         iconName: 'human-brain-crm',
@@ -203,7 +208,8 @@ const FALLBACK = {
       {
         id: '05',
         title: 'Crew Control',
-        desc: 'Acquire robust operational skills to manage airline crew pairing, roster disruptions, and fatigue mitigation.',
+        subtitle: 'Keep the operation moving.',
+        desc: 'Build the skills to manage crew planning, disruptions, pairings, rostering, and operational changes in a fast-paced airline environment.',
         audience: 'Crew Schedulers & Controllers',
         category: 'flight-ops',
         tag: 'Crew Scheduling',
@@ -213,8 +219,9 @@ const FALLBACK = {
       {
         id: '06',
         title: 'Consulting Services',
-        desc: 'Transform airline operations with world-class OCC audits, regulatory alignment, and organizational efficiency.',
-        audience: 'Airlines & Authorities',
+        subtitle: 'Turn operational challenges into better performance.',
+        desc: 'Get tailored aviation expertise across OCC processes, operational systems, regulatory requirements, and organizational capability.',
+        audience: 'Airlines & Aviation Organizations',
         category: 'consulting',
         tag: 'Aviation Advisory',
         iconName: 'airline-audit',
@@ -293,7 +300,19 @@ export function ServicesPage() {
   })
 
   return (
-    <div className="bg-white text-rocket-dark selection:bg-slate-900 selection:text-white" data-purpose="services-page">
+    <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="services-page">
+      <Seo
+        path="/services"
+        title="Aviation Training Services: Dispatch, DGR & OCC | IFOA"
+        description="Flight dispatch, dangerous goods, train the trainer, human factors, crew control and OCC consulting — competency-based training for airlines and operators."
+        jsonLd={graph(
+          organizationSchema(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' }
+          ])
+        )}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
         {/* Ambient Aviation Background */}
@@ -328,7 +347,7 @@ export function ServicesPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
+              <RiWhatsappFill className="w-4 h-4 text-white" />
               <span>WhatsApp Us</span>
             </a>
           </div>
@@ -350,14 +369,16 @@ export function ServicesPage() {
               <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
                 {c.specialist.intro}
               </p>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium italic">
-                {c.specialist.note}
-              </p>
+              {c.specialist.note ? (
+                <p className="text-xs sm:text-sm text-slate-500 font-medium italic">
+                  {c.specialist.note}
+                </p>
+              ) : null}
             </div>
 
             {/* Search Input */}
             <div className="relative w-full md:w-80 shrink-0">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <RiSearchLine className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search disciplines..."
@@ -394,28 +415,39 @@ export function ServicesPage() {
                 className="group rounded-3xl bg-white border border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
                 {/* Top Media Container */}
-                <div className="relative h-52 sm:h-56 w-full overflow-hidden bg-slate-950 shrink-0">
+                <div className="relative aspect-3/2 w-full overflow-hidden bg-slate-100 shrink-0">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent pointer-events-none" />
-
-                  {/* Floating Header Badges */}
-                  <div className="absolute top-3.5 left-3.5 flex items-center pointer-events-none">
-                    <span className="text-xs font-mono font-bold text-white bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 shadow-xs">
-                      {item.id}
-                    </span>
-                  </div>
                 </div>
 
                 {/* Card Content Body */}
                 <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-5 bg-white">
                   <div className="space-y-2.5">
-                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-slate-950 transition-colors">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-mono font-black text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
+                        // {item.id}
+                      </span>
+                      {item.tag && (
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md">
+                          {item.tag}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-slate-950 transition-colors pt-0.5">
                       {item.title}
                     </h3>
+
+                    {item.subtitle && (
+                      <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">
+                        {item.subtitle}
+                      </p>
+                    )}
 
                     <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
                       {item.desc}
@@ -425,7 +457,7 @@ export function ServicesPage() {
                   {/* Audience & Inquire Action Footer */}
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 truncate max-w-[170px] sm:max-w-[190px]">
-                      <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <RiGroupLine className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       <span className="truncate">{item.audience}</span>
                     </div>
 
@@ -435,7 +467,7 @@ export function ServicesPage() {
                       className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn"
                     >
                       <span>Inquire</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform text-slate-700 hover:text-[#34E06E]" />
+                      <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 hover:text-[#34E06E]" />
                     </button>
                   </div>
                 </div>
@@ -508,10 +540,10 @@ export function ServicesPage() {
                   </span>
                   <button
                     onClick={() => navigate('/contact')}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-rocket-dark group-hover:text-slate-900 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-rocket-dark group-hover:text-slate-900 transition-colors cursor-pointer group/btn"
                   >
                     <span>{card.action}</span>
-                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    <HiArrowRight className="w-3.5 h-3.5 text-rocket-dark group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -635,7 +667,7 @@ export function ServicesPage() {
                   href="mailto:info@theifoa.com"
                   className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all duration-200 shadow-2xs"
                 >
-                  <Mail className="w-3.5 h-3.5 text-slate-500" />
+                  <MdOutlineMail className="w-4 h-4 text-slate-500" />
                   <span>info@theifoa.com</span>
                 </a>
               </div>

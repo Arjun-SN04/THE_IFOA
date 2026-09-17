@@ -1,21 +1,105 @@
-# ----------------------------------------------------------------------
-# SPA client-side routing — send all non-file requests to index.html
-# ----------------------------------------------------------------------
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Force HTTPS (comment out if TLS not terminated at Apache)
-  # RewriteCond %{HTTPS} off
-  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # --------------------------------------------------------------------------
+  # Canonical scheme + host
+  # Every other rule below assumes one canonical origin: https://theifoa.com
+  # (no www), matching <link rel="canonical"> and sitemap.xml. The
+  # X-Forwarded-Proto check keeps this loop-safe when TLS terminates upstream.
+  # --------------------------------------------------------------------------
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Do not rewrite real files or directories
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+  # ==========================================================================
+  # 301s from the previous WordPress site.
+  #
+  # These URLs are indexed and carry existing ranking signal. A 301 passes that
+  # signal to the new URL; a 404 throws it away. Keep these rules for at least
+  # a year after launch.
+  #
+  # NOTE: rules marked [CONSOLIDATED] point several old pages at one new page
+  # because the new site has no equivalent. Google treats a redirect to a
+  # non-equivalent page as a soft 404 and passes little or no ranking signal,
+  # so these recover far less than a like-for-like page would. Replacing them
+  # with real pages is tracked as follow-up work.
+  # ==========================================================================
+
+  # --- About ---------------------------------------------------------------
+  RewriteRule ^about-us/?$                      /about [L,R=301]
+  RewriteRule ^about-us/team/?$                 /about [L,R=301]
+  RewriteRule ^about-us/ifoa-brand/?$           /about [L,R=301]
+
+  # --- Per-discipline service pages [CONSOLIDATED] -------------------------
+  # Each of these was its own keyword-targeted landing page on WordPress.
+  RewriteRule ^services/flight-dispatch/?$          /services [L,R=301]
+  RewriteRule ^services/ground-operations/?$        /services [L,R=301]
+  RewriteRule ^services/train-the-trainer/?$        /services [L,R=301]
+  RewriteRule ^services/consulting-services/?$      /services [L,R=301]
+  RewriteRule ^services/crew-control/?$             /services [L,R=301]
+  RewriteRule ^services/aviation-sustainability/?$  /services [L,R=301]
+  RewriteRule ^services/dangerous-goods/?$          /services [L,R=301]
+
+  # --- Magazine / blog [CONSOLIDATED] --------------------------------------
+  RewriteRule ^blog/?$ /foxtrot-delta [L,R=301]
+  RewriteRule ^foxtrot-delta-magazine-special-edition-aviation-sustainability/?$ /foxtrot-delta [L,R=301]
+  RewriteRule ^foxtrot-delta-edition-1-air-mauritius/?$  /foxtrot-delta [L,R=301]
+  RewriteRule ^foxtrot-delta-edition-2-jetfly-occ/?$     /foxtrot-delta [L,R=301]
+  RewriteRule ^ifoa-2022-review/?$                       /foxtrot-delta [L,R=301]
+  RewriteRule ^ifoa-activities-review-q1-2023/?$         /foxtrot-delta [L,R=301]
+  RewriteRule ^ifoa-activities-review-q2-2023/?$         /foxtrot-delta [L,R=301]
+
+  # --- Events -> course pages ----------------------------------------------
+  RewriteRule ^event/ifoa-india-4-weeks-flight-operations-flight-dispatch-program-ref-ipin2501/?$ /courses/ifoa-india-4-weeks-flight-operations-and-flight-dispatch-program [L,R=301]
+  RewriteRule ^event/4-weeks-easa-flight-dispatch-initial-course-ref-fdin2403/?$ /courses/flight-dispatcher-initial-certification [L,R=301]
+  RewriteRule ^event/4-weeks-easa-flight-dispatch-initial-course-ref-fdin2401/?$ /courses/flight-dispatcher-initial-certification [L,R=301]
+  RewriteRule ^event/4-weeks-easa-flight-dispatch-course-prom2-2023/?$          /courses/flight-dispatcher-initial-certification [L,R=301]
+  RewriteRule ^event/3-days-easa-flight-dispatch-recurrent-online-course-module-1-2023/?$ /courses/flight-dispatch-recurrent-refresher-course [L,R=301]
+  RewriteRule ^event/4-days-easa-crew-control-frm-online-course-2023/?$         /services [L,R=301]
+  RewriteRule ^3-weeks-easa-flight-dispatch-initial-course-prom1-2023/?$        /events [L,R=301]
+  RewriteRule ^ifoa-india-landing-page/?$ /courses/ifoa-india-4-weeks-flight-operations-and-flight-dispatch-program [L,R=301]
+  # Any remaining Events Calendar URL.
+  RewriteRule ^event/.*$  /events [L,R=301]
+  RewriteRule ^events/.+$ /events [L,R=301]
+
+  # --- Legal / misc [CONSOLIDATED] -----------------------------------------
+  # /impressum and /data-protection-policy have no replacement yet. An Impressum
+  # is a legal requirement for the Swiss entity, so these need real pages.
+  RewriteRule ^impressum/?$               /contact [L,R=301]
+  RewriteRule ^data-protection-policy/?$  /contact [L,R=301]
+  RewriteRule ^faq/?$                     /contact [L,R=301]
+  RewriteRule ^landing-page/?$            / [L,R=301]
+
+  # --- Agent for Service (separate product, separate host) -----------------
+  RewriteRule ^agent-for-service(/.*)?$ https://agent.theifoa.com/ [L,R=301]
+
+  # --- Dead WordPress surface ----------------------------------------------
+  # Kill crawl budget spent on URLs that will never exist again.
+  RewriteRule ^(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|feed|comments/feed)(/.*)?$ - [R=410,L]
+  RewriteRule ^(category|tag|author)/.*$ - [R=410,L]
+
+  # ==========================================================================
+  # Prerendered routes
+  # Serve /about from /about/index.html directly. DirectorySlash is off so
+  # Apache does not 301 /about -> /about/, which would fight the canonical.
+  # ==========================================================================
+  DirectorySlash Off
+
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^([^.]+?)/?$ /$1/index.html [L]
+
+  # Real files and directories pass through untouched.
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Everything else -> SPA entry point
-  RewriteRule ^ index.html [L]
+  # Everything else: SPA shell (admin console, enrollment forms, and any route
+  # added after the last build). The app renders a noindex 404 for unknown paths.
+  RewriteRule ^ /index.html [L]
 </IfModule>
 
 # ----------------------------------------------------------------------
@@ -49,6 +133,9 @@
   <FilesMatch "\.(html)$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
+  <FilesMatch "\.(xml|txt)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
 </IfModule>
 
 # ----------------------------------------------------------------------
@@ -61,4 +148,3 @@
 </IfModule>
 
 Options -Indexes
-ErrorDocument 404 /index.html

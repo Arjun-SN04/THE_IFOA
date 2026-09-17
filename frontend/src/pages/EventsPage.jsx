@@ -3,29 +3,24 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import {
-  Calendar,
-  Clock,
-  MapPin,
-  Video,
-  CheckCircle2,
-  ArrowRight,
-  Sparkles,
-  Users,
-  Search,
-  BookOpen,
-  Send,
-  MessageSquare,
-  Shield,
-  Layers,
-  Globe,
-  Mail,
-  Bell
-} from 'lucide-react'
+  RiWhatsappFill,
+  RiGlobeLine,
+  RiNotification3Line,
+  RiCheckboxCircleFill,
+  RiCalendarEventLine,
+  RiMapPin2Line
+} from 'react-icons/ri'
+import { TbClockHour4 } from 'react-icons/tb'
+import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
+import { MdOutlineMail } from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import { CourseCard } from '@/components/course/CourseCard'
 import { AviationIcon } from '@/components/common/AviationIcon'
 import { usePageContent } from '@/hooks/usePageContent'
+import { Seo } from '@/components/common/Seo'
+import { readPreload } from '@/lib/preload'
+import { graph, organizationSchema, breadcrumbSchema, absoluteUrl } from '@/lib/seo'
 import bannerEventsHero from '@/assets/courses/course_banner_dispatcher_3d.jpg'
 
 // Content the page ships with; editable at /admin/pages/events.
@@ -39,9 +34,9 @@ const FALLBACK = {
   },
   programs: {
     eyebrow: 'Open-Enrollment Programs',
-    title: 'Open-Enrollment Programs',
+    title: 'Your Next Step in Aviation Starts Here',
     intro:
-      'These curriculum tracks stay live year-round. Individual dates are scheduled as dedicated cohort intakes rather than one-off event posts.',
+      'Explore our range of open-enrollment programs, developed to build practical knowledge, professional skills, and operational capability across aviation. Find your program and join an upcoming intake.',
     badge: 'Rolling Global Intakes',
     emptyTitle: 'No open intakes right now',
     emptyDesc: 'New cohorts are published here as admissions open. Leave your email below to be notified.'
@@ -147,9 +142,7 @@ const formatIntakeDate = (isoString) => {
 
 export function EventsPage() {
   const navigate = useNavigate()
-  const [notifyEmail, setNotifyEmail] = useState('')
-  const [notifySuccess, setNotifySuccess] = useState(false)
-  const [liveCourses, setLiveCourses] = useState([])
+  const [liveCourses, setLiveCourses] = useState(() => readPreload('courses') || [])
   const { c } = usePageContent('events', FALLBACK)
 
   useEffect(() => {
@@ -162,19 +155,30 @@ export function EventsPage() {
   const curriculumModules = c.curriculum.modules
   const recentCohorts = c.recent.cohorts
 
-  const handleNotifySubmit = (e) => {
-    e.preventDefault()
-    if (notifyEmail.trim()) {
-      setNotifySuccess(true)
-      setTimeout(() => {
-        setNotifyEmail('')
-        setNotifySuccess(false)
-      }, 4000)
-    }
-  }
-
   return (
-    <div className="bg-white text-rocket-dark selection:bg-slate-900 selection:text-white" data-purpose="events-page">
+    <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="events-page">
+      <Seo
+        path="/events"
+        title="Flight Dispatcher Course Dates & Upcoming Intakes | IFOA"
+        description="Open-enrollment flight dispatcher and flight operations courses with confirmed start dates in New Delhi, Europe and online. Find the next available intake."
+        jsonLd={graph(
+          organizationSchema(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Events & Programs', path: '/events' }
+          ]),
+          liveCourses.length > 0 && {
+            '@type': 'ItemList',
+            name: 'Upcoming IFOA training intakes',
+            itemListElement: liveCourses.map((course, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: course.title,
+              url: absoluteUrl(`/courses/${course.slug}`)
+            }))
+          }
+        )}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
         {/* Ambient Aviation Background */}
@@ -209,7 +213,7 @@ export function EventsPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
+              <RiWhatsappFill className="w-4 h-4 text-white" />
               <span>Inquire on WhatsApp</span>
             </a>
           </div>
@@ -269,23 +273,26 @@ export function EventsPage() {
                       </span>
                       <span className="text-slate-300">•</span>
                       <span className="inline-flex items-center gap-1.5 text-slate-600">
-                        <Globe className="w-3.5 h-3.5 text-slate-400" />
+                        <RiGlobeLine className="w-3.5 h-3.5 text-slate-400" />
                         {course.schedule?.mode || 'Virtual'}
                       </span>
                       {durationLabel && (
                         <>
                           <span className="text-slate-300">•</span>
                           <span className="inline-flex items-center gap-1.5 text-slate-600">
-                            <Clock className="w-3.5 h-3.5 text-slate-400" />
+                            <TbClockHour4 className="w-3.5 h-3.5 text-slate-400" />
                             {durationLabel}
                           </span>
                         </>
                       )}
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#1c8b41] transition-colors">
+                    <Link
+                      to={`/courses/${course.slug}`}
+                      className="block text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#1c8b41] transition-colors"
+                    >
                       {course.title}
-                    </h3>
+                    </Link>
                   </div>
 
                   {/* Right Status & Action */}
@@ -300,52 +307,16 @@ export function EventsPage() {
                     </div>
 
                     <Link
-                      to={`/courses/${course.slug}/enroll`}
+                      to={`/courses/${course.slug}`}
                       className="inline-flex items-center justify-center gap-2 bg-[#020617] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-200 shadow-2xs hover:shadow-md cursor-pointer shrink-0"
                     >
                       <span>Register Interest</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      <HiArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>
               )
             })}
-          </div>
-
-          {/* Email Notification Bar */}
-          <div className="rounded-3xl bg-[#020617] text-white p-8 sm:p-10 border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-xl">
-            <div className="space-y-2 max-w-lg">
-              <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-mono font-semibold text-slate-400 uppercase tracking-wider">
-                <Bell className="w-4 h-4" />
-                <span>{c.alerts.eyebrow}</span>
-              </div>
-              <h4 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">
-                {c.alerts.title}
-              </h4>
-              <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-                {c.alerts.desc}
-              </p>
-            </div>
-
-            <form onSubmit={handleNotifySubmit} className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
-              <div className="relative w-full sm:w-80">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  required
-                  value={notifyEmail}
-                  onChange={(e) => setNotifyEmail(e.target.value)}
-                  placeholder="you@airline.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-white focus:ring-2 focus:ring-white/20 transition-all"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-wider px-7 py-3 rounded-xl transition-all duration-200 shadow-md hover:scale-105 cursor-pointer shrink-0"
-              >
-                {notifySuccess ? 'Notified!' : c.alerts.buttonLabel}
-              </button>
-            </form>
           </div>
         </div>
       </section>
@@ -356,7 +327,7 @@ export function EventsPage() {
           {/* Header Row */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end justify-between">
             <div className="lg:col-span-7 space-y-3">
-              <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#15803d] border-b border-[#34E06E] pb-0.5 inline-block">
+              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                 What You Develop
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -399,10 +370,10 @@ export function EventsPage() {
                 className="group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-4">
-                  <span className="text-xs font-mono font-bold text-[#15803d] block">
+                  <span className="text-xs font-mono font-bold text-slate-950 block">
                     {pillar.num}
                   </span>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#15803d] transition-colors">
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors">
                     {pillar.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
@@ -482,15 +453,15 @@ export function EventsPage() {
             <div className="lg:col-span-7 space-y-6">
               <div className="space-y-3">
                 <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#34E06E] inline-block">
-                  From Theory to the Aircraft
+                  FROM THEORY TO THE AIRCRAFT
                 </span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                  Learn the operation through the B737-NG.
+                  Know the aircraft. Understand the operation.
                 </h2>
               </div>
 
               <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl">
-                Aircraft knowledge is integrated into operational training rather than treated as an isolated academic subject. Participants work through B737-NG systems, performance, mass and balance, limitations and manual flight-planning exercises.
+                Take aircraft knowledge beyond the classroom. Our training connects aircraft systems, performance, limitations, mass and balance, and flight planning to the operational decisions professionals make every day.
               </p>
 
               {/* Module Tags */}
@@ -536,82 +507,7 @@ export function EventsPage() {
         </div>
       </section>
 
-      {/* 4. RECENT COHORTS */}
-      <section className="py-16 sm:py-24 bg-slate-50/60 border-b border-slate-200/80" data-purpose="recent-cohorts">
-        <div className="max-w-[1280px] mx-auto px-6 space-y-12">
-          <div className="max-w-2xl space-y-2.5">
-            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.recent.eyebrow}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              {c.recent.title}
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-              {c.recent.intro}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
-            {recentCohorts.map((cohort, idx) => (
-              <div
-                key={idx}
-                className="group rounded-3xl bg-white border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
-              >
-                <div className="space-y-4">
-                  {/* Top Bar: Code & Delivered status */}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
-                      {cohort.code}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-slate-600" />
-                      <span>Completed</span>
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-slate-900 transition-colors">
-                    {cohort.title}
-                  </h3>
-
-                  {/* Metadata Chips */}
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200/70 px-3 py-1.5 rounded-xl">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{cohort.dates}</span>
-                    </div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200/70 px-3 py-1.5 rounded-xl">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{cohort.location}</span>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-slate-600 font-normal leading-relaxed pt-1">
-                    {cohort.description}
-                  </p>
-                </div>
-
-                {/* Bottom Action */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-                  <span className="text-xs font-semibold text-slate-500 truncate">
-                    {cohort.pricing}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/contact')}
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 hover:text-slate-700 transition-colors cursor-pointer group/btn shrink-0"
-                  >
-                    <span>Inquire dates</span>
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+     
       {/* 5. FINAL FLEET-WIDE CTA */}
       <section className="py-16 sm:py-24 bg-white text-center" data-purpose="events-final-cta">
         <div className="max-w-[800px] mx-auto px-6 space-y-6">
@@ -631,10 +527,10 @@ export function EventsPage() {
             </button>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
+              className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 group"
             >
               <span>{c.finalCta.secondaryLabel}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
         </div>

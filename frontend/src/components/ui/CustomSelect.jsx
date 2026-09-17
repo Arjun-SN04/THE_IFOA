@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { ChevronDown, Check } from 'lucide-react'
+import { RiArrowDownSLine, RiCheckLine } from 'react-icons/ri'
 
 export function CustomSelect({
   value,
@@ -60,8 +60,8 @@ export function CustomSelect({
         >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown
-          className={`w-4 h-4 text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
+        <RiArrowDownSLine
+          className={`w-5 h-5 text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
             isOpen ? 'rotate-180 text-[#34E06E]' : ''
           }`}
         />
@@ -89,7 +89,7 @@ export function CustomSelect({
                 }`}
               >
                 <span className="truncate">{opt.label}</span>
-                {isSelected && <Check className="w-4 h-4 text-[#16a34a] shrink-0 ml-2" />}
+                {isSelected && <RiCheckLine className="w-4 h-4 text-[#16a34a] shrink-0 ml-2" />}
               </button>
             )
           })}

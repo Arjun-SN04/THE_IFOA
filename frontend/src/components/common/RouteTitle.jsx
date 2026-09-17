@@ -3,17 +3,11 @@ import { useLocation, matchPath } from 'react-router-dom'
 
 const BRAND = 'IFOA | International Flight Operations Academy'
 
-// Ordered most-specific first. `title` is the full <title> string.
+// Admin console only. Public routes render their own <title> (plus description,
+// canonical, OG and structured data) through <Seo>; assigning document.title in
+// an effect here would run after React commits and clobber those.
+// Ordered most-specific first.
 const ROUTES = [
-  { pattern: '/', title: BRAND, end: true },
-  { pattern: '/services', title: 'Training & Services | IFOA' },
-  { pattern: '/events', title: 'Events & Courses | IFOA' },
-  { pattern: '/about', title: 'About | IFOA' },
-  { pattern: '/contact', title: 'Contact | IFOA' },
-  { pattern: '/agent-for-service', title: 'Agent for Service | IFOA' },
-  // Course detail sets its own title from the course data (CourseDetailView).
-  { pattern: '/courses/:slug', title: 'Course | IFOA' },
-
   { pattern: '/admin/login', title: 'Admin Login | IFOA' },
   { pattern: '/admin/courses/new', title: 'New Course · Admin | IFOA' },
   { pattern: '/admin/courses/:id/preview', title: 'Course Preview · Admin | IFOA' },
@@ -23,15 +17,16 @@ const ROUTES = [
   { pattern: '/admin/form-template', title: 'Form Template · Admin | IFOA' },
   { pattern: '/admin/submissions/:id', title: 'Submission · Admin | IFOA' },
   { pattern: '/admin/submissions', title: 'Submissions · Admin | IFOA' },
+  { pattern: '/admin/pages/:page', title: 'Page Content · Admin | IFOA' },
+  { pattern: '/admin/pages', title: 'Pages · Admin | IFOA' },
   { pattern: '/admin', title: 'Admin | IFOA' }
 ]
 
-// Sets document.title per route. Pages that need a data-driven title
-// (e.g. a course name) may still override it in their own effect.
 export function RouteTitle() {
   const { pathname } = useLocation()
 
   useEffect(() => {
+    if (!pathname.startsWith('/admin')) return
     const hit = ROUTES.find((r) =>
       matchPath({ path: r.pattern, end: r.end ?? false }, pathname)
     )

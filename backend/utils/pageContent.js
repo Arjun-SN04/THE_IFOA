@@ -237,6 +237,7 @@ const SCHEMAS = {
             fields: [
               f('id', 'Number'),
               f('title', 'Title'),
+              f('subtitle', 'Subtitle'),
               f('desc', 'Description', 'textarea'),
               f('audience', 'Audience'),
               f('category', 'Category ID'),
@@ -388,14 +389,14 @@ const DEFAULTS = {
           country: 'United States',
           address: '1616 Concierge Blvd, Suite 100, Daytona Beach, FL 32117, USA',
           phone: '+1 508 838 5880',
-          email: 'info-usa@theifoa.com'
+          email: 'info@theifoa.com'
         },
         {
           region: 'Asia',
           country: 'India',
           address: 'Innov8 Old Fort, 2nd Floor, Saket District Centre, New Delhi 110017, India',
           phone: '+91 98101 44034',
-          email: 'info-india@theifoa.com'
+          email: 'info@theifoa.com'
         }
       ]
     },
@@ -407,9 +408,9 @@ const DEFAULTS = {
 
   about: {
     hero: {
-      title: 'Four years in, we became the standard other schools get measured against.',
+      title: 'The Global Flight Dispatch Standard',
       subtitle:
-        "We stepped away from the traditional training approach in favor of Competency-Based Training and Assessment, because every dispatcher deserves training that's actually exceptional.",
+        'Five years in, we became the standard other schools get measured against.',
       primaryLabel: 'Book a Consultation',
       secondaryLabel: 'Explore Programs',
       image: null
@@ -457,25 +458,25 @@ const DEFAULTS = {
       eyebrow: 'GLOBAL FOOTPRINT',
       title: 'Operational wherever airlines fly',
       intro:
-        'Three regional operational hubs supporting carriers, students, and dispatch teams across four continents.',
+        'Three regional operational hubs supporting carriers, students, and dispatch teams across 3 continents.',
       regions: [
         {
           name: 'Europe HQ',
           location: 'Basel, Switzerland',
-          facility: 'EuroAirport Hub',
-          desc: 'European headquarters leading EASA Part-ORO aligned dispatcher certification and OCC scenario labs.'
+          facility: 'IFOA',
+          desc: 'European headquarters leading EASA Part-ORO GEN 110 compliant Flight Dispatcher certification and OCC scenario labs'
         },
         {
           name: 'North America',
           location: 'Daytona Beach, FL',
-          facility: 'IFOA USA Operations',
-          desc: 'FAA-approved Flight Dispatcher certification school and 14 CFR Part 3 Agent for Service gateway.'
+          facility: 'IFOA USA',
+          desc: 'FAA Part 65 approved Aircraft Dispatcher school and Agent for Service.'
         },
         {
           name: 'India & Asia-Pacific',
           location: 'New Delhi, India',
-          facility: 'Aerocity Training Hub',
-          desc: 'South Asian operational base delivering DGCA and ICAO Doc 10106 compliant dispatcher programs.'
+          facility: 'IFOA INDIA',
+          desc: 'South Asian School delivering FAA Part 65 certified and EASA Part ORO GEN 110 compliant Flight Dispatcher programs.'
         }
       ]
     },
@@ -491,7 +492,7 @@ const DEFAULTS = {
     hero: {
       title: 'Built on competency, not just compliance.',
       subtitle:
-        'Eight disciplines, one standard: training that prepares people to make the right call under pressure.',
+        'Six disciplines, one standard: training that prepares people to make the right call under pressure.',
       primaryLabel: 'Book a Consultation',
       image: null
     },
@@ -505,7 +506,7 @@ const DEFAULTS = {
           region: 'Europe / Worldwide',
           title: 'EASA Standards Initial',
           desc: 'Comprehensive initial flight dispatcher certification aligned with ICAO Doc 10106 and EASA ORO.GEN.110.',
-          badge1: '175 HOURS',
+          badge1: '200 HOURS',
           badge2: 'HYBRID',
           action: 'Explore EASA'
         },
@@ -545,39 +546,40 @@ const DEFAULTS = {
       pillars: [
         {
           idx: '01',
-          title: 'Customized Scenario-Based',
-          subtitle: 'Real OCC Context',
-          desc: "Every training is precisely tailored for your operation's needs, leveraging hands-on, high-impact scenario drills.",
+          title: 'Training That Reflects the Operation',
+          subtitle: 'REAL-WORLD OCC CONTEXT',
+          desc: 'Every program is built around realistic operational scenarios, helping learners apply knowledge, make decisions, and respond to the challenges of a modern OCC.',
           iconName: 'flight-route'
         },
         {
           idx: '02',
-          title: 'Certified Instructors Only',
-          subtitle: 'Active Industry Practitioners',
-          desc: 'We exclusively collaborate with ICAO and FAA certified instructors who possess active flight dispatch experience.',
+          title: 'Learn From Those Who Operate',
+          subtitle: 'ACTIVE INDUSTRY PRACTITIONERS',
+          desc: 'Train with experienced aviation professionals who bring current operational knowledge and real-world experience into every session.',
           iconName: 'instructor-board'
         },
         {
           idx: '03',
-          title: 'Delivery Flexibility',
-          subtitle: 'Onsite, Virtual & Hybrid',
-          desc: 'Choose the training delivery method and global hub that best aligns with your team logistics and shift rosters.',
+          title: 'Training That Fits Your Operation',
+          subtitle: 'ONSITE, VIRTUAL & HYBRID',
+          desc: 'Choose the delivery format that works for you—onsite, virtual, or hybrid—without compromising the quality or practical focus of the training.',
           iconName: 'occ-console'
         },
         {
           idx: '04',
-          title: 'Licenses, Properly Earned',
-          subtitle: 'Verified Competency',
-          desc: 'Flight Dispatch certificates with proper regulatory education and lifetime verification for civil aviation authorities.',
+          title: 'Demonstrate What You Can Do',
+          subtitle: 'COMPETENCY-FOCUSED ASSESSMENT',
+          desc: 'Go beyond completing a course. Build and demonstrate the knowledge, skills, and behaviours required to perform effectively in real operational environments.',
           iconName: 'official-certificate'
         }
       ]
     },
     specialist: {
-      eyebrow: 'Specialized Operational Services',
-      title: 'Premium Services Tailored to Your Needs',
-      intro: 'We offer our customers a vast and unique customized services portfolio.',
-      note: 'Select the Service you need and access to more details',
+      eyebrow: 'Aviation Expertise, Your Way',
+      title: 'From Career Growth to Operational Excellence',
+      intro:
+        "Build your career with specialized aviation services or strengthen your organization's capabilities with tailored operational solutions. Training, consulting, and expertise designed around what you need.",
+      note: '',
       moreTitle: 'More Information?',
       moreDesc:
         'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
@@ -591,7 +593,8 @@ const DEFAULTS = {
         {
           id: '01',
           title: 'Flight Dispatch',
-          desc: 'Join the selected club of aviation industry heroes working behind the scenes in Airline Operations Control.',
+          subtitle: 'Own the operation from the ground.',
+          desc: 'Build the skills to plan, monitor, and coordinate flights while making informed operational decisions in a modern airline OCC.',
           audience: 'Individuals & Airline OCC Teams',
           category: 'flight-ops',
           tag: 'Flight Operations',
@@ -601,8 +604,9 @@ const DEFAULTS = {
         {
           id: '02',
           title: 'Dangerous Goods',
-          desc: 'Ensure absolute compliance and safety for dangerous goods air transport beyond textbook theory.',
-          audience: 'Airlines, Cargo & Handlers',
+          subtitle: 'Know the risks. Move with confidence.',
+          desc: 'Develop the practical expertise to identify, handle, document, and manage dangerous goods throughout the air transport process.',
+          audience: 'Airlines, Cargo & Ground Handlers',
           category: 'flight-ops',
           tag: 'DGR Compliance',
           iconName: 'dgr-flame',
@@ -610,9 +614,10 @@ const DEFAULTS = {
         },
         {
           id: '03',
-          title: 'Train The trainer',
-          desc: 'Master ICAO CBTA adult learning pedagogy to become a certified best-in-class aviation instructor.',
-          audience: 'Nominated Persons & Instructors',
+          title: 'Train the Trainer',
+          subtitle: 'Turn expertise into exceptional training.',
+          desc: 'Develop the skills to engage aviation professionals, build competency, and deliver training that translates into real operational performance.',
+          audience: 'Nominated Trainers & Instructors',
           category: 'train-trainer',
           tag: 'Instructional Pedagogy',
           iconName: 'instructor-board',
@@ -621,8 +626,9 @@ const DEFAULTS = {
         {
           id: '04',
           title: 'Human Factors',
-          desc: 'Build vital operational resilience, stress inoculation, and CRM soft skills for high-stakes environments.',
-          audience: 'OCC & Flight Ops Personnel',
+          subtitle: 'Performance under pressure starts with people.',
+          desc: 'Strengthen decision-making, communication, teamwork, and resilience for demanding aviation environments.',
+          audience: 'OCC & Flight Operations Personnel',
           category: 'flight-ops',
           tag: 'Resilience & CRM',
           iconName: 'human-brain-crm',
@@ -631,7 +637,8 @@ const DEFAULTS = {
         {
           id: '05',
           title: 'Crew Control',
-          desc: 'Acquire robust operational skills to manage airline crew pairing, roster disruptions, and fatigue mitigation.',
+          subtitle: 'Keep the operation moving.',
+          desc: 'Build the skills to manage crew planning, disruptions, pairings, rostering, and operational changes in a fast-paced airline environment.',
           audience: 'Crew Schedulers & Controllers',
           category: 'flight-ops',
           tag: 'Crew Scheduling',
@@ -641,8 +648,9 @@ const DEFAULTS = {
         {
           id: '06',
           title: 'Consulting Services',
-          desc: 'Transform airline operations with world-class OCC audits, regulatory alignment, and organizational efficiency.',
-          audience: 'Airlines & Authorities',
+          subtitle: 'Turn operational challenges into better performance.',
+          desc: 'Get tailored aviation expertise across OCC processes, operational systems, regulatory requirements, and organizational capability.',
+          audience: 'Airlines & Aviation Organizations',
           category: 'consulting',
           tag: 'Aviation Advisory',
           iconName: 'airline-audit',
@@ -662,9 +670,9 @@ const DEFAULTS = {
     },
     programs: {
       eyebrow: 'Open-Enrollment Programs',
-      title: 'Open-Enrollment Programs',
+      title: 'Your Next Step in Aviation Starts Here',
       intro:
-        'These curriculum tracks stay live year-round. Individual dates are scheduled as dedicated cohort intakes rather than one-off event posts.',
+        'Explore our range of open-enrollment programs, developed to build practical knowledge, professional skills, and operational capability across aviation. Find your program and join an upcoming intake.',
       badge: 'Rolling Global Intakes',
       emptyTitle: 'No open intakes right now',
       emptyDesc:

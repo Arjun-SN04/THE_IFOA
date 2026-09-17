@@ -1,4 +1,5 @@
 const Course = require('../models/Course')
+const FormSchema = require('../models/FormSchema')
 const { asyncHandler } = require('../middleware/error')
 const { deleteObject } = require('../config/r2')
 
@@ -45,7 +46,15 @@ const listAdmin = asyncHandler(async (req, res) => {
   if (q) filter.title = { $regex: q, $options: 'i' }
 
   const courses = await Course.find(filter).sort({ updatedAt: -1 }).lean()
-  res.json({ count: courses.length, courses })
+
+  const formedIds = new Set(
+    (await FormSchema.find({ course: { $in: courses.map((c) => c._id) } }).select('course').lean()).map((f) =>
+      String(f.course)
+    )
+  )
+  const withFormStatus = courses.map((c) => ({ ...c, hasCustomForm: formedIds.has(String(c._id)) }))
+
+  res.json({ count: withFormStatus.length, courses: withFormStatus })
 })
 
 // GET /api/admin/courses/:id

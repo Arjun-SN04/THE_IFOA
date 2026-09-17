@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Navigate, useParams, useNavigate } from 'react-router-dom'
 import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  MapPin,
-  Award,
-  ShieldCheck,
-  CheckCircle2,
-  MessageSquare,
-  Mail,
-  Loader2,
-  Sparkles,
-  BookOpen
-} from 'lucide-react'
+  RiArrowLeftLine,
+  RiCalendarEventLine,
+  RiMapPin2Line,
+  RiWhatsappFill,
+  RiLoader4Line
+} from 'react-icons/ri'
+import { TbClockHour4, TbCertificate } from 'react-icons/tb'
 
 import { api } from '@/lib/api'
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import RegistrationForm from '@/components/course/RegistrationForm'
+import { Seo } from '@/components/common/Seo'
 
 // Standards Logos
 import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
@@ -84,7 +79,7 @@ export function CourseEnrollmentPage() {
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <Loader2 className="w-10 h-10 animate-spin text-[#34E06E]" />
+        <RiLoader4Line className="w-10 h-10 animate-spin text-[#34E06E]" />
         <p className="text-sm font-semibold text-slate-600">Loading Official Application Portal…</p>
       </div>
     )
@@ -99,7 +94,7 @@ export function CourseEnrollmentPage() {
           to="/events"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-sm shadow-sm hover:brightness-95 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> View All Open Programs
+          <RiArrowLeftLine className="w-4 h-4" /> View All Open Programs
         </Link>
       </div>
     )
@@ -109,6 +104,14 @@ export function CourseEnrollmentPage() {
 
   return (
     <div className="bg-slate-50 min-h-screen">
+      {/* Enrollment forms carry no search value and would compete with the
+          course page for the same query — kept out of the index deliberately. */}
+      <Seo
+        path={`/courses/${course.slug}/enroll`}
+        title={`Enroll — ${course.title} | IFOA`}
+        description="Complete your IFOA candidate application form."
+        noindex
+      />
       {/* 1. Header Banner with Dark Frosted Space Theme */}
       <section className="relative bg-[#020617] text-white pt-28 pb-14 border-b border-white/10 overflow-hidden">
         <CosmicParallaxBg className="absolute inset-0 opacity-40 pointer-events-none" />
@@ -146,7 +149,7 @@ export function CourseEnrollmentPage() {
               to={`/courses/${course.slug}`}
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-white/10 hover:bg-white/15 border border-white/15 px-4 py-2.5 rounded-xl transition shrink-0"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <RiArrowLeftLine className="w-4 h-4" />
               <span>Back to Course Overview</span>
             </Link>
           </div>
@@ -202,7 +205,7 @@ export function CourseEnrollmentPage() {
               <div className="space-y-2.5 text-xs sm:text-sm">
                 <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0">
-                    <Clock className="w-4 h-4 text-slate-400" />
+                    <TbClockHour4 className="w-4 h-4 text-slate-400" />
                     <span>Duration</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold">{course.duration || '4 Weeks'}</strong>
@@ -210,7 +213,7 @@ export function CourseEnrollmentPage() {
 
                 <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0">
-                    <Calendar className="w-4 h-4 text-slate-400" />
+                    <RiCalendarEventLine className="w-4 h-4 text-slate-400" />
                     <span>Next Intake</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold">
@@ -220,7 +223,7 @@ export function CourseEnrollmentPage() {
 
                 <div className="flex items-start justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                    <MapPin className="w-4 h-4 text-slate-400" />
+                    <RiMapPin2Line className="w-4 h-4 text-slate-400" />
                     <span>Location</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold leading-snug">
@@ -230,7 +233,7 @@ export function CourseEnrollmentPage() {
 
                 <div className="flex items-start justify-between gap-4 py-2 border-b border-slate-100">
                   <span className="text-slate-500 flex items-center gap-2 shrink-0 pt-0.5">
-                    <Award className="w-4 h-4 text-slate-400" />
+                    <TbCertificate className="w-4 h-4 text-slate-400" />
                     <span>Credential</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold leading-snug">
@@ -263,7 +266,7 @@ export function CourseEnrollmentPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-xs font-bold text-[#0d6833] hover:underline pt-1"
                 >
-                  <MessageSquare className="w-3.5 h-3.5" />
+                  <RiWhatsappFill className="w-3.5 h-3.5" />
                   <span>Chat with Admissions on WhatsApp</span>
                 </a>
               </div>

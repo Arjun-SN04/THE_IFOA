@@ -1,24 +1,36 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Seo } from '@/components/common/Seo'
+import { graph, organizationSchema, ORGANIZATION_ID, SITE_NAME, SITE_URL } from '@/lib/seo'
 import {
-  ArrowRight,
-  CheckCircle2,
-  BookOpen,
-  Globe,
-  ChevronRight,
-  ChevronLeft,
-  ExternalLink,
-  Shield,
-  Sparkles,
-  Mail,
-  Briefcase,
-  Layers,
-  Star,
-  Clock,
-  User,
-  Building2
-} from 'lucide-react'
+  RiCompass3Line,
+  RiStarFill,
+  RiUser3Line,
+  RiBuilding4Line,
+  RiCheckboxCircleFill,
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+  RiArrowRightLine,
+  RiSendPlaneFill
+} from 'react-icons/ri'
+import {
+  PiAirplaneTiltFill,
+  PiAirplaneTakeoffFill,
+  PiAirplaneLandingFill
+} from 'react-icons/pi'
+import {
+  TbClockHour4,
+  TbCertificate,
+  TbRadar2,
+  TbPlaneInflight
+} from 'react-icons/tb'
+import {
+  HiArrowUpRight,
+  HiArrowRight,
+  HiSparkles
+} from 'react-icons/hi2'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import hero3dMockup from '@/assets/home/hero-3d-mockup.webp'
@@ -150,7 +162,7 @@ for (const item of imageData) {
 
 export function HomePage() {
   const navigate = useNavigate()
-  const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [activePage, setActivePage] = useState(0)
 
   const strategicPartners = [
     { name: 'Click Aviation Network', logo: logoClick, category: 'Global Trip Support & OCC' },
@@ -330,14 +342,17 @@ export function HomePage() {
     return () => window.removeEventListener('resize', updateReviewsPerView)
   }, [])
 
+  const totalPages = Math.max(1, Math.ceil(filteredTestimonials.length / reviewsPerView))
+  const safePage = activePage >= totalPages ? 0 : activePage
+
   const timerRef = useRef(null)
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % filteredTestimonials.length)
-    }, 6500)
-  }, [filteredTestimonials.length])
+      setActivePage((prev) => (prev + 1) % totalPages)
+    }, 7000)
+  }, [totalPages])
 
   useEffect(() => {
     resetTimer()
@@ -347,71 +362,25 @@ export function HomePage() {
   }, [resetTimer])
 
   const handleNextTestimonial = () => {
-    setActiveTestimonial((prev) => (prev + 1) % filteredTestimonials.length)
+    setActivePage((prev) => (prev + 1) % totalPages)
     resetTimer()
   }
 
   const handlePrevTestimonial = () => {
-    setActiveTestimonial((prev) => (prev === 0 ? filteredTestimonials.length - 1 : prev - 1))
+    setActivePage((prev) => (prev === 0 ? totalPages - 1 : prev - 1))
     resetTimer()
   }
-
-  const logoScrollRef = useRef(null)
-  const isDraggingRef = useRef(false)
-  const startXRef = useRef(0)
-  const scrollLeftRef = useRef(0)
-  const hasMovedRef = useRef(false)
-
-  const handleMouseDown = (e) => {
-    if (!logoScrollRef.current) return
-    isDraggingRef.current = true
-    hasMovedRef.current = false
-    startXRef.current = e.pageX - logoScrollRef.current.offsetLeft
-    scrollLeftRef.current = logoScrollRef.current.scrollLeft
-  }
-
-  const handleMouseMove = (e) => {
-    if (!isDraggingRef.current || !logoScrollRef.current) return
-    e.preventDefault()
-    const x = e.pageX - logoScrollRef.current.offsetLeft
-    const walk = (x - startXRef.current) * 1.5
-    if (Math.abs(walk) > 4) {
-      hasMovedRef.current = true
-    }
-    logoScrollRef.current.scrollLeft = scrollLeftRef.current - walk
-  }
-
-  const handleMouseUpOrLeave = () => {
-    isDraggingRef.current = false
-  }
-
-  const isFirstMountRef = useRef(true)
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
-
-  useEffect(() => {
-    if (isFirstMountRef.current) {
-      isFirstMountRef.current = false
-      return
-    }
-    if (!logoScrollRef.current) return
-    const activeEl = logoScrollRef.current.querySelector(`[data-logo-index="${activeTestimonial}"]`)
-    if (activeEl && logoScrollRef.current) {
-      const containerLeft = logoScrollRef.current.getBoundingClientRect().left
-      const elLeft = activeEl.getBoundingClientRect().left
-      const offset = elLeft - containerLeft - (logoScrollRef.current.clientWidth / 2) + (activeEl.clientWidth / 2)
-      logoScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
-    }
-  }, [activeTestimonial])
 
   const trainingPathways = [
     {
       category: 'Initial Training',
       title: 'EASA Standards',
       desc: 'Flight Dispatch Initial Training aligned with ICAO Doc 10106 and EASA ORO.GEN.110 requirements.',
-      hours: '175 Hours · Hybrid',
+      hours: '200 Hours · Hybrid',
       linkText: 'Explore EASA Training',
       link: '/events-courses'
     },
@@ -521,48 +490,63 @@ export function HomePage() {
 
   return (
     <div className="font-sans text-rocket-dark bg-white">
+      <Seo
+        path="/"
+        title="Flight Dispatcher Courses & EASA / FAA Certification | IFOA"
+        description="Train as a certified flight dispatcher with IFOA. EASA ORO.GEN.110 and FAA Part 65 flight operations courses taught by active airline dispatchers."
+        jsonLd={graph(
+          organizationSchema(),
+          {
+            '@type': 'WebSite',
+            '@id': `${SITE_URL}/#website`,
+            url: SITE_URL,
+            name: SITE_NAME,
+            publisher: { '@id': ORGANIZATION_ID },
+            inLanguage: 'en'
+          }
+        )}
+      />
       {/* BEGIN: HeroSection */}
-      <section className="relative w-full min-h-screen min-h-[100dvh] text-white overflow-hidden border-b border-white/10 flex flex-col" data-purpose="hero-content">
+      <section className="relative w-full min-h-[100dvh] lg:h-[100dvh] lg:max-h-[1080px] text-white overflow-hidden border-b border-white/10 flex flex-col justify-between" data-purpose="hero-content">
         <CosmicParallaxBg
-          className="cosmic-parallax-bg min-h-screen min-h-[100dvh] flex flex-col justify-between pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8"
-          contentClassName="justify-between flex-1 flex flex-col h-full"
+          className="cosmic-parallax-bg min-h-[100dvh] lg:h-full flex flex-col justify-between pt-20 sm:pt-24 lg:pt-22 xl:pt-24 pb-4 sm:pb-5 px-4 sm:px-6 lg:px-8"
+          contentClassName="justify-between flex-1 flex flex-col h-full w-full max-w-[1280px] mx-auto"
         >
-          <div className="max-w-[1280px] w-full mx-auto my-auto py-4 sm:py-6 lg:py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
+          {/* Main Hero Grid Content (Auto-centered vertically in available viewport) */}
+          <div className="w-full my-auto py-2 sm:py-4 lg:py-1 flex-1 flex items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-10 items-center w-full">
               {/* Left Column: Typography & CTAs */}
-              <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-left">
+              <div className="lg:col-span-7 space-y-3 sm:space-y-4 lg:space-y-3.5 xl:space-y-5 text-left">
                 {/* Eyebrow Label with Green Underline */}
-                <div className="inline-flex items-center pb-1 border-b border-white text-white text-xs sm:text-[13px] font-mono font-medium tracking-widest uppercase w-fit">
+                <div className="inline-flex items-center pb-1 border-b border-white text-white text-[11px] sm:text-xs font-mono font-medium tracking-widest uppercase w-fit">
                   <span>International Flight Operations Academy</span>
                 </div>
 
                 {/* Main Headline & Subtitle */}
-                <div className="space-y-4 sm:space-y-5 max-w-2xl">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold tracking-tight text-white leading-[1.08]">
+                <div className="space-y-3 sm:space-y-3.5 max-w-2xl">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold tracking-tight text-white leading-[1.08]">
                     Trained for the moment <br className="hidden sm:inline" />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-slate-300">
                       nothing goes to plan.
                     </span>
                   </h1>
 
-                  <p className="text-slate-300 text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed max-w-xl font-normal">
+                  <p className="text-slate-300 text-xs sm:text-sm md:text-base lg:text-sm xl:text-base leading-relaxed max-w-xl font-normal">
                     IFOA prepares flight dispatchers and OCC teams for the decisions that matter at 3am not just the ones covered on the exam.
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2 sm:pt-3">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
                     <button
                       onClick={() => navigate('/events-courses')}
                       className="liquid-btn group gap-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all shadow-xl cursor-pointer"
                     >
                       <span className="leading-none font-bold">Explore Programs</span>
-                      <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform flex-shrink-0" />
                     </button>
                     <button
                       onClick={() => navigate('/services')}
                       className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-white/20 hover:border-white/40 hover:bg-white/10 text-white text-xs font-mono uppercase tracking-wider transition-all cursor-pointer backdrop-blur-xs group"
                     >
                       <span>Our Services</span>
-                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                     </button>
                   </div>
                 </div>
@@ -571,14 +555,14 @@ export function HomePage() {
               {/* Right Column: 3D Aircraft & Learning Platform Visual */}
               <div className="lg:col-span-5 relative flex items-center justify-center">
                 {/* Ambient glow accent behind mockup */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-80 sm:h-80 bg-[#34E06E]/15 rounded-full blur-3xl pointer-events-none -z-10" />
-                <div className="relative w-full max-w-120 sm:max-w-140 lg:max-w-none lg:w-[130%] animate-float-slow">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72 bg-[#34E06E]/15 rounded-full blur-3xl pointer-events-none -z-10" />
+                <div className="relative w-full max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-[440px] xl:max-w-[500px] 2xl:max-w-[560px] animate-float-slow">
                   <picture className="block">
                     <source srcSet={hero3dMockup} type="image/webp" />
                     <img
                       src={hero3dMockupPng}
                       alt="IFOA Flight Operations Training & Certification Platform"
-                      className="w-full h-auto object-contain select-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] pointer-events-none"
+                      className="w-full max-h-[32vh] sm:max-h-[38vh] lg:max-h-[42vh] xl:max-h-[46vh] object-contain select-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] pointer-events-none mx-auto"
                       loading="eager"
                       fetchPriority="high"
                     />
@@ -588,45 +572,45 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Key Stats & Accreditations Metric Strip (Inside Hero - Clean Minimalist) */}
-          <div className="max-w-[1280px] w-full mx-auto pt-4 sm:pt-6 lg:pt-8 border-t border-white/15 mt-6 sm:mt-8 md:mt-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-white/15">
+          {/* Key Stats & Accreditations Metric Strip (Inside Hero - Viewport-Fitted) */}
+          <div className="w-full pt-3 sm:pt-4 border-t border-white/15 mt-auto pb-1 sm:pb-2 shrink-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-white/15">
               {/* Metric 1 */}
-              <div className="px-2 sm:px-4 md:px-8 py-2 first:pl-0 space-y-1 sm:space-y-1.5">
-                <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+              <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 first:pl-0 space-y-0.5 sm:space-y-1">
+                <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-white tracking-tight">
                   500+
                 </p>
-                <p className="text-[11px] sm:text-xs md:text-[13px] font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
+                <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
                   PROFESSIONALS TRAINED ANNUALLY
                 </p>
               </div>
 
               {/* Metric 2 */}
-              <div className="px-2 sm:px-4 md:px-8 py-2 pt-2 md:pt-2 space-y-1 sm:space-y-1.5">
-                <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+              <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 pt-1.5 md:pt-2 space-y-0.5 sm:space-y-1">
+                <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-white tracking-tight">
                   70+
                 </p>
-                <p className="text-[11px] sm:text-xs md:text-[13px] font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
+                <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
                   AVIATION ORGANIZATIONS
                 </p>
               </div>
 
               {/* Metric 3 */}
-              <div className="px-2 sm:px-4 md:px-8 py-2 pt-2 md:pt-2 space-y-1 sm:space-y-1.5">
-                <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#34E06E] tracking-tight">
+              <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 pt-1.5 md:pt-2 space-y-0.5 sm:space-y-1">
+                <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-[#34E06E] tracking-tight">
                   FAA
                 </p>
-                <p className="text-[11px] sm:text-xs md:text-[13px] font-mono font-bold uppercase tracking-wider text-[#34E06E] leading-tight">
+                <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-[#34E06E] leading-tight">
                   PART 65 APPROVED TRAINING
                 </p>
               </div>
 
               {/* Metric 4 */}
-              <div className="px-2 sm:px-4 md:px-8 py-2 pt-2 md:pt-2 last:pr-0 space-y-1 sm:space-y-1.5">
-                <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+              <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 pt-1.5 md:pt-2 last:pr-0 space-y-0.5 sm:space-y-1">
+                <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-white tracking-tight">
                   Global
                 </p>
-                <p className="text-[11px] sm:text-xs md:text-[13px] font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
+                <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
                   OPERATIONAL DELIVERY
                 </p>
               </div>
@@ -643,13 +627,13 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-6">
             <div className="max-w-2xl space-y-2">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                Accredited Training Programs
+                Professional Aviation Training
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-rocket-dark">
-                Instructor-led programs, measurable outcomes.
+                Industry-led training for aviation professionals.
               </h2>
               <p className="text-base sm:text-lg text-gray-500 font-normal">
-                From initial flight dispatcher certification to recurrent training for established airline operations control teams, every programme is delivered by active industry practitioners and aligned with EASA, FAA and ICAO standards.
+                Gain the knowledge, practical skills, and operational expertise required to perform with confidence in today’s aviation environment. From initial certification to advanced and recurrent training, our programs are built around real operational requirements.
               </p>
             </div>
 
@@ -658,7 +642,7 @@ export function HomePage() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-black/15 text-xs font-bold uppercase tracking-wider text-rocket-dark hover:bg-black hover:text-white hover:border-black transition-all shrink-0 self-start md:self-auto group shadow-xs"
             >
               <span>View all courses</span>
-              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-slate-900 group-hover:translate-x-0.5 transition-all" />
+              <HiArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
 
@@ -685,7 +669,7 @@ export function HomePage() {
                     </span>
 
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full">
-                      <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                      <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       <span>12 Weeks Hybrid</span>
                     </span>
                   </div>
@@ -697,17 +681,6 @@ export function HomePage() {
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
                     Comprehensive FAA Part 65 &amp; EASA curriculum with high-stress live OCC flight simulations and guaranteed regulatory exam preparation.
                   </p>
-
-                  {/* Rating Stars */}
-                  <div className="flex items-center gap-1.5 pt-0.5">
-                    <div className="flex items-center text-amber-400">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <span className="text-slate-900 text-xs font-bold ml-1">5.0</span>
-                    <span className="text-slate-400 text-xs font-normal">(480+ Reviews)</span>
-                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
@@ -717,7 +690,7 @@ export function HomePage() {
                   >
                     <span>View Course Details</span>
                     <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center transition-colors shrink-0">
-                      <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5 transition-all" />
+                      <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
                   </button>
                 </div>
@@ -745,7 +718,7 @@ export function HomePage() {
                     </span>
 
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full">
-                      <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                      <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       <span>4 Weeks Station Track</span>
                     </span>
                   </div>
@@ -757,17 +730,6 @@ export function HomePage() {
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
                     Master airside operations, turnaround supervision, dangerous goods regulations, and ground handling collision avoidance.
                   </p>
-
-                  {/* Rating Stars */}
-                  <div className="flex items-center gap-1.5 pt-0.5">
-                    <div className="flex items-center text-amber-400">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <span className="text-slate-900 text-xs font-bold ml-1">4.9</span>
-                    <span className="text-slate-400 text-xs font-normal">(320+ Reviews)</span>
-                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
@@ -777,7 +739,7 @@ export function HomePage() {
                   >
                     <span>View Course Details</span>
                     <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center transition-colors shrink-0">
-                      <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5 transition-all" />
+                      <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
                   </button>
                 </div>
@@ -786,6 +748,79 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* BEGIN: Accredited Training Programs Trust & Verified Rating Showcase */}
+      <section className="pt-2 pb-14 sm:pb-16 bg-white" data-purpose="course-trust-rating-banner">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-gradient-to-br from-slate-950 via-[#0B132B] to-[#020617] text-white p-7 sm:p-10 md:p-12 border border-slate-800/80 shadow-[0_24px_60px_rgba(2,6,23,0.18)]">
+            {/* Subtle radar contour rings matching IFOA aviation aesthetic */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              viewBox="0 0 1000 400"
+            >
+              <circle cx="820" cy="200" r="140" stroke="#34E06E" strokeWidth="1" strokeDasharray="4 4" fill="none" />
+              <circle cx="820" cy="200" r="230" stroke="white" strokeWidth="1" opacity="0.4" fill="none" />
+              <circle cx="820" cy="200" r="330" stroke="#34E06E" strokeWidth="1" opacity="0.3" fill="none" />
+              <circle cx="820" cy="200" r="450" stroke="white" strokeWidth="1" opacity="0.2" fill="none" />
+              <circle cx="120" cy="80" r="180" stroke="white" strokeWidth="1" opacity="0.2" fill="none" />
+              <circle cx="120" cy="80" r="300" stroke="#34E06E" strokeWidth="1" opacity="0.2" fill="none" />
+            </svg>
+
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              {/* Left Column: Headline & Description */}
+              <div className="lg:col-span-7 space-y-3.5 text-left">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block">
+                  Verified Post-Training Feedback
+                </span>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight font-display">
+                  Rated by the People We Trained
+                </h3>
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal max-w-xl">
+                  Every course closes with a post-training survey sent straight to our OCC teams and dispatchers. Across 458 completed surveys from 70+ aviation organizations, our training has been rated an average of 4.7 out of 5, with 98% saying they'd recommend IFOA.{' '}
+                  <button
+                    onClick={() => {
+                      const el = document.getElementById('testimonials') || document.querySelector('[data-purpose="from-the-operation-grid"]')
+                      if (el) el.scrollIntoView({ behavior: 'smooth' })
+                      else navigate('/events-courses')
+                    }}
+                    className="font-bold text-[#34E06E] hover:text-white underline underline-offset-4 transition-colors cursor-pointer inline-block"
+                  >
+                    Learn more
+                  </button>
+                </p>
+              </div>
+
+              {/* Right Column: Prominent Rating & Vivid Stars */}
+              <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center space-y-2 lg:border-l lg:border-white/10 lg:pl-8">
+                <div className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight font-sans">
+                  4.7<span className="text-2xl sm:text-3xl md:text-4xl font-medium text-[#34E06E]">/5</span>
+                </div>
+
+                {/* 5 Vivid Gold Stars */}
+                <div className="flex items-center gap-1.5 py-1">
+                  {[...Array(5)].map((_, i) => (
+                    <RiStarFill key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFB800] drop-shadow-[0_0_12px_rgba(255,184,0,0.35)]" />
+                  ))}
+                </div>
+
+                <p className="text-xs sm:text-sm font-medium text-slate-400 tracking-wide font-mono">
+                  (458 verified post-training surveys)
+                </p>
+
+                <div className="pt-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono font-bold text-slate-300">
+
+                    <span>98% Recommendation Rate</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* BEGIN: Training Pathways Smart Shifting Carousel */}
       <section className="w-full bg-[#020617] border-t border-white/10 text-white py-12 sm:py-16 overflow-hidden" data-purpose="training-pathways-carousel">
         <div className="max-w-[1280px] mx-auto px-6 space-y-8">
@@ -807,7 +842,7 @@ export function HomePage() {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-slate-100 text-slate-950 font-bold text-xs font-mono uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-105 cursor-pointer group"
               >
                 <span>See More</span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
+                <HiArrowUpRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
 
               <div className="flex items-center gap-3">
@@ -820,14 +855,14 @@ export function HomePage() {
                     className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/20 hover:text-white text-slate-300 border border-white/10 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     aria-label="Previous Pathway"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <RiArrowLeftSLine className="w-5 h-5" />
                   </button>
                   <button
                     onClick={handleNextPathway}
                     className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/20 hover:text-white text-slate-300 border border-white/10 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     aria-label="Next Pathway"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <RiArrowRightSLine className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -878,7 +913,7 @@ export function HomePage() {
                             className="inline-flex items-center gap-1.5 text-xs font-bold text-white/90 hover:text-white transition-colors group/link"
                           >
                             <span>{item.linkText}</span>
-                            <span className="group-hover/link:translate-x-1 transition-transform">→</span>
+                            <HiArrowRight className="w-3.5 h-3.5 text-[#34E06E] group-hover/link:translate-x-1 transition-transform" />
                           </Link>
                         </div>
                       </div>
@@ -914,10 +949,10 @@ export function HomePage() {
             Global Airline Network
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark">
-            Airlines &amp; Operators Where Our Professionals Excel
+            Training Professionals for the Global Aviation Industry
           </h2>
           <p className="text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Our certified flight dispatchers and operations specialists build careers across leading commercial, cargo, and business aviation carriers worldwide.
+            Our training equips aviation professionals with the skills and expertise to pursue careers across commercial, cargo, and business aviation worldwide.
           </p>
         </div>
 
@@ -997,35 +1032,35 @@ export function HomePage() {
           {/* Dual Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
             {/* Card 1: For Individuals */}
-            <div className="rounded-2xl bg-white border border-slate-200 p-7 sm:p-9 flex flex-col justify-between space-y-6 text-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 transition-shadow duration-300">
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-8 sm:p-9 flex flex-col justify-between space-y-6 text-slate-900 shadow-xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 group">
               <div className="space-y-4">
-                {/* Badge Header */}
-                <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-semibold uppercase tracking-wide text-emerald-800">
-                    <User className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>For Individuals</span>
-                  </div>
-                  <span className="text-[11px] text-slate-500 font-semibold tracking-wide uppercase">
+                {/* Header Row: Clean Eyebrow & Track Badge */}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
+                    For Individuals
+                  </span>
+                  <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                     Career Pathway
                   </span>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-snug">
-                  Build your Operational Control career.
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors pt-1">
+                  Become Ready for the Modern OCC
                 </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Find the right certification, understand the pathway and develop the competencies required in a modern OCC.
+
+                <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                  Gain the operational knowledge and practical competencies needed to perform confidently in a fast-paced airline Operations Control Centre.
                 </p>
 
                 {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-4 border-t border-slate-100 text-sm text-slate-700">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>FAA Part 65 &amp; EASA</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700">
+                  <div className="flex items-center gap-2.5">
+                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
+                    <span className="font-semibold text-slate-800">FAA Part 65 &amp; EASA</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>100% Practical Scenarios</span>
+                  <div className="flex items-center gap-2.5">
+                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
+                    <span className="font-semibold text-slate-800">Scenario-Based Drills</span>
                   </div>
                 </div>
               </div>
@@ -1033,44 +1068,44 @@ export function HomePage() {
               <div className="pt-2">
                 <Button
                   onClick={() => navigate('/events-courses')}
-                  className="bg-ifoa-navy hover:bg-ifoa-navy-light text-slate-950 font-semibold px-6 py-3 rounded-full text-sm transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] cursor-pointer"
                 >
                   <span>Explore Training</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <HiArrowUpRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
             {/* Card 2: For Organizations */}
-            <div className="rounded-2xl bg-white border border-slate-200 p-7 sm:p-9 flex flex-col justify-between space-y-6 text-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 transition-shadow duration-300">
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-8 sm:p-9 flex flex-col justify-between space-y-6 text-slate-900 shadow-xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 group">
               <div className="space-y-4">
-                {/* Badge Header */}
-                <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-white text-[11px] font-semibold uppercase tracking-wide">
-                    <Building2 className="w-3.5 h-3.5 text-slate-300" />
-                    <span>For Airlines</span>
-                  </div>
-                  <span className="text-[11px] text-slate-500 font-semibold tracking-wide uppercase">
+                {/* Header Row: Clean Eyebrow & Track Badge */}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
+                    For Airlines
+                  </span>
+                  <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                     Airlines &amp; OCCs
                   </span>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-snug">
-                  Build stronger operational capability.
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors pt-1">
+                  Training Built Around Your Operations
                 </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Initial, recurrent and customized training adapted to your operations manuals, fleet, approvals, network and operational risks.
+
+                <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                  Customized initial, recurrent, and advanced training designed around your fleet, manuals, procedures, and operational environment.
                 </p>
 
                 {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-4 border-t border-slate-100 text-sm text-slate-700">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-slate-900 shrink-0" />
-                    <span>Fleet-Customized Syllabus</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700">
+                  <div className="flex items-center gap-2.5">
+                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
+                    <span className="font-semibold text-slate-800">Customized Fleet Training</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-slate-900 shrink-0" />
-                    <span>OCC Audits &amp; Consulting</span>
+                  <div className="flex items-center gap-2.5">
+                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
+                    <span className="font-semibold text-slate-800">OCC Consulting</span>
                   </div>
                 </div>
               </div>
@@ -1078,10 +1113,10 @@ export function HomePage() {
               <div className="pt-2">
                 <Button
                   onClick={() => navigate('/services')}
-                  className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-full text-sm transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm cursor-pointer"
                 >
                   <span>Corporate Training</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <HiArrowUpRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -1093,11 +1128,11 @@ export function HomePage() {
       {/* BEGIN: From the Operation (Clean 3-Column Review Grid Showcase) */}
       <section className="py-14 sm:py-20 bg-[#f8fafc] border-y border-slate-200/80 text-rocket-dark" data-purpose="from-the-operation-grid">
         <div className="max-w-[1280px] mx-auto px-6 space-y-8">
-          
+
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-slate-200/60">
             <div className="space-y-2 max-w-2xl">
-              <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#15803d] inline-block">
+              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                 Verified Industry Feedback
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -1111,7 +1146,7 @@ export function HomePage() {
             {/* Carousel Arrow Controls */}
             <div className="flex items-center gap-3 shrink-0 self-start md:self-end">
               <span className="text-xs font-mono font-bold text-slate-400">
-                {String(activeTestimonial + 1).padStart(2, '0')} / {String(filteredTestimonials.length).padStart(2, '0')}
+                {String(safePage + 1).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
@@ -1119,14 +1154,14 @@ export function HomePage() {
                   className="w-9 h-9 rounded-full bg-white hover:bg-slate-900 hover:text-white text-slate-700 border border-slate-200 flex items-center justify-center transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
                   aria-label="Previous Reviews"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <RiArrowLeftSLine className="w-5 h-5" />
                 </button>
                 <button
                   onClick={handleNextTestimonial}
                   className="w-9 h-9 rounded-full bg-white hover:bg-slate-900 hover:text-white text-slate-700 border border-slate-200 flex items-center justify-center transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
                   aria-label="Next Reviews"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <RiArrowRightSLine className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -1138,194 +1173,193 @@ export function HomePage() {
               <button
                 onClick={() => {
                   setFeedbackTab('visual')
-                  setActiveTestimonial(0)
+                  setActivePage(0)
                   resetTimer()
                 }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  feedbackTab === 'visual'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${feedbackTab === 'visual'
+                  ? 'bg-[#34E06E] text-slate-950 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
+                  }`}
               >
                 Airline Showcase ({testimonials.filter((t) => t.cardImage).length})
               </button>
               <button
                 onClick={() => {
                   setFeedbackTab('executive')
-                  setActiveTestimonial(0)
+                  setActivePage(0)
                   resetTimer()
                 }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  feedbackTab === 'executive'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${feedbackTab === 'executive'
+                  ? 'bg-[#34E06E] text-slate-950 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
+                  }`}
               >
                 Executive Statements ({testimonials.filter((t) => !t.cardImage).length})
               </button>
               <button
                 onClick={() => {
                   setFeedbackTab('all')
-                  setActiveTestimonial(0)
+                  setActivePage(0)
                   resetTimer()
                 }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  feedbackTab === 'all'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${feedbackTab === 'all'
+                  ? 'bg-[#34E06E] text-slate-950 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
+                  }`}
               >
                 All Feedback ({testimonials.length})
               </button>
             </div>
           </div>
 
-          {/* 3 Review Cards in One Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-            {Array.from(
-              { length: Math.min(reviewsPerView, filteredTestimonials.length) },
-              (_, i) => filteredTestimonials[(activeTestimonial + i) % filteredTestimonials.length]
-            ).map((item, idx) => (
-              <div key={idx} className="flex flex-col h-full">
-                {item.cardImage ? (
-                  /* Visual Card Display: Clean Minimal Presentation */
-                  <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between group">
-                    {/* Top Row: Company Logo & Category Badge */}
-                    <div className="flex items-center justify-between gap-3 pb-3 border-b border-slate-100 shrink-0">
-                      <div className="flex items-center h-8">
-                        {item.logo ? (
-                          <img
-                            src={item.logo}
-                            alt={item.company}
-                            className="h-6 sm:h-7 max-w-[130px] w-auto object-contain select-none"
-                          />
-                        ) : (
-                          <span className="text-sm font-bold text-slate-900 tracking-wide">
-                            {item.company}
-                          </span>
-                        )}
-                      </div>
-                      {item.badge && (
-                        <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-[#15803d] border-b border-[#34E06E] pb-0.5 whitespace-nowrap">
-                          {item.badge}
-                        </span>
+          {/* 3 Review Cards in One Row (Fixed Height + Butter-Smooth Motion) */}
+          <div className="relative min-h-[470px] sm:min-h-[490px] md:min-h-[500px] overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${feedbackTab}-${safePage}`}
+                initial={{ opacity: 0, x: 25 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -25 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch w-full"
+              >
+                {filteredTestimonials
+                  .slice(safePage * reviewsPerView, safePage * reviewsPerView + reviewsPerView)
+                  .map((item, idx) => (
+                    <div key={idx} className="flex flex-col h-[460px] sm:h-[480px] md:h-[490px]">
+                      {item.cardImage ? (
+                        /* Visual Card Display: Fixed Height + Clean Presentation */
+                        <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between group overflow-hidden">
+                          {/* Top Row: Company Logo & Category Badge */}
+                          <div className="flex items-center justify-between gap-3 pb-3 border-b border-slate-100 shrink-0 h-10">
+                            <div className="flex items-center h-8">
+                              {item.logo ? (
+                                <img
+                                  src={item.logo}
+                                  alt={item.company}
+                                  className="h-6 sm:h-7 max-w-[130px] w-auto object-contain select-none"
+                                />
+                              ) : (
+                                <span className="text-sm font-bold text-slate-900 tracking-wide">
+                                  {item.company}
+                                </span>
+                              )}
+                            </div>
+                            {item.badge && (
+                              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 border-b border-[#34E06E] pb-0.5 whitespace-nowrap">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Middle: Full Uncropped Graphic Endorsement inside Flex Area */}
+                          <div className="flex-1 w-full min-h-0 pt-3 flex items-center justify-center overflow-hidden">
+                            <img
+                              src={item.cardImage}
+                              alt={`${item.company} Endorsement`}
+                              className="max-h-full max-w-full w-auto h-auto object-contain select-none rounded-xl transition-transform duration-500 group-hover:scale-[1.01]"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        /* Executive Text Card: Fixed Height + Clean Typography */
+                        <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between group overflow-hidden">
+                          {/* Top Row: Airline Logo & Badge */}
+                          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 shrink-0 h-11">
+                            <div className="flex items-center h-8">
+                              {item.logo ? (
+                                <img
+                                  src={item.logo}
+                                  alt={item.company}
+                                  className="h-7 max-w-[130px] w-auto object-contain select-none"
+                                />
+                              ) : (
+                                <span className="text-base font-bold text-slate-900 tracking-wide">
+                                  {item.company}
+                                </span>
+                              )}
+                            </div>
+                            {item.badge && (
+                              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 border-b border-[#34E06E] pb-0.5 whitespace-nowrap">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Center: Full Quote inside Flex Area */}
+                          <div className="flex-1 my-auto flex flex-col justify-center py-4 space-y-2 overflow-hidden">
+                            <span className="text-3xl font-serif text-slate-400 leading-none block select-none">
+                              “
+                            </span>
+                            <blockquote className="text-xs sm:text-sm font-normal text-slate-700 leading-relaxed italic line-clamp-6">
+                              {item.quote}
+                            </blockquote>
+                          </div>
+
+                          {/* Bottom: Author Credentials */}
+                          <div className="pt-4 border-t border-slate-100 space-y-0.5 shrink-0">
+                            <h4 className="text-sm font-bold text-slate-900 leading-tight">
+                              {item.name}
+                            </h4>
+                            <p className="text-[11px] text-slate-500 font-mono tracking-wide">
+                              {item.role}
+                            </p>
+                          </div>
+                        </div>
                       )}
                     </div>
-
-                    {/* Middle: Full Uncropped Graphic Endorsement */}
-                    <div className="my-auto pt-3 w-full rounded-xl overflow-hidden bg-white flex items-center justify-center">
-                      <img
-                        src={item.cardImage}
-                        alt={`${item.company} Endorsement`}
-                        className="w-full h-auto object-contain select-none rounded-xl transition-transform duration-500 group-hover:scale-[1.01]"
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  /* Executive Text Card: Clean Minimal Typography */
-                  <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between group">
-                    {/* Top Row: Airline Logo & Badge */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                      <div className="flex items-center h-8">
-                        {item.logo ? (
-                          <img
-                            src={item.logo}
-                            alt={item.company}
-                            className="h-7 max-w-[130px] w-auto object-contain select-none"
-                          />
-                        ) : (
-                          <span className="text-base font-bold text-slate-900 tracking-wide">
-                            {item.company}
-                          </span>
-                        )}
-                      </div>
-                      {item.badge && (
-                        <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-[#15803d] border-b border-[#34E06E] pb-0.5 whitespace-nowrap">
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Center: Full Quote */}
-                    <div className="py-4 my-auto space-y-2">
-                      <span className="text-3xl font-serif text-[#15803d] leading-none block select-none">
-                        “
-                      </span>
-                      <blockquote className="text-xs sm:text-sm font-normal text-slate-700 leading-relaxed italic">
-                        {item.quote}
-                      </blockquote>
-                    </div>
-
-                    {/* Bottom: Author Credentials */}
-                    <div className="pt-4 border-t border-slate-100 space-y-0.5">
-                      <h4 className="text-sm font-bold text-slate-900 leading-tight">
-                        {item.name}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 font-mono tracking-wide">
-                        {item.role}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* Draggable Airline Selector Bar (Highlights All Currently Visible Cards) */}
-          <div className="relative w-full overflow-hidden shrink-0 pt-2 border-t border-slate-200/60">
-            <div
-              ref={logoScrollRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUpOrLeave}
-              onMouseLeave={handleMouseUpOrLeave}
-              className="flex items-center justify-start sm:justify-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar py-2 px-1 cursor-grab active:cursor-grabbing select-none"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {filteredTestimonials.map((item, idx) => {
-                const visibleCount = Math.min(reviewsPerView, filteredTestimonials.length)
-                const visibleIndices = Array.from(
-                  { length: visibleCount },
-                  (_, i) => (activeTestimonial + i) % filteredTestimonials.length
-                )
-                const isCurrentlyVisible = visibleIndices.includes(idx)
+          {/* Clean Grouped Logo Selector (Simple pairs of logos with active green underline) */}
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 pt-4 border-t border-slate-200/60">
+            {Array.from({ length: totalPages }, (_, pageIdx) => {
+              const isCurrentPage = safePage === pageIdx
+              const pageItems = filteredTestimonials.slice(
+                pageIdx * reviewsPerView,
+                pageIdx * reviewsPerView + reviewsPerView
+              )
 
-                return (
-                  <button
-                    key={idx}
-                    data-logo-index={idx}
-                    onClick={() => {
-                      if (hasMovedRef.current) return
-                      setActiveTestimonial(idx)
-                      resetTimer()
-                    }}
-                    className={`h-10 px-3 py-1.5 transition-all duration-200 flex items-center justify-center shrink-0 cursor-pointer rounded-t-lg ${
-                      isCurrentlyVisible
-                        ? 'opacity-100 scale-105 border-b-2 border-[#15803d] bg-emerald-50/50 font-bold shadow-2xs'
-                        : 'opacity-40 hover:opacity-85 hover:scale-105 border-b-2 border-transparent bg-transparent'
+              return (
+                <button
+                  key={pageIdx}
+                  onClick={() => {
+                    setActivePage(pageIdx)
+                    resetTimer()
+                  }}
+                  className={`group relative pb-2.5 transition-all duration-300 flex items-center gap-4 sm:gap-7 cursor-pointer border-b-2 ${isCurrentPage
+                    ? 'border-[#34E06E] opacity-100 scale-100'
+                    : 'border-transparent opacity-40 hover:opacity-80'
                     }`}
-                    title={item.company || item.name}
-                  >
-                    {item.logo ? (
-                      <img
-                        src={item.logo}
-                        alt={item.company}
-                        draggable={false}
-                        className="h-5 sm:h-6 max-w-[90px] w-auto object-contain select-none pointer-events-none"
-                      />
-                    ) : (
-                      <span
-                        className={`text-[11px] font-bold whitespace-nowrap select-none ${
-                          isCurrentlyVisible ? 'text-[#15803d]' : 'text-slate-500'
-                        }`}
-                      >
-                        {item.company}
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
+                  aria-label={`View group ${pageIdx + 1}`}
+                >
+                  {pageItems.map((item, itemIdx) => (
+                    <div key={itemIdx} className="h-8 sm:h-9 flex items-center justify-center">
+                      {item.logo ? (
+                        <img
+                          src={item.logo}
+                          alt={item.company}
+                          draggable={false}
+                          className={`h-5 sm:h-6 max-w-[85px] sm:max-w-[105px] w-auto object-contain transition-all select-none pointer-events-none ${isCurrentPage
+                            ? 'grayscale-0'
+                            : 'grayscale group-hover:grayscale-0'
+                            }`}
+                        />
+                      ) : (
+                        <span
+                          className={`text-xs sm:text-sm font-bold tracking-tight whitespace-nowrap ${isCurrentPage ? 'text-slate-900' : 'text-slate-500'
+                            }`}
+                        >
+                          {item.company}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </button>
+              )
+            })}
           </div>
 
         </div>
@@ -1381,10 +1415,10 @@ export function HomePage() {
                 Training Framework
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-                International standards. Local operational relevance.
+                Built on global aviation standards. Designed for real operations.
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
-                The program is structured around the applicable international Flight Dispatcher training framework while incorporating the Indian regulatory and operational environment. Regulatory references must be validated against the current approved program before production publication.
+                Our training draws from ICAO, FAA, and EASA frameworks to deliver internationally relevant knowledge, practical operational skills, and scenario-based learning for today’s aviation professionals.
               </p>
             </div>
           </div>
@@ -1415,10 +1449,10 @@ export function HomePage() {
             <div className="relative z-10 shrink-0">
               <Button
                 onClick={() => navigate('/contact')}
-                className="bg-[#34E06E] text-slate-950 hover:bg-[#28c85e] font-extrabold px-7 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-lg hover:shadow-[0_0_25px_rgba(52,224,110,0.4)] transition-all hover:scale-105 inline-flex items-center gap-2.5 cursor-pointer"
+                className="bg-[#34E06E] text-slate-950 hover:bg-[#28c85e] font-extrabold px-7 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-lg hover:shadow-[0_0_25px_rgba(52,224,110,0.4)] transition-all hover:scale-105 inline-flex items-center gap-2.5 cursor-pointer group"
               >
                 <span>Contact IFOA</span>
-                <ArrowRight className="w-4 h-4 text-slate-950" />
+                <RiSendPlaneFill className="w-4 h-4 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </div>
           </div>

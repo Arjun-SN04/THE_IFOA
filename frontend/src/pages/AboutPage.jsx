@@ -2,24 +2,19 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
-  Shield,
-  Award,
-  Users,
-  CheckCircle2,
-  Sparkles,
-  ArrowRight,
-  Globe2,
-  Building,
-  Plane,
-  Layers,
-  HeartHandshake,
-  Target,
-  Zap,
-  MessageSquare
-} from 'lucide-react'
+  RiShieldCheckFill,
+  RiAwardFill,
+  RiGlobeLine,
+  RiPlaneFill,
+  RiArrowRightLine
+} from 'react-icons/ri'
+import { PiAirplaneTiltFill } from 'react-icons/pi'
+import { HiArrowUpRight } from 'react-icons/hi2'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import { usePageContent } from '@/hooks/usePageContent'
+import { Seo } from '@/components/common/Seo'
+import { graph, organizationSchema, breadcrumbSchema } from '@/lib/seo'
 
 // Standards Logos
 import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
@@ -37,9 +32,9 @@ import imgAircraftClouds from '@/assets/profile_media/aviation-aircraft-clouds.j
 // Content the page ships with; editable at /admin/pages/about.
 const FALLBACK = {
   hero: {
-    title: 'Four years in, we became the standard other schools get measured against.',
+    title: 'The Global Flight Dispatch Standard',
     subtitle:
-      "We stepped away from the traditional training approach in favor of Competency-Based Training and Assessment, because every dispatcher deserves training that's actually exceptional.",
+      'Five years in, we became the standard other schools get measured against.',
     primaryLabel: 'Book a Consultation',
     secondaryLabel: 'Explore Programs',
     image: null
@@ -87,25 +82,25 @@ const FALLBACK = {
     eyebrow: 'GLOBAL FOOTPRINT',
     title: 'Operational wherever airlines fly',
     intro:
-      'Three regional operational hubs supporting carriers, students, and dispatch teams across four continents.',
+      'Three regional operational hubs supporting carriers, students, and dispatch teams across 3 continents.',
     regions: [
       {
         name: 'Europe HQ',
         location: 'Basel, Switzerland',
-        facility: 'EuroAirport Hub',
-        desc: 'European headquarters leading EASA Part-ORO aligned dispatcher certification and OCC scenario labs.'
+        facility: 'IFOA',
+        desc: 'European headquarters leading EASA Part-ORO GEN 110 compliant Flight Dispatcher certification and OCC scenario labs.'
       },
       {
         name: 'North America',
         location: 'Daytona Beach, FL',
-        facility: 'IFOA USA Operations',
-        desc: 'FAA-approved Flight Dispatcher certification school and 14 CFR Part 3 Agent for Service gateway.'
+        facility: 'IFOA USA',
+        desc: 'FAA Part 65 approved Aircraft Dispatcher school and Agent for Service.'
       },
       {
         name: 'India & Asia-Pacific',
         location: 'New Delhi, India',
-        facility: 'Aerocity Training Hub',
-        desc: 'South Asian operational base delivering DGCA and ICAO Doc 10106 compliant dispatcher programs.'
+        facility: 'IFOA INDIA',
+        desc: 'South Asian School delivering FAA Part 65 certified and EASA Part ORO GEN 110 compliant Flight Dispatcher programs.'
       }
     ]
   },
@@ -125,7 +120,19 @@ export function AboutPage() {
   const regions = c.footprint.regions
 
   return (
-    <div className="bg-white text-rocket-dark selection:bg-slate-900 selection:text-white" data-purpose="about-page">
+    <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="about-page">
+      <Seo
+        path="/about"
+        title="About IFOA | Flight Operations Academy, Europe, USA & India"
+        description="IFOA trains flight dispatchers to ICAO Doc 10106, EASA ORO.GEN.110 and FAA Part 65 standards, with operational hubs in Switzerland, the United States and India."
+        jsonLd={graph(
+          organizationSchema(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'About', path: '/about' }
+          ])
+        )}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
         {/* Ambient Aviation Background */}
@@ -156,10 +163,10 @@ export function AboutPage() {
             </button>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 group"
             >
               <span>{c.hero.secondaryLabel}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
         </div>
@@ -228,42 +235,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* 4. REGULATORY ALIGNMENT & ACCREDITATION */}
-      <section className="py-16 sm:py-24 bg-slate-50/60 border-b border-slate-200/80" data-purpose="regulatory-alignment">
-        <div className="max-w-[1280px] mx-auto px-6 space-y-12">
-          <div className="max-w-3xl space-y-3">
-            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.regulatory.eyebrow}
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-              {c.regulatory.title}
-            </h2>
-            <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
-              {c.regulatory.intro}
-            </p>
-          </div>
-
-          {/* Official Standards Logo Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {c.regulatory.standards.map((std, idx) => (
-              <div
-                key={idx}
-                className="rounded-3xl bg-white border border-slate-200/90 shadow-sm p-7 flex items-center gap-5 hover:shadow-xl hover:border-[#34E06E]/40 transition-all duration-300"
-              >
-                <img
-                  src={[logoEasa, logoIcao, logoFaa][idx] || logoIcao}
-                  alt=""
-                  className="h-11 w-auto object-contain shrink-0"
-                />
-                <div>
-                  <strong className="text-base font-bold text-rocket-dark block">{std.title}</strong>
-                  <span className="text-xs text-slate-500 font-medium">{std.sub}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+     
 
       {/* 5. GLOBAL FOOTPRINT */}
       <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="global-footprint">
@@ -286,10 +258,10 @@ export function AboutPage() {
               const flagImg = name.includes('switzerland') || name.includes('europe') || name.includes('basel')
                 ? flagSwitzerland
                 : name.includes('united states') || name.includes('usa') || name.includes('north america') || name.includes('daytona')
-                ? flagUsa
-                : name.includes('india') || name.includes('delhi') || name.includes('asia')
-                ? flagIndia
-                : [flagSwitzerland, flagUsa, flagIndia][idx] || flagSwitzerland
+                  ? flagUsa
+                  : name.includes('india') || name.includes('delhi') || name.includes('asia')
+                    ? flagIndia
+                    : [flagSwitzerland, flagUsa, flagIndia][idx] || flagSwitzerland
 
               return (
                 <div
@@ -347,10 +319,10 @@ export function AboutPage() {
             </button>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-sm"
+              className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-sm group"
             >
               <span>{c.finalCta.secondaryLabel}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
         </div>

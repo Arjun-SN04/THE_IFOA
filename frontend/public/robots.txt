@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Admin console and enrollment forms hold no search value.
+Disallow: /admin
+Disallow: /admin/
+Disallow: /enroll
+Disallow: /*/enroll
+
+Sitemap: https://theifoa.com/sitemap.xml

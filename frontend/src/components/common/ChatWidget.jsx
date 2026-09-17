@@ -1,7 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
-import { MessageCircle, X, Send, HelpCircle, Loader2 } from 'lucide-react'
+import {
+  RiCustomerService2Fill,
+  RiSendPlaneFill,
+  RiCloseLine,
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+  RiSearchLine,
+  RiQuestionLine,
+  RiWhatsappFill,
+  RiHome5Fill,
+  RiHome5Line,
+  RiMessage3Fill,
+  RiMessage3Line,
+  RiQuestionAnswerFill,
+  RiFullscreenLine,
+  RiFullscreenExitLine,
+  RiLoader4Line,
+} from 'react-icons/ri'
+import { MdOutlineMail } from 'react-icons/md'
 import { api } from '@/lib/api'
 import ifoaLogo from '@/assets/ifoa-logo.png'
 
@@ -58,9 +76,7 @@ function HomeView({ onAsk, onViewMessages }) {
         >
           <span className="text-sm font-bold text-gray-900">Ask a question</span>
           <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-            <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <RiQuestionLine className="w-4 h-4 text-gray-700" />
           </div>
         </button>
 
@@ -68,9 +84,7 @@ function HomeView({ onAsk, onViewMessages }) {
         <div className="bg-white rounded-2xl overflow-hidden border border-gray-200">
           <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100">
             <span className="text-sm font-bold text-gray-900">Search for help</span>
-            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <RiSearchLine className="w-4 h-4 text-gray-400" />
           </div>
           {SUGGESTIONS.map((s, i) => (
             <button
@@ -80,9 +94,7 @@ function HomeView({ onAsk, onViewMessages }) {
               style={{ borderBottom: i < SUGGESTIONS.length - 1 ? '1px solid #f3f4f6' : 'none' }}
             >
               <span className="text-sm text-gray-700 leading-snug pr-3">{s}</span>
-              <svg className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-gray-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+              <RiArrowRightSLine className="w-4 h-4 text-gray-400 shrink-0 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all" />
             </button>
           ))}
         </div>
@@ -108,9 +120,7 @@ function HelpView({ onAsk }) {
         <div className="rounded-2xl border border-gray-200 p-5 bg-gradient-to-br from-slate-50 to-slate-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-              </svg>
+              <MdOutlineMail className="w-5 h-5 text-white" />
             </div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 leading-none mb-1">Email Admissions</p>
@@ -127,13 +137,13 @@ function HelpView({ onAsk }) {
         </div>
 
         {/* WhatsApp Card */}
-        <div className="rounded-2xl border border-gray-200 p-5 bg-gradient-to-br from-emerald-50/50 to-emerald-100/50">
+        <div className="rounded-2xl border border-gray-200 p-5 bg-gradient-to-br from-slate-50 to-slate-100/70">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#34E06E] flex items-center justify-center shrink-0 text-black font-extrabold">
-              WA
+            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shrink-0 text-white text-xl font-bold shadow-xs">
+              <RiWhatsappFill className="text-white" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800 leading-none mb-1">WhatsApp Live Support</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 leading-none mb-1">WhatsApp Live Support</p>
               <p className="text-sm font-bold text-gray-900 leading-none">{WHATSAPP_NUMBER}</p>
             </div>
           </div>
@@ -141,29 +151,26 @@ function HelpView({ onAsk }) {
             href="https://wa.me/41782273103"
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center rounded-xl bg-[#34E06E] hover:bg-[#28c85e] text-black text-sm font-extrabold py-2.5 transition-colors"
+            className="block w-full text-center rounded-xl bg-slate-950 hover:bg-black text-white text-sm font-extrabold py-2.5 transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
           >
-            Message on WhatsApp
+            <RiWhatsappFill className="w-4 h-4 text-white shrink-0" />
+            <span>Message on WhatsApp</span>
           </a>
         </div>
 
         {/* Ask the assistant */}
         <button
           onClick={() => onAsk?.(null)}
-          className="w-full flex items-center justify-between rounded-2xl border border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm px-5 py-4 transition-all cursor-pointer"
+          className="w-full flex items-center justify-between rounded-2xl border border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm px-5 py-4 transition-all cursor-pointer group"
         >
           <div className="flex items-center gap-3 text-left">
-            <svg className="w-5 h-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-5l-4 4v-4z" />
-            </svg>
+            <RiCustomerService2Fill className="w-5 h-5 text-gray-700 shrink-0" />
             <div>
               <p className="text-sm font-bold text-gray-900">Chat with the assistant</p>
               <p className="text-[11px] text-gray-400">Instant answers to curriculum questions</p>
             </div>
           </div>
-          <svg className="w-4 h-4 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
+          <RiArrowRightSLine className="w-4 h-4 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all shrink-0" />
         </button>
       </div>
     </div>
@@ -478,14 +485,9 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white transition-all shrink-0 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed bg-slate-900 hover:bg-black cursor-pointer"
           >
             {loading ? (
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
-                <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2Z" />
-              </svg>
+              <RiLoader4Line className="w-5 h-5 animate-spin text-white" />
             ) : (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-              </svg>
+              <RiSendPlaneFill className="w-4 h-4 text-white" />
             )}
           </button>
         </div>
@@ -566,29 +568,17 @@ export function ChatWidget() {
     {
       id: 'home',
       label: 'Home',
-      icon: (
-        <svg className="w-5 h-5" fill={view === 'home' ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={view === 'home' ? 0 : 2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      ),
+      icon: view === 'home' ? <RiHome5Fill className="w-5 h-5 text-gray-900" /> : <RiHome5Line className="w-5 h-5" />,
     },
     {
       id: 'chat',
       label: 'Messages',
-      icon: (
-        <svg className="w-5 h-5" fill={view === 'chat' ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={view === 'chat' ? 0 : 2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-5l-4 4v-4z" />
-        </svg>
-      ),
+      icon: view === 'chat' ? <RiMessage3Fill className="w-5 h-5 text-gray-900" /> : <RiMessage3Line className="w-5 h-5" />,
     },
     {
       id: 'help',
       label: 'Help',
-      icon: (
-        <svg className="w-5 h-5" fill={view === 'help' ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={view === 'help' ? 0 : 2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: view === 'help' ? <RiQuestionAnswerFill className="w-5 h-5 text-gray-900" /> : <RiQuestionLine className="w-5 h-5" />,
     },
   ]
 
@@ -614,9 +604,7 @@ export function ChatWidget() {
           aria-label="Open chat"
           className="relative w-14 h-14 rounded-full shadow-2xl flex items-center justify-center bg-slate-950 text-white hover:bg-black transition-colors cursor-pointer border border-white/20"
         >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-5l-4 4v-4z" />
-          </svg>
+          <RiCustomerService2Fill className="w-6 h-6 text-white" />
           {unread > 0 && (
             <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#34E06E] text-black text-[10px] font-black flex items-center justify-center shadow-xs">
               {unread}
@@ -662,13 +650,9 @@ export function ChatWidget() {
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
                 >
                   {widthIndex === WIDTH_SIZES.length - 1 ? (
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-                    </svg>
+                    <RiFullscreenExitLine className="w-4 h-4 text-gray-600" />
                   ) : (
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-                    </svg>
+                    <RiFullscreenLine className="w-4 h-4 text-gray-600" />
                   )}
                 </button>
 
@@ -678,9 +662,7 @@ export function ChatWidget() {
                     onClick={() => setView('home')}
                     className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
+                    <RiArrowLeftSLine className="w-5 h-5 text-gray-600" />
                   </button>
                 )}
 
@@ -689,9 +671,7 @@ export function ChatWidget() {
                   onClick={() => setOpen(false)}
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <RiCloseLine className="w-5 h-5 text-gray-600" />
                 </button>
               </div>
             </div>

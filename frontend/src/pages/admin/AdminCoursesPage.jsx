@@ -23,7 +23,9 @@ import {
   X,
   Sparkles,
   Calendar,
-  DollarSign
+  DollarSign,
+  FileText,
+  Link as LinkIcon
 } from 'lucide-react'
 import { api } from '@/lib/api'
 
@@ -317,7 +319,7 @@ export function AdminCoursesPage() {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[900px]">
+            <table className="w-full text-left border-collapse min-w-[1080px]">
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold uppercase tracking-wider text-slate-400 select-none">
                   <th className="px-6 py-4">Course &amp; Identifier</th>
@@ -325,6 +327,7 @@ export function AdminCoursesPage() {
                   <th className="px-5 py-4">Status</th>
                   <th className="px-5 py-4">Schedule &amp; Mode</th>
                   <th className="px-5 py-4">Tuition</th>
+                  <th className="px-5 py-4">Registration Form</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -436,6 +439,23 @@ export function AdminCoursesPage() {
                         ) : (
                           <span className="text-xs font-medium text-slate-400 italic">On request</span>
                         )}
+                      </td>
+
+                      {/* Registration Form Link */}
+                      <td className="px-5 py-4.5">
+                        <Link
+                          to={`/admin/courses/${course._id}/form`}
+                          title="Open the enrollment form linked to this overview page"
+                          className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border transition-colors ${
+                            course.hasCustomForm
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80 hover:bg-emerald-100'
+                              : 'bg-amber-50 text-amber-700 border-amber-200/80 hover:bg-amber-100'
+                          }`}
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                          <span>{course.hasCustomForm ? 'Custom Form' : 'Using Template'}</span>
+                          <LinkIcon className="w-3 h-3 opacity-60" />
+                        </Link>
                       </td>
 
                       {/* Actions */}

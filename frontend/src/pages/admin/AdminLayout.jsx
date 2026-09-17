@@ -23,7 +23,7 @@ function NavItem({ to, icon: Icon, children, end, badge }) {
       className={({ isActive }) =>
         `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
           isActive
-            ? 'bg-[#34E06E]/10 text-[#1c8b41] border border-[#34E06E]/30 shadow-xs'
+            ? 'bg-slate-900 text-white font-bold shadow-xs border border-slate-900'
             : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent'
         }`
       }
@@ -33,7 +33,7 @@ function NavItem({ to, icon: Icon, children, end, badge }) {
           <div className="flex items-center gap-3">
             <Icon
               className={`w-4 h-4 shrink-0 transition-colors ${
-                isActive ? 'text-[#1c8b41]' : 'text-slate-400 group-hover:text-slate-700'
+                isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-700'
               }`}
             />
             <span>{children}</span>
@@ -42,7 +42,7 @@ function NavItem({ to, icon: Icon, children, end, badge }) {
             <span
               className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                 isActive
-                  ? 'bg-[#34E06E]/20 text-[#1c8b41]'
+                  ? 'bg-white/20 text-white'
                   : 'bg-slate-100 text-slate-500 group-hover:text-slate-700'
               }`}
             >

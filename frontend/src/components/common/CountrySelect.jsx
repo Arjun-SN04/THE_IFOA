@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { ChevronDown, Search, X } from 'lucide-react'
+import { RiArrowDownSLine, RiSearchLine, RiCloseLine } from 'react-icons/ri'
 import { COUNTRIES, getCountryFlag } from './countries'
 
 export function CountrySelect({
@@ -68,7 +68,7 @@ export function CountrySelect({
             <span className="text-gray-400 font-normal">{value || placeholder}</span>
           )}
         </div>
-        <ChevronDown className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <RiArrowDownSLine className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Hidden input for HTML form validation if required */}
@@ -88,7 +88,7 @@ export function CountrySelect({
         <div className="absolute left-0 top-full mt-1.5 w-full min-w-[280px] max-h-80 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150">
           {/* Search Bar */}
           <div className="p-2.5 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
-            <Search className="w-4 h-4 text-gray-400 shrink-0" />
+            <RiSearchLine className="w-4 h-4 text-gray-400 shrink-0" />
             <input
               ref={searchInputRef}
               type="text"
@@ -103,7 +103,7 @@ export function CountrySelect({
                 onClick={() => setSearch('')}
                 className="p-1 text-gray-400 hover:text-rocket-dark"
               >
-                <X className="w-3.5 h-3.5" />
+                <RiCloseLine className="w-4 h-4" />
               </button>
             )}
           </div>

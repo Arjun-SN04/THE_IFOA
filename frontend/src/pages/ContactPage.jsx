@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  MapPin,
-  Mail,
-  Phone,
-  MessageSquare,
-  CheckCircle2,
-  ArrowRight,
-  Send,
-  Building,
-  User,
-  Plane
-} from 'lucide-react'
+  RiBuilding4Line,
+  RiUser3Line,
+  RiCheckboxCircleFill,
+  RiMailLine,
+  RiPhoneLine,
+  RiMapPin2Line,
+  RiSendPlaneFill
+} from 'react-icons/ri'
+import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
+import { MdOutlineMail } from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import { CustomSelect } from '@/components/ui/CustomSelect'
 import { usePageContent } from '@/hooks/usePageContent'
+import { Seo } from '@/components/common/Seo'
+import { graph, organizationSchema, localBusinessSchemas, breadcrumbSchema } from '@/lib/seo'
+import { api } from '@/lib/api'
 import flagSwitzerland from '@/assets/contact/flag-switzerland.png'
 import flagUsa from '@/assets/contact/flag-usa.png'
 import flagIndia from '@/assets/contact/flag-india.jpg'
@@ -43,7 +45,7 @@ const FALLBACK = {
   form: {
     eyebrow: 'SEND A MESSAGE',
     title: 'Start the conversation',
-    submitLabel: 'Send Message →',
+    submitLabel: 'Send Message',
     topics: [
       'Training my OCC / dispatch team',
       'Individual dispatcher certification',
@@ -68,20 +70,20 @@ const FALLBACK = {
         country: 'United States',
         address: '1616 Concierge Blvd, Suite 100, Daytona Beach, FL 32117, USA',
         phone: '+1 508 838 5880',
-        email: 'info-usa@theifoa.com'
+        email: 'info@theifoa.com'
       },
       {
         region: 'Asia',
         country: 'India',
         address: 'Innov8 Old Fort, 2nd Floor, Saket District Centre, New Delhi 110017, India',
         phone: '+91 98101 44034',
-        email: 'info-india@theifoa.com'
+        email: 'info@theifoa.com'
       }
     ]
   },
   newsletter: {
-    title: 'Prefer to just get the newsletter?',
-    desc: 'One email a month: aviation insight worth reading, plus Foxtrot Delta, free.'
+    title: 'Stay informed on operational developments',
+    desc: 'Occasional briefings on regulatory changes, training best practices, and industry analysis. No spam.'
   }
 }
 
@@ -92,22 +94,28 @@ export function ContactPage() {
     lastName: '',
     email: '',
     organization: '',
-    topic: '',
+    topic: c.form.topics[0] || 'Training my OCC / dispatch team',
     message: ''
   })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [newsletterSuccess, setNewsletterSuccess] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
     setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      await api.sendContact(formData)
       setSubmitted(true)
-    }, 700)
+    } catch (err) {
+      setError(err.message || 'Could not send your message. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleNewsletter = (e) => {
@@ -117,36 +125,49 @@ export function ContactPage() {
     setNewsletterEmail('')
   }
 
+  const cards = c.hero.cards
   const offices = c.offices.items
 
   return (
-    <div className="bg-white text-rocket-dark selection:bg-slate-900 selection:text-white" data-purpose="contact-page">
+    <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="contact-page">
+      <Seo
+        path="/contact"
+        title="Contact IFOA | Flight Dispatch Training Enquiries"
+        description="Contact IFOA's flight operations training team in Switzerland, the United States or India for course dates, eligibility and airline training programmes."
+        jsonLd={graph(
+          organizationSchema(),
+          localBusinessSchemas(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Contact', path: '/contact' }
+          ])
+        )}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[460px] md:min-h-[500px] flex flex-col items-center justify-center bg-[#020617] text-white pt-28 pb-16 overflow-hidden">
-        {/* Ambient Aviation Background */}
+        {/* Ambient Aviation Background Art */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
             src={c.hero.image?.url || bannerContactHero}
-            alt="IFOA Operations and Global Consultation"
-            className="w-full h-full object-cover object-center opacity-35 scale-105"
+            alt="IFOA Aviation Operations Contact"
+            className="w-full h-full object-cover object-center opacity-30 scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/90 via-[#020617]/75 to-[#020617]" />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 space-y-10">
-          <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight">
-              {c.hero.title}
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg text-slate-300 font-normal leading-relaxed">
-              {c.hero.subtitle}
-            </p>
-          </div>
+        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl mx-auto leading-tight">
+            {c.hero.title}
+          </h1>
 
-          {/* Fork Cards (Dark Frosted Glass Theme Matching Hero Background) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {c.hero.cards.map((card, idx) => {
-              const isAirline = idx === 0 || card.eyebrow?.toLowerCase().includes('airline')
+          <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
+            {c.hero.subtitle}
+          </p>
+
+          {/* Clean 2-Column Audience Direct Routing Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl pt-6">
+            {cards.map((card, idx) => {
+              const isAirline = idx === 0
               return (
                 <div
                   key={idx}
@@ -166,18 +187,18 @@ export function ContactPage() {
                     <div className="flex items-center justify-between">
                       {isAirline ? (
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-white border-b-2 border-[#34E06E] pb-0.5">
-                          <Building className="w-3.5 h-3.5 text-slate-300" />
+                          <RiBuilding4Line className="w-3.5 h-3.5 text-slate-300" />
                           <span>For Airlines</span>
                         </div>
                       ) : (
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b-2 border-[#34E06E] pb-0.5">
-                          <User className="w-3.5 h-3.5 text-[#34E06E]" />
+                          <RiUser3Line className="w-3.5 h-3.5 text-[#34E06E]" />
                           <span>For Individuals</span>
                         </div>
                       )}
 
                       <span className="text-[11px] text-slate-400 font-semibold tracking-wide uppercase font-mono">
-                        {isAirline ? 'Airlines & OCCs' : 'Career Pathway'}
+                        {card.eyebrow || (isAirline ? 'Airlines & OCCs' : 'Career Pathway')}
                       </span>
                     </div>
 
@@ -194,22 +215,22 @@ export function ContactPage() {
                       {isAirline ? (
                         <>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                             <span>Fleet-Customized</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                             <span>OCC Consulting</span>
                           </div>
                         </>
                       ) : (
                         <>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
+                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
                             <span>FAA &amp; EASA Path</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
+                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
                             <span>Direct Guidance</span>
                           </div>
                         </>
@@ -224,7 +245,7 @@ export function ContactPage() {
                         className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
                       >
                         <span>Corporate Training</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <HiArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     ) : (
                       <button
@@ -232,7 +253,7 @@ export function ContactPage() {
                         className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit shadow-md hover:shadow-[0_0_15px_rgba(52,224,110,0.4)]"
                       >
                         <span>Explore Training</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <HiArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     )}
                   </div>
@@ -261,8 +282,8 @@ export function ContactPage() {
               <div className="rounded-3xl bg-slate-50/70 border border-slate-200/90 p-7 sm:p-9 shadow-sm flex-1 flex flex-col justify-between">
                 {submitted ? (
                   <div className="text-center py-12 space-y-4 animate-in fade-in duration-300 my-auto">
-                    <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center mx-auto">
-                      <CheckCircle2 className="w-8 h-8" />
+                    <div className="w-16 h-16 rounded-full bg-slate-100 text-[#34E06E] flex items-center justify-center mx-auto">
+                      <RiCheckboxCircleFill className="w-10 h-10" />
                     </div>
                     <h3 className="text-2xl font-bold text-rocket-dark">
                       Message Transmitted
@@ -359,12 +380,23 @@ export function ContactPage() {
                       />
                     </div>
 
+                    {error ? (
+                      <p className="text-xs font-semibold text-red-600 text-center">{error}</p>
+                    ) : null}
+
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-widest py-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] cursor-pointer shrink-0"
+                      className="w-full bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-widest py-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] cursor-pointer shrink-0 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
                     >
-                      {loading ? 'Transmitting...' : c.form.submitLabel}
+                      <span>
+                        {loading
+                          ? 'Transmitting...'
+                          : (c.form.submitLabel || 'Send Message').replace(/[→\->]/g, '').trim()}
+                      </span>
+                      {!loading && (
+                        <RiSendPlaneFill className="w-4 h-4 text-slate-950 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                      )}
                     </button>
                   </form>
                 )}
@@ -464,7 +496,7 @@ export function ContactPage() {
 
             {newsletterSuccess ? (
               <div className="inline-flex items-center gap-2 text-[#34E06E] text-xs font-mono font-bold">
-                <CheckCircle2 className="w-4 h-4" />
+                <RiCheckboxCircleFill className="w-4 h-4" />
                 <span>Subscribed! Check your inbox for confirmation.</span>
               </div>
             ) : (

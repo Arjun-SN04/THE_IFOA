@@ -1,7 +1,8 @@
-import { pdf } from '@react-pdf/renderer';
-import { EnrollmentPdfDocument } from './EnrollmentPdfDocument.jsx';
-
 export async function getEnrollmentPdfBlob(submission) {
+  const [{ pdf }, { EnrollmentPdfDocument }] = await Promise.all([
+    import('@react-pdf/renderer'),
+    import('./EnrollmentPdfDocument.jsx')
+  ]);
   return pdf(<EnrollmentPdfDocument submission={submission} />).toBlob();
 }
 

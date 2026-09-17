@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Star, Clock, ArrowRight } from 'lucide-react'
+import { RiStarFill } from 'react-icons/ri'
+import { TbClockHour4 } from 'react-icons/tb'
+import { HiArrowUpRight } from 'react-icons/hi2'
 
 import bannerDispatcher from '@/assets/courses/course_banner_dispatcher_3d.jpg'
 import bannerGroundOps from '@/assets/courses/course_banner_ground_ops_3d.jpg'
@@ -67,7 +69,7 @@ export function CourseCard({ course, preview = false }) {
             {/* Clean Duration Tag */}
             {v.duration && (
               <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full max-w-full">
-                <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span className="truncate max-w-[160px] sm:max-w-[200px]">{v.duration}</span>
               </span>
             )}
@@ -80,17 +82,6 @@ export function CourseCard({ course, preview = false }) {
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-3">
             {v.blurb}
           </p>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 pt-0.5">
-            <div className="flex items-center text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            <span className="text-slate-900 text-xs font-bold ml-1">{v.rating}</span>
-            <span className="text-slate-400 text-xs font-normal">({v.reviews})</span>
-          </div>
         </div>
 
         <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
@@ -98,7 +89,7 @@ export function CourseCard({ course, preview = false }) {
             <div className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 transition-colors py-1">
               <span>View Course Details</span>
               <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
-                <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-white transition-all" />
+                <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
             </div>
           ) : (
@@ -108,7 +99,7 @@ export function CourseCard({ course, preview = false }) {
             >
               <span>View Course Details</span>
               <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
-                <ArrowRight className="w-4 h-4 text-slate-700 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
             </Link>
           )}

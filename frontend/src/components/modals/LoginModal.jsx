@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Lock, Mail, UserCheck, ShieldCheck, KeyRound, ArrowRight } from 'lucide-react'
+import { RiLockPasswordFill, RiArrowRightLine } from 'react-icons/ri'
 import ifoaLogo from '@/assets/brand/ifoa-logoweb.png'
 
 export function LoginModal({ isOpen, onClose }) {
@@ -25,7 +25,7 @@ export function LoginModal({ isOpen, onClose }) {
       <DialogContent className="sm:max-w-[460px] bg-white border border-black/10 p-0 overflow-hidden rounded-2xl shadow-2xl">
         <div className="bg-rocket-dark p-6 text-white text-center relative flex flex-col items-center">
           <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-3">
-            <Lock className="w-6 h-6 text-rocket-lime" />
+            <RiLockPasswordFill className="w-6 h-6 text-rocket-lime" />
           </div>
           <DialogTitle className="text-2xl font-bold font-display text-white">
             IFOA Portal Access
@@ -92,7 +92,7 @@ export function LoginModal({ isOpen, onClose }) {
                     type="submit"
                     className="w-full bg-rocket-dark text-white hover:bg-rocket-lime hover:text-black font-bold rounded-full py-3 transition-all flex items-center justify-center gap-2 uppercase tracking-wider text-xs mt-2"
                   >
-                    Log In <ArrowRight className="w-3.5 h-3.5" />
+                    Log In <RiArrowRightLine className="w-4 h-4" />
                   </Button>
                 </form>
 

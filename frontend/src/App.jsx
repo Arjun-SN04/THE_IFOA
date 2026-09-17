@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'r
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
 import { HomePage } from './pages/HomePage'
+import { NotFoundPage } from './pages/NotFoundPage'
 import { AboutPage } from './pages/AboutPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { EventsPage } from './pages/EventsPage'
@@ -10,6 +11,7 @@ import { ContactPage } from './pages/ContactPage'
 import { AgentForServicePage } from './pages/AgentForServicePage'
 import { CourseDetailPage } from './pages/CourseDetailPage'
 import { CourseEnrollmentPage } from './pages/CourseEnrollmentPage'
+import { FoxtrotDeltaPage } from './pages/FoxtrotDeltaPage'
 import { LoginModal } from './components/modals/LoginModal'
 import { RouteTitle } from './components/common/RouteTitle'
 import { ChatWidget } from './components/common/ChatWidget'
@@ -26,7 +28,7 @@ import { AdminFormBuilderPage } from './pages/admin/AdminFormBuilderPage'
 import { AdminPagesPage } from './pages/admin/AdminPagesPage'
 import { AdminPageEditorPage } from './pages/admin/AdminPageEditorPage'
 import { SmoothScroll } from './components/common/SmoothScroll'
-import { Loader2 } from 'lucide-react'
+import { RiLoader4Line } from 'react-icons/ri'
 
 // ScrollToTop helper on route change
 function ScrollToTop() {
@@ -53,7 +55,7 @@ function RequireAdmin({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-rocket-dark">
-        <Loader2 className="w-8 h-8 animate-spin text-rocket-lime" />
+        <RiLoader4Line className="w-8 h-8 animate-spin text-[#34E06E]" />
       </div>
     )
   }
@@ -77,6 +79,8 @@ function PublicSite() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/events-courses" element={<Navigate to="/events" replace />} />
+          <Route path="/foxtrot-delta" element={<FoxtrotDeltaPage />} />
+          <Route path="/magazine" element={<Navigate to="/foxtrot-delta" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/courses/:slug" element={<CourseDetailPage />} />
@@ -87,7 +91,7 @@ function PublicSite() {
           <Route path="/training" element={<Navigate to="/services" replace />} />
           <Route path="/compliance" element={<ExternalRedirect to="https://agent.theifoa.com/" />} />
           <Route path="/agent-for-service" element={<ExternalRedirect to="https://agent.theifoa.com/" />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
 
@@ -100,9 +104,12 @@ function PublicSite() {
   )
 }
 
-function App() {
+// Router-agnostic app tree. The browser entry wraps this in BrowserRouter via
+// <App>; scripts/prerender.mjs wraps the same tree in StaticRouter so every
+// route can be rendered to static HTML at build time.
+export function AppRoutes() {
   return (
-    <Router>
+    <>
       <SmoothScroll>
         <ScrollToTop />
         <RouteTitle />
@@ -145,6 +152,14 @@ function App() {
           </Routes>
         </AdminAuthProvider>
       </SmoothScroll>
+    </>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <AppRoutes />
     </Router>
   )
 }

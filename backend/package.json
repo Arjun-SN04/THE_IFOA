@@ -11,7 +11,8 @@
     "seed:courses": "node scripts/seedCourses.js",
     "seed:catalog": "node scripts/seedCatalog.js",
     "seed:form-template": "node scripts/seedFormTemplate.js",
-    "seed:course-forms": "node scripts/seedCourseForms.js"
+    "seed:course-forms": "node scripts/seedCourseForms.js",
+    "extract:inbox": "node scripts/extractReviewsFromInbox.js"
   },
   "keywords": [],
   "author": "",
@@ -26,9 +27,12 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.6.2",
+    "imapflow": "^2.0.5",
     "jsonwebtoken": "^9.0.3",
+    "mailparser": "^3.9.28",
     "mongoose": "^9.9.3",
     "multer": "^2.2.0",
+    "nodemailer": "^10.0.10",
     "slugify": "^1.6.9"
   },
   "devDependencies": {

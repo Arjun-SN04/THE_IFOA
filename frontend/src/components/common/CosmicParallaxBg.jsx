@@ -38,20 +38,20 @@ export const CosmicParallaxBg = ({
 
     // Initialize lightweight starfield (optimized density for 60fps+ scrolling)
     const initStars = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       const rect = container.getBoundingClientRect();
       width = rect.width || window.innerWidth;
       height = rect.height || window.innerHeight;
 
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
 
       const areaRatio = (width * height) / (1920 * 1080);
-      const smallCount = Math.max(120, Math.floor(250 * areaRatio));
-      const mediumCount = Math.max(35, Math.floor(70 * areaRatio));
-      const bigCount = Math.max(15, Math.floor(30 * areaRatio));
+      const smallCount = Math.max(70, Math.floor(160 * areaRatio));
+      const mediumCount = Math.max(20, Math.floor(45 * areaRatio));
+      const bigCount = Math.max(10, Math.floor(20 * areaRatio));
 
       smallStars = Array.from({ length: smallCount }, () => ({
         x: Math.random() * width,
@@ -76,7 +76,7 @@ export const CosmicParallaxBg = ({
       const rect = container.getBoundingClientRect();
       const newWidth = rect.width || window.innerWidth;
       const newHeight = rect.height || window.innerHeight;
-      if (Math.abs(newWidth - width) <= 2 && Math.abs(newHeight - height) <= 150) return;
+      if (Math.abs(newWidth - width) <= 4 && Math.abs(newHeight - height) <= 150) return;
 
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
       resizeRaf = requestAnimationFrame(() => {
@@ -122,7 +122,7 @@ export const CosmicParallaxBg = ({
       const smallOffsetY = mouseY * 14;
       for (let i = 0; i < smallStars.length; i++) {
         const star = smallStars[i];
-        star.y -= 0.6;
+        star.y -= 0.5;
         if (star.y < 0) {
           star.y = height;
           star.x = Math.random() * width;
@@ -135,11 +135,11 @@ export const CosmicParallaxBg = ({
       }
 
       // Layer 2: Medium stars
-      const medOffsetX = mouseX * 30;
-      const medOffsetY = mouseY * 30;
+      const medOffsetX = mouseX * 26;
+      const medOffsetY = mouseY * 26;
       for (let i = 0; i < mediumStars.length; i++) {
         const star = mediumStars[i];
-        star.y -= 0.3;
+        star.y -= 0.25;
         if (star.y < 0) {
           star.y = height;
           star.x = Math.random() * width;
@@ -152,11 +152,11 @@ export const CosmicParallaxBg = ({
       }
 
       // Layer 3: Big stars
-      const bigOffsetX = mouseX * 55;
-      const bigOffsetY = mouseY * 55;
+      const bigOffsetX = mouseX * 45;
+      const bigOffsetY = mouseY * 45;
       for (let i = 0; i < bigStars.length; i++) {
         const star = bigStars[i];
-        star.y -= 0.18;
+        star.y -= 0.15;
         if (star.y < 0) {
           star.y = height;
           star.x = Math.random() * width;
@@ -178,9 +178,12 @@ export const CosmicParallaxBg = ({
         isVisibleRef.current = isVisible;
         if (isVisible && !animationFrameId) {
           animationFrameId = requestAnimationFrame(render);
+        } else if (!isVisible && animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
         }
       },
-      { threshold: 0.05 }
+      { threshold: 0.01 }
     );
 
     observer.observe(container);
@@ -199,10 +202,11 @@ export const CosmicParallaxBg = ({
   return (
     <div
       ref={containerRef}
+      style={{ contain: 'paint layout', willChange: 'transform' }}
       className={
         children
-          ? `relative w-full h-full overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_#0f172a_0%,_#020617_100%)] ${className}`
-          : `absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_#0f172a_0%,_#020617_100%)] ${className}`
+          ? `relative w-full h-full overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_#0f172a_0%,_#020617_100%)] transform-gpu ${className}`
+          : `absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_#0f172a_0%,_#020617_100%)] transform-gpu ${className}`
       }
     >
       {/* 60fps+ Space Canvas */}

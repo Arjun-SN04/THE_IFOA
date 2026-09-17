@@ -549,7 +549,7 @@ export function EnrollmentPdfDocument({ submission }) {
           fixed
           style={{ position: 'absolute', bottom: 16, right: 28, fontSize: 7.5, color: '#555555' }}
         >
-          info@theIFOA.com | +41 78 227 3103
+          info@theifoa.com | +41 78 227 3103
         </Text>
       </Page>
     </Document>

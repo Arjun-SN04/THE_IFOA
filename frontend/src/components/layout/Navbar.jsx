@@ -1,13 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, ChevronRight, ChevronDown, LayoutDashboard, BookOpen, Users, LogOut } from 'lucide-react'
+import {
+  RiMenu4Fill,
+  RiCloseLine,
+  RiArrowRightSLine,
+  RiArrowDownSLine,
+  RiDashboard3Line,
+  RiBookOpenLine,
+  RiGroupLine,
+  RiLogoutBoxRLine
+} from 'react-icons/ri'
 import ifoaLogo from '@/assets/brand/ifoa-logoweb.png'
 import { useAdminAuth } from '@/context/AdminAuthContext'
 
 const ADMIN_LINKS = [
-  { name: 'Admin Dashboard', path: '/admin/courses', icon: LayoutDashboard },
-  { name: 'Courses', path: '/admin/courses', icon: BookOpen },
-  { name: 'Registrations', path: '/admin/registrations', icon: Users }
+  { name: 'Admin Dashboard', path: '/admin/courses', icon: RiDashboard3Line },
+  { name: 'Courses', path: '/admin/courses', icon: RiBookOpenLine },
+  { name: 'Registrations', path: '/admin/registrations', icon: RiGroupLine }
 ]
 
 function initialsOf(name = '', email = '') {
@@ -44,7 +53,7 @@ function AdminMenu({ admin, onLogout }) {
         <span className="hidden sm:block text-xs font-semibold text-white/90 max-w-[120px] truncate">
           {admin.name || admin.email}
         </span>
-        <ChevronDown className={`w-4 h-4 text-white/60 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <RiArrowDownSLine className={`w-4 h-4 text-white/60 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
@@ -84,7 +93,7 @@ function AdminMenu({ admin, onLogout }) {
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
               role="menuitem"
             >
-              <LogOut className="w-4 h-4" /> Sign out
+              <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
             </button>
           </div>
         </div>
@@ -131,6 +140,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
     { name: 'Events', path: '/events' },
+    { name: 'Foxtrot Delta', path: '/foxtrot-delta' },
     { name: 'Agent for Service', path: 'https://agent.theifoa.com/', external: true },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
@@ -140,6 +150,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
     if (path === '/' && location.pathname === '/') return true
     if (path === '/services' && (location.pathname.startsWith('/services') || location.pathname.startsWith('/courses'))) return true
     if (path === '/events' && (location.pathname.startsWith('/events') || location.pathname.startsWith('/events-courses'))) return true
+    if (path === '/foxtrot-delta' && (location.pathname.startsWith('/foxtrot-delta') || location.pathname.startsWith('/magazine'))) return true
     if (path !== '/' && !path.startsWith('http') && location.pathname.startsWith(path)) return true
     return false
   }
@@ -151,10 +162,10 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
 
   return (
     <header
-      className={`${isStatic ? 'relative' : 'fixed'} top-0 left-0 w-full z-50 text-white transition-all duration-300 ${
+      className={`${isStatic ? 'relative' : 'fixed'} top-0 left-0 w-full z-50 text-white transform-gpu will-change-transform transition-[background-color,border-color,box-shadow] duration-200 ${
         isScrolled || mobileMenuOpen
-          ? 'bg-[#020617]/95 backdrop-blur-xl border-b border-white/10 shadow-2xl'
-          : 'bg-[#020617]/85 backdrop-blur-md border-b border-white/10 shadow-lg'
+          ? 'bg-[#020617]/95 backdrop-blur-md border-b border-white/10 shadow-xl'
+          : 'bg-[#020617]/85 backdrop-blur-md border-b border-white/10 shadow-sm'
       }`}
       data-purpose="sticky-navigation"
     >
@@ -228,7 +239,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
               aria-label="Toggle Menu"
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+              {mobileMenuOpen ? <RiCloseLine className="w-6 h-6 text-white" /> : <RiMenu4Fill className="w-6 h-6 text-white" />}
             </button>
           </div>
         </div>
@@ -251,7 +262,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                     className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
                   >
                     <span>{link.name}</span>
-                    <ChevronRight className="w-4 h-4 opacity-50" />
+                    <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
                   </a>
                 )
               }
@@ -267,7 +278,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                   }`}
                 >
                   <span>{link.name}</span>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
+                  <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
                 </Link>
               )
             })}
@@ -292,7 +303,7 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-white/10 transition-colors"
                 >
-                  <LogOut className="w-4 h-4" /> Sign out
+                  <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
                 </button>
               </div>
             ) : (
