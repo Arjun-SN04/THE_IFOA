@@ -20,9 +20,9 @@ const courses = [
   {
     slug: 'flight-dispatcher-initial-certification',
     authority: "EASA / FAA Part 65 Standards",
-    format: "Hybrid Online + In-Person Simulator Sessions",
+    format: "Hybrid: 2 Weeks Online + 3 Weeks Onsite Sønderborg (Denmark)",
     careerPath: "Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist",
-    intakeLabel: "",
+    intakeLabel: "Next Intake: 4th Jan 2027",
     title: 'Flight Dispatcher Initial Certification',
     refCode: 'FD-INITIAL',
     category: 'dispatch',
@@ -30,31 +30,42 @@ const courses = [
     order: 10,
     summary: 'Complete licensing curriculum for aspiring airline flight dispatchers.',
     heroImage: { url: '/course-images/Flight-Dispatch-Webpage-Small.jpg', key: '', alt: 'Flight dispatch training' },
-    schedule: { mode: 'Hybrid', startDate: new Date('2026-04-14T09:00:00Z'), timeText: 'Intensive Theory + Live OCC Sim' },
-    duration: '12 Weeks',
-    location: 'Hybrid Online + In-Person Simulator Sessions',
-    price: { amount: null, currency: 'EUR', note: 'Contact admissions for current intake pricing.' },
+    schedule: {
+      mode: 'Hybrid',
+      startDate: new Date('2027-01-04T09:00:00Z'),
+      endDate: new Date('2027-02-05T17:00:00Z'),
+      timeText: '2 Weeks Online + 3 Weeks Onsite Sønderborg (Denmark)'
+    },
+    duration: '5 Weeks',
+    location: 'Online 2 Weeks + 3 Weeks Onsite Sønderborg (Denmark)',
+    price: { amount: 3500, currency: 'EUR', note: 'Inclusive of official materials and exam certification' },
     whatYouWillLearn: {
       intro:
-        'The premier worldwide certification curriculum covering Meteorology, Flight Planning, Air Law, Mass & Balance, Aircraft Systems, and real-time live OCC flight monitoring.',
+        'Built for Operational Control: Develop core competency across flight planning, dispatch, operational risk assessment, and collaborative decision-making.',
       points: [
-        'To contribute to the safety and efficiency of flight operations',
-        'To enhance situational awareness and collaborative decision-making',
-        'To assess and anticipate operational situation risks',
-        'To plan, file and monitor flights to ICAO, EASA and FAA standards'
+        'Plan and prepare flights',
+        'Assess operational risks and constraints',
+        'Apply weather, fuel, routing and alternate requirements',
+        'Monitor flights and anticipate disruptions',
+        'Support safe operational decision-making',
+        'Apply EASA, ICAO and operator procedures'
       ]
     },
     delivery: {
-      intro: 'Hybrid delivery: online theory modules combined with in-person live OCC simulator sessions.',
+      intro: 'Hybrid delivery: 2 weeks online theory modules combined with 3 weeks in-person simulator and flight operations practicum in Sønderborg (Denmark).',
       items: [
         { label: 'School', title: 'IFOA', description: 'Delivered by the International Flight Operations Academy' },
-        { label: 'Format', title: 'Hybrid', description: '12 weeks online theory plus in-person simulator practicum' }
+        { label: 'Format', title: 'Hybrid (Online + Onsite)', description: '2 Weeks Online Theory + 3 Weeks Onsite Sønderborg (Denmark)' }
       ]
     },
-    trainingStandards: { intro: `${ICAO_INTRO} It meets EASA Part ORO GEN 110(c) and FAA Part 65 requirements.`, logos: [] },
+    trainingStandards: {
+      intro:
+        'A 5-week Flight Dispatcher programme aligned with EASA Air Operations requirements and ICAO Flight Operations Officer / Flight Dispatcher competency standards.',
+      logos: []
+    },
     whoShouldAttend: {
       intro: 'This programme is designed for individuals beginning a career in airline operational control. Ideal for:',
-      points: ['Aspiring flight dispatchers', 'CPL Pilot students', 'Airline operations personnel', 'Air Traffic Controllers', 'Aviation enthusiasts'],
+      points: ['Ab initio', 'Aspiring flight dispatchers', 'Air Traffic Controllers', 'Airline operations personnel', 'Aviation enthusiasts'],
       outro:
         'Target roles on completion: Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist.'
     },

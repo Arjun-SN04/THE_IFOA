@@ -8,12 +8,14 @@ import {
   RiCompass3Line,
   RiStarFill,
   RiUser3Line,
-  RiBuilding4Line,
+  RiFlightTakeoffLine,
   RiCheckboxCircleFill,
   RiArrowLeftSLine,
   RiArrowRightSLine,
   RiArrowRightLine,
-  RiSendPlaneFill
+  RiSendPlaneFill,
+  RiChatQuoteLine,
+  RiApps2Line
 } from 'react-icons/ri'
 import {
   PiAirplaneTiltFill,
@@ -32,6 +34,7 @@ import {
   HiSparkles
 } from 'react-icons/hi2'
 
+import { usePageContent } from '@/hooks/usePageContent'
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import hero3dMockup from '@/assets/home/hero-3d-mockup.webp'
 import hero3dMockupPng from '@/assets/home/hero-3d-mockup.png'
@@ -49,8 +52,8 @@ import imgTeamTraining from '@/assets/profile_media/dhl-austria-team-training.jp
 import imgEnacCohort from '@/assets/profile_media/enac-training-cohort.jpg'
 
 // Course Book Package 3D Banners
-import courseBannerDispatcher3D from '@/assets/courses/course_banner_dispatcher_3d.jpg'
-import courseBannerGroundOps3D from '@/assets/courses/course_banner_ground_ops_3d.jpg'
+import courseBannerDispatcher3D from '@/assets/courses/part65-hero.png'
+import courseBannerGroundOps3D from '@/assets/courses/easa-hero.png'
 import imgFlightDispatch from '@/assets/common/Flight-Dispatch-Webpage-Small.jpg'
 import imgGroundOps from '@/assets/common/aviation-ground-operations.jpg'
 import imgTrainTrainer from '@/assets/common/Train-the-trainer.jpg'
@@ -80,6 +83,7 @@ import cardAzerbaijan from '@/assets/testimonials/testimonial-card-6.png'
 import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
 import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
 import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
+import logoDgca from '@/assets/course/standards-logos/logo-dgca.png'
 
 // Strategic Partner Logos
 import logoClick from '@/assets/partners/Click-Logo-150.png'
@@ -160,8 +164,165 @@ for (const item of imageData) {
   }
 }
 
+// Content the page ships with; editable at /admin/pages/home.
+const FALLBACK = {
+  hero: {
+    eyebrow: 'International Flight Operations Academy',
+    title: 'Trained for the moment',
+    titleHighlight: 'nothing goes to plan.',
+    subtitle:
+      'IFOA prepares flight dispatchers and OCC teams for the decisions that matter at 3am not just the ones covered on the exam.',
+    primaryLabel: 'Explore Programs',
+    secondaryLabel: 'Our Services',
+    stats: [
+      { value: '500+', label: 'PROFESSIONALS TRAINED ANNUALLY' },
+      { value: '70+', label: 'AVIATION ORGANIZATIONS' },
+      { value: 'FAA', label: 'PART 65 APPROVED TRAINING' },
+      { value: 'Global', label: 'OPERATIONAL DELIVERY' }
+    ]
+  },
+  featuredCourses: {
+    eyebrow: 'Professional Aviation Training',
+    title: 'Industry-led training for aviation professionals.',
+    intro:
+      'Gain the knowledge, practical skills, and operational expertise required to perform with confidence in today’s aviation environment. From initial certification to advanced and recurrent training, our programs are built around real operational requirements.',
+    viewAllLabel: 'View all courses',
+    cards: [
+      {
+        tag: 'FAA Part 65 Certification',
+        duration: '12 Weeks Hybrid',
+        title: 'Part 65 Commercial Flight Dispatcher License Course',
+        desc: 'Comprehensive FAA Part 65 & EASA curriculum with live OCC flight simulations and guaranteed regulatory exam preparation.',
+        ctaLabel: 'View Course Details'
+      },
+      {
+        tag: 'IATA ISAGO / EASA',
+        duration: '5 Weeks Station Track',
+        title: 'Ground Operations & Ramp Safety Specialist Course',
+        desc: 'Master airside operations, turnaround supervision, dangerous goods regulations, and ground handling collision avoidance.',
+        ctaLabel: 'View Course Details'
+      }
+    ]
+  },
+  trustRating: {
+    eyebrow: 'Verified Post-Training Feedback',
+    title: 'Rated by the People We Trained',
+    desc:
+      "Every course closes with a post-training survey sent straight to our OCC teams and dispatchers. Across 458 completed surveys from 70+ aviation organizations, our training has been rated an average of 4.7 out of 5, with 98% saying they'd recommend IFOA.",
+    learnMoreLabel: 'Learn more',
+    ratingValue: '4.7',
+    ratingSuffix: '/5',
+    reviewCountLabel: '(458 verified post-training surveys)',
+    badgeLabel: '98% Recommendation Rate'
+  },
+  pathways: {
+    eyebrow: 'Global Training Pathways',
+    title: 'Certification Pathways Built for Operations',
+    seeMoreLabel: 'See More',
+    cards: [
+      {
+        category: 'Initial Training',
+        title: 'EASA Standards',
+        desc: 'Flight Dispatch Initial Training aligned with ICAO Doc 10106 and EASA ORO.GEN.110 requirements.',
+        hours: '200 Hours · Hybrid',
+        linkText: 'Explore EASA Training'
+      },
+      {
+        category: 'FAA Approved',
+        title: 'FAA Part 65',
+        desc: 'FAA-approved Aircraft Dispatcher certification training delivered through IFOA USA.',
+        hours: '200 Hours · USA',
+        linkText: 'Explore FAA Training'
+      },
+      {
+        category: 'Multiple Certification',
+        title: 'EASA + FAA',
+        desc: 'Combined pathway integrating FAA Part 65 certification with European operational knowledge.',
+        hours: '200 Hours · Hybrid',
+        linkText: 'Explore Combined Training'
+      },
+      {
+        category: 'Maintain Competency',
+        title: 'Recurrent Training',
+        desc: 'Customized recurrent programs based on the operator, regulatory framework, and fleet.',
+        hours: 'Carrier-Customized',
+        linkText: 'Recurrent Programs'
+      },
+      {
+        category: 'Professional Development',
+        title: 'Advanced Training',
+        desc: 'Scenario-driven development for experienced dispatchers and OCC professionals.',
+        hours: 'Scenario-Driven',
+        linkText: 'Advanced Programs'
+      },
+      {
+        category: 'Operational Teams',
+        title: 'Specialist Training',
+        desc: 'Crew Control, Ground Operations, Dangerous Goods and Train-the-Trainer programs.',
+        hours: 'CBTA Modular Tracks',
+        linkText: 'All Specialist Training'
+      }
+    ]
+  },
+  network: {
+    eyebrow: 'Global Airline Network',
+    title: 'Training Professionals for the Global Aviation Industry',
+    intro:
+      'Our training equips aviation professionals with the skills and expertise to pursue careers across commercial, cargo, and business aviation worldwide.'
+  },
+  audience: {
+    eyebrow: 'Two Different Needs',
+    title: 'Built for careers. Built for operations.',
+    intro: 'Individuals and aviation organizations should not be forced through the same customer journey.',
+    cards: [
+      {
+        eyebrow: 'For Individuals',
+        trackBadge: 'Career Pathway',
+        title: 'Become Ready for the Modern OCC',
+        desc:
+          'Gain the operational knowledge and practical competencies needed to perform confidently in a fast-paced airline Operations Control Centre.',
+        bullet1: 'FAA Part 65 & EASA',
+        bullet2: 'Scenario-Based Drills',
+        ctaLabel: 'Explore Training'
+      },
+      {
+        eyebrow: 'For Airlines',
+        trackBadge: 'Airlines & OCCs',
+        title: 'Training Built Around Your Operations',
+        desc:
+          'Customized initial, recurrent, and advanced training designed around your fleet, manuals, procedures, and operational environment.',
+        bullet1: 'Customized Fleet Training',
+        bullet2: 'OCC Consulting',
+        ctaLabel: 'Corporate Training'
+      }
+    ]
+  },
+  testimonialsSection: {
+    eyebrow: 'Verified Industry Feedback',
+    title: 'Stories from Those Who Know Us Best',
+    intro:
+      'Operational expertise, not generic aviation education. Real-world feedback from flight dispatchers, OCC managers, and airline training leaders.',
+    visualTabLabel: 'Airline Showcase',
+    executiveTabLabel: 'Executive Statements',
+    allTabLabel: 'All Feedback'
+  },
+  framework: {
+    eyebrow: 'Training Framework',
+    title: 'Built on global aviation standards. Designed for real operations.',
+    desc:
+      'Our training draws from ICAO, FAA, and EASA frameworks to deliver internationally relevant knowledge, practical operational skills, and scenario-based learning for today’s aviation professionals.'
+  },
+  finalCta: {
+    eyebrow: 'OPERATIONAL EXCELLENCE',
+    title: 'Train for the operation. Not only for the exam.',
+    desc: 'Explore individual programs or discuss a customized solution for your organization.',
+    ctaLabel: 'Contact IFOA'
+  }
+}
+
 export function HomePage() {
   const navigate = useNavigate()
+  const { c } = usePageContent('home', FALLBACK)
   const [activePage, setActivePage] = useState(0)
 
   const strategicPartners = [
@@ -375,56 +536,7 @@ export function HomePage() {
     window.scrollTo(0, 0)
   }, [])
 
-  const trainingPathways = [
-    {
-      category: 'Initial Training',
-      title: 'EASA Standards',
-      desc: 'Flight Dispatch Initial Training aligned with ICAO Doc 10106 and EASA ORO.GEN.110 requirements.',
-      hours: '200 Hours · Hybrid',
-      linkText: 'Explore EASA Training',
-      link: '/events-courses'
-    },
-    {
-      category: 'FAA Approved',
-      title: 'FAA Part 65',
-      desc: 'FAA-approved Aircraft Dispatcher certification training delivered through IFOA USA.',
-      hours: '200 Hours · USA',
-      linkText: 'Explore FAA Training',
-      link: '/events-courses'
-    },
-    {
-      category: 'Multiple Certification',
-      title: 'EASA + FAA',
-      desc: 'Combined pathway integrating FAA Part 65 certification with European operational knowledge.',
-      hours: '200 Hours · Hybrid',
-      linkText: 'Explore Combined Training',
-      link: '/events-courses'
-    },
-    {
-      category: 'Maintain Competency',
-      title: 'Recurrent Training',
-      desc: 'Customized recurrent programs based on the operator, regulatory framework, and fleet.',
-      hours: 'Carrier-Customized',
-      linkText: 'Recurrent Programs',
-      link: '/events-courses'
-    },
-    {
-      category: 'Professional Development',
-      title: 'Advanced Training',
-      desc: 'Scenario-driven development for experienced dispatchers and OCC professionals.',
-      hours: 'Scenario-Driven',
-      linkText: 'Advanced Programs',
-      link: '/events-courses'
-    },
-    {
-      category: 'Operational Teams',
-      title: 'Specialist Training',
-      desc: 'Crew Control, Ground Operations, Dangerous Goods and Train-the-Trainer programs.',
-      hours: 'CBTA Modular Tracks',
-      linkText: 'All Specialist Training',
-      link: '/events-courses'
-    }
-  ]
+  const trainingPathways = c.pathways.cards.map((card) => ({ ...card, link: '/events-courses' }))
 
   const [pathwayIndex, setPathwayIndex] = useState(0)
   const [cardsPerView, setCardsPerView] = useState(3)
@@ -519,20 +631,20 @@ export function HomePage() {
               <div className="lg:col-span-7 space-y-3 sm:space-y-4 lg:space-y-3.5 xl:space-y-5 text-left">
                 {/* Eyebrow Label with Green Underline */}
                 <div className="inline-flex items-center pb-1 border-b border-white text-white text-[11px] sm:text-xs font-mono font-medium tracking-widest uppercase w-fit">
-                  <span>International Flight Operations Academy</span>
+                  <span>{c.hero.eyebrow}</span>
                 </div>
 
                 {/* Main Headline & Subtitle */}
                 <div className="space-y-3 sm:space-y-3.5 max-w-2xl">
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold tracking-tight text-white leading-[1.08]">
-                    Trained for the moment <br className="hidden sm:inline" />
+                    {c.hero.title} <br className="hidden sm:inline" />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-slate-300">
-                      nothing goes to plan.
+                      {c.hero.titleHighlight}
                     </span>
                   </h1>
 
                   <p className="text-slate-300 text-xs sm:text-sm md:text-base lg:text-sm xl:text-base leading-relaxed max-w-xl font-normal">
-                    IFOA prepares flight dispatchers and OCC teams for the decisions that matter at 3am not just the ones covered on the exam.
+                    {c.hero.subtitle}
                   </p>
 
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
@@ -540,13 +652,13 @@ export function HomePage() {
                       onClick={() => navigate('/events-courses')}
                       className="liquid-btn group gap-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all shadow-xl cursor-pointer"
                     >
-                      <span className="leading-none font-bold">Explore Programs</span>
+                      <span className="leading-none font-bold">{c.hero.primaryLabel}</span>
                     </button>
                     <button
                       onClick={() => navigate('/services')}
                       className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-white/20 hover:border-white/40 hover:bg-white/10 text-white text-xs font-mono uppercase tracking-wider transition-all cursor-pointer backdrop-blur-xs group"
                     >
-                      <span>Our Services</span>
+                      <span>{c.hero.secondaryLabel}</span>
                     </button>
                   </div>
                 </div>
@@ -578,40 +690,40 @@ export function HomePage() {
               {/* Metric 1 */}
               <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 first:pl-0 space-y-0.5 sm:space-y-1">
                 <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-white tracking-tight">
-                  500+
+                  {c.hero.stats[0].value}
                 </p>
                 <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
-                  PROFESSIONALS TRAINED ANNUALLY
+                  {c.hero.stats[0].label}
                 </p>
               </div>
 
               {/* Metric 2 */}
               <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 pt-1.5 md:pt-2 space-y-0.5 sm:space-y-1">
                 <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-white tracking-tight">
-                  70+
+                  {c.hero.stats[1].value}
                 </p>
                 <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
-                  AVIATION ORGANIZATIONS
+                  {c.hero.stats[1].label}
                 </p>
               </div>
 
               {/* Metric 3 */}
               <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 pt-1.5 md:pt-2 space-y-0.5 sm:space-y-1">
                 <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-[#34E06E] tracking-tight">
-                  FAA
+                  {c.hero.stats[2].value}
                 </p>
                 <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-[#34E06E] leading-tight">
-                  PART 65 APPROVED TRAINING
+                  {c.hero.stats[2].label}
                 </p>
               </div>
 
               {/* Metric 4 */}
               <div className="px-2 sm:px-4 md:px-6 lg:px-8 py-1.5 sm:py-2 pt-1.5 md:pt-2 last:pr-0 space-y-0.5 sm:space-y-1">
                 <p className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-white tracking-tight">
-                  Global
+                  {c.hero.stats[3].value}
                 </p>
                 <p className="text-[10px] sm:text-[11px] md:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 leading-tight">
-                  OPERATIONAL DELIVERY
+                  {c.hero.stats[3].label}
                 </p>
               </div>
             </div>
@@ -627,13 +739,13 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-6">
             <div className="max-w-2xl space-y-2">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                Professional Aviation Training
+                {c.featuredCourses.eyebrow}
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-rocket-dark">
-                Industry-led training for aviation professionals.
+                {c.featuredCourses.title}
               </h2>
               <p className="text-base sm:text-lg text-gray-500 font-normal">
-                Gain the knowledge, practical skills, and operational expertise required to perform with confidence in today’s aviation environment. From initial certification to advanced and recurrent training, our programs are built around real operational requirements.
+                {c.featuredCourses.intro}
               </p>
             </div>
 
@@ -641,7 +753,7 @@ export function HomePage() {
               to="/services"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-black/15 text-xs font-bold uppercase tracking-wider text-rocket-dark hover:bg-black hover:text-white hover:border-black transition-all shrink-0 self-start md:self-auto group shadow-xs"
             >
-              <span>View all courses</span>
+              <span>{c.featuredCourses.viewAllLabel}</span>
               <HiArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
@@ -650,12 +762,12 @@ export function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {/* Card 1: Flight Dispatcher Part 65 */}
             <div className="group rounded-3xl overflow-hidden border border-slate-200/80 bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-              {/* Top Clean Course Book Banner */}
-              <div className="relative h-[240px] sm:h-[280px] overflow-hidden bg-[#020617] select-none">
+              {/* Top Clean Course Book Banner - Fully Visible */}
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-white select-none flex items-center justify-center border-b border-slate-100">
                 <img
                   src={courseBannerDispatcher3D}
                   alt="Commercial Flight Dispatcher License Course"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
+                  className="w-full h-full object-contain object-center group-hover:scale-[1.03] transition-transform duration-500 select-none p-2"
                 />
               </div>
 
@@ -665,21 +777,21 @@ export function HomePage() {
                   {/* Top Scope / Tag & Duration row */}
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
-                      FAA Part 65 Certification
+                      {c.featuredCourses.cards[0].tag}
                     </span>
 
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full">
                       <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>12 Weeks Hybrid</span>
+                      <span>{c.featuredCourses.cards[0].duration}</span>
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug group-hover:text-slate-900 transition-colors">
-                    Part 65 Commercial Flight Dispatcher License Course
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug group-hover:text-[#34E06E] transition-colors">
+                    {c.featuredCourses.cards[0].title}
                   </h3>
 
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                    Comprehensive FAA Part 65 &amp; EASA curriculum with high-stress live OCC flight simulations and guaranteed regulatory exam preparation.
+                    {c.featuredCourses.cards[0].desc}
                   </p>
                 </div>
 
@@ -688,7 +800,7 @@ export function HomePage() {
                     onClick={() => navigate('/events-courses')}
                     className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 group-hover:text-slate-900 transition-colors py-1 cursor-pointer"
                   >
-                    <span>View Course Details</span>
+                    <span>{c.featuredCourses.cards[0].ctaLabel}</span>
                     <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center transition-colors shrink-0">
                       <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
@@ -699,12 +811,12 @@ export function HomePage() {
 
             {/* Card 2: Ground Operations & Ramp Safety */}
             <div className="group rounded-3xl overflow-hidden border border-slate-200/80 bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-              {/* Top Clean Course Book Banner */}
-              <div className="relative h-[240px] sm:h-[280px] overflow-hidden bg-[#020617] select-none">
+              {/* Top Clean Course Book Banner - Fully Visible */}
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-white select-none flex items-center justify-center border-b border-slate-100">
                 <img
                   src={courseBannerGroundOps3D}
                   alt="Ground Operations & Ramp Safety Specialist Course"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
+                  className="w-full h-full object-contain object-center group-hover:scale-[1.03] transition-transform duration-500 select-none p-2"
                 />
               </div>
 
@@ -714,21 +826,21 @@ export function HomePage() {
                   {/* Top Scope / Tag & Duration row */}
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
-                      IATA ISAGO / EASA
+                      {c.featuredCourses.cards[1].tag}
                     </span>
 
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full">
                       <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>4 Weeks Station Track</span>
+                      <span>{c.featuredCourses.cards[1].duration}</span>
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug group-hover:text-slate-900 transition-colors">
-                    Ground Operations &amp; Ramp Safety Specialist Course
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug group-hover:text-[#34E06E] transition-colors">
+                    {c.featuredCourses.cards[1].title}
                   </h3>
 
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                    Master airside operations, turnaround supervision, dangerous goods regulations, and ground handling collision avoidance.
+                    {c.featuredCourses.cards[1].desc}
                   </p>
                 </div>
 
@@ -737,7 +849,7 @@ export function HomePage() {
                     onClick={() => navigate('/events-courses')}
                     className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 group-hover:text-slate-900 transition-colors py-1 cursor-pointer"
                   >
-                    <span>View Course Details</span>
+                    <span>{c.featuredCourses.cards[1].ctaLabel}</span>
                     <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center transition-colors shrink-0">
                       <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
@@ -772,13 +884,13 @@ export function HomePage() {
               {/* Left Column: Headline & Description */}
               <div className="lg:col-span-7 space-y-3.5 text-left">
                 <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block">
-                  Verified Post-Training Feedback
+                  {c.trustRating.eyebrow}
                 </span>
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight font-display">
-                  Rated by the People We Trained
+                  {c.trustRating.title}
                 </h3>
                 <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal max-w-xl">
-                  Every course closes with a post-training survey sent straight to our OCC teams and dispatchers. Across 458 completed surveys from 70+ aviation organizations, our training has been rated an average of 4.7 out of 5, with 98% saying they'd recommend IFOA.{' '}
+                  {c.trustRating.desc}{' '}
                   <button
                     onClick={() => {
                       const el = document.getElementById('testimonials') || document.querySelector('[data-purpose="from-the-operation-grid"]')
@@ -787,7 +899,7 @@ export function HomePage() {
                     }}
                     className="font-bold text-[#34E06E] hover:text-white underline underline-offset-4 transition-colors cursor-pointer inline-block"
                   >
-                    Learn more
+                    {c.trustRating.learnMoreLabel}
                   </button>
                 </p>
               </div>
@@ -795,7 +907,7 @@ export function HomePage() {
               {/* Right Column: Prominent Rating & Vivid Stars */}
               <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center space-y-2 lg:border-l lg:border-white/10 lg:pl-8">
                 <div className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight font-sans">
-                  4.7<span className="text-2xl sm:text-3xl md:text-4xl font-medium text-[#34E06E]">/5</span>
+                  {c.trustRating.ratingValue}<span className="text-2xl sm:text-3xl md:text-4xl font-medium text-[#34E06E]">{c.trustRating.ratingSuffix}</span>
                 </div>
 
                 {/* 5 Vivid Gold Stars */}
@@ -806,13 +918,13 @@ export function HomePage() {
                 </div>
 
                 <p className="text-xs sm:text-sm font-medium text-slate-400 tracking-wide font-mono">
-                  (458 verified post-training surveys)
+                  {c.trustRating.reviewCountLabel}
                 </p>
 
                 <div className="pt-2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono font-bold text-slate-300">
 
-                    <span>98% Recommendation Rate</span>
+                    <span>{c.trustRating.badgeLabel}</span>
                   </span>
                 </div>
               </div>
@@ -828,10 +940,10 @@ export function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
             <div className="space-y-2">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-[#34E06E] border-b-2 border-[#34E06E] pb-1 inline-block">
-                Global Training Pathways
+                {c.pathways.eyebrow}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
-                Certification Pathways Built for Operations
+                {c.pathways.title}
               </h2>
             </div>
 
@@ -841,7 +953,7 @@ export function HomePage() {
                 to="/events"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-slate-100 text-slate-950 font-bold text-xs font-mono uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-105 cursor-pointer group"
               >
-                <span>See More</span>
+                <span>{c.pathways.seeMoreLabel}</span>
                 <HiArrowUpRight className="w-3.5 h-3.5 text-slate-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
 
@@ -893,18 +1005,18 @@ export function HomePage() {
                         className="p-7 rounded-3xl bg-white/[0.04] border border-white/10 hover:border-slate-400 hover:bg-white/[0.07] transition-all duration-300 flex flex-col justify-between space-y-6 group"
                       >
                         <div className="space-y-3">
-                          <span className="text-[11px] font-mono font-bold tracking-wider text-slate-400 uppercase block">
+                          <span className="text-[11px] font-mono font-bold tracking-wider text-slate-400 uppercase block h-5 flex items-center">
                             {item.category}
                           </span>
-                          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors">
+                          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors min-h-[3.25rem] flex items-start">
                             {item.title}
                           </h3>
-                          <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
+                          <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed min-h-[4.25rem]">
                             {item.desc}
                           </p>
                         </div>
 
-                        <div className="space-y-3 pt-4 border-t border-white/10">
+                        <div className="mt-auto space-y-3 pt-4 border-t border-white/10">
                           <div className="text-xs text-[#34E06E] font-mono font-semibold tracking-wide">
                             {item.hours}
                           </div>
@@ -946,13 +1058,13 @@ export function HomePage() {
       <section className="pt-10 sm:pt-14 pb-10 sm:pb-14 bg-white border-b border-black/5 overflow-hidden">
         <div className="max-w-[1280px] mx-auto px-6 text-center space-y-2 mb-6 sm:mb-8">
           <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-            Global Airline Network
+            {c.network.eyebrow}
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark">
-            Training Professionals for the Global Aviation Industry
+            {c.network.title}
           </h2>
-          <p className="text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Our training equips aviation professionals with the skills and expertise to pursue careers across commercial, cargo, and business aviation worldwide.
+          <p className="text-xs sm:text-sm md:text-base text-gray-500 max-w-2xl mx-auto font-normal">
+            {c.network.subtitle}
           </p>
         </div>
 
@@ -1011,22 +1123,20 @@ export function HomePage() {
       </section>
       {/* END: Global Airline Network Infinite Marquee */}
 
-      {/* BEGIN: Audience Pathways (Built for careers. Built for operations.) */}
-      <section className="relative w-full bg-white text-rocket-dark py-10 sm:py-14 border-b border-black/5 overflow-hidden" data-purpose="audience-split-pathways">
-        <div className="max-w-[1280px] mx-auto px-6 relative z-10 space-y-8 sm:space-y-10">
-          {/* Header Row */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-2 max-w-xl">
+
+      {/* 4. DUAL AUDIENCE VALUE PROPOSITION */}
+      <section className="py-16 sm:py-24 bg-slate-50/70 border-b border-slate-200/80" data-purpose="dual-audience">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-12">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-2.5 max-w-xl">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                Two Different Needs
+                {c.audience.eyebrow}
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-                Built for careers. Built for operations.
+                {c.audience.title}
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-gray-500 max-w-md font-normal leading-relaxed">
-              Individuals and aviation organizations should not be forced through the same customer journey.
-            </p>
           </div>
 
           {/* Dual Cards Grid */}
@@ -1035,42 +1145,43 @@ export function HomePage() {
             <div className="rounded-3xl bg-white border border-slate-200/90 p-8 sm:p-9 flex flex-col justify-between space-y-6 text-slate-900 shadow-xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 group">
               <div className="space-y-4">
                 {/* Header Row: Clean Eyebrow & Track Badge */}
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                    For Individuals
+                <div className="flex items-center justify-between gap-3 min-h-[1.75rem]">
+                  <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1">
+                    <RiUser3Line className="w-4 h-4 text-slate-700" />
+                    <span>{c.audience.cards[0].eyebrow}</span>
                   </span>
                   <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                    Career Pathway
+                    {c.audience.cards[0].trackBadge}
                   </span>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors pt-1">
-                  Become Ready for the Modern OCC
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors pt-1 min-h-[4rem] flex items-start">
+                  {c.audience.cards[0].title}
                 </h3>
 
-                <p className="text-sm text-slate-600 leading-relaxed font-normal">
-                  Gain the operational knowledge and practical competencies needed to perform confidently in a fast-paced airline Operations Control Centre.
+                <p className="text-sm text-slate-600 leading-relaxed font-normal min-h-[3.75rem]">
+                  {c.audience.cards[0].desc}
                 </p>
 
                 {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 min-h-[3rem]">
                   <div className="flex items-center gap-2.5">
                     <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">FAA Part 65 &amp; EASA</span>
+                    <span className="font-semibold text-slate-800">{c.audience.cards[0].bullet1}</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">Scenario-Based Drills</span>
+                    <span className="font-semibold text-slate-800">{c.audience.cards[0].bullet2}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="mt-auto pt-2">
                 <Button
                   onClick={() => navigate('/events-courses')}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] cursor-pointer"
                 >
-                  <span>Explore Training</span>
+                  <span>{c.audience.cards[0].ctaLabel}</span>
                   <HiArrowUpRight className="w-4 h-4" />
                 </Button>
               </div>
@@ -1080,42 +1191,43 @@ export function HomePage() {
             <div className="rounded-3xl bg-white border border-slate-200/90 p-8 sm:p-9 flex flex-col justify-between space-y-6 text-slate-900 shadow-xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 group">
               <div className="space-y-4">
                 {/* Header Row: Clean Eyebrow & Track Badge */}
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                    For Airlines
+                <div className="flex items-center justify-between gap-3 min-h-[1.75rem]">
+                  <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1">
+                    <RiFlightTakeoffLine className="w-4 h-4 text-slate-700" />
+                    <span>{c.audience.cards[1].eyebrow}</span>
                   </span>
                   <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                    Airlines &amp; OCCs
+                    {c.audience.cards[1].trackBadge}
                   </span>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors pt-1">
-                  Training Built Around Your Operations
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors pt-1 min-h-[4rem] flex items-start">
+                  {c.audience.cards[1].title}
                 </h3>
 
-                <p className="text-sm text-slate-600 leading-relaxed font-normal">
-                  Customized initial, recurrent, and advanced training designed around your fleet, manuals, procedures, and operational environment.
+                <p className="text-sm text-slate-600 leading-relaxed font-normal min-h-[3.75rem]">
+                  {c.audience.cards[1].desc}
                 </p>
 
                 {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 min-h-[3rem]">
                   <div className="flex items-center gap-2.5">
                     <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">Customized Fleet Training</span>
+                    <span className="font-semibold text-slate-800">{c.audience.cards[1].bullet1}</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">OCC Consulting</span>
+                    <span className="font-semibold text-slate-800">{c.audience.cards[1].bullet2}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="mt-auto pt-2">
                 <Button
                   onClick={() => navigate('/services')}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm cursor-pointer"
                 >
-                  <span>Corporate Training</span>
+                  <span>{c.audience.cards[1].ctaLabel}</span>
                   <HiArrowUpRight className="w-4 h-4" />
                 </Button>
               </div>
@@ -1133,13 +1245,13 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-slate-200/60">
             <div className="space-y-2 max-w-2xl">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                Verified Industry Feedback
+                {c.testimonialsSection.eyebrow}
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Stories from Those Who Know Us Best
+                {c.testimonialsSection.title}
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Operational expertise, not generic aviation education. Real-world feedback from flight dispatchers, OCC managers, and airline training leaders.
+                {c.testimonialsSection.intro}
               </p>
             </div>
 
@@ -1169,46 +1281,61 @@ export function HomePage() {
 
           {/* Clean Segmented Tab Filters */}
           <div className="flex items-center justify-start flex-wrap gap-4">
-            <div className="inline-flex items-center p-1 bg-slate-200/80 rounded-xl border border-slate-300/60 shadow-xs">
-              <button
-                onClick={() => {
-                  setFeedbackTab('visual')
-                  setActivePage(0)
-                  resetTimer()
-                }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${feedbackTab === 'visual'
-                  ? 'bg-[#34E06E] text-slate-950 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
-                  }`}
-              >
-                Airline Showcase ({testimonials.filter((t) => t.cardImage).length})
-              </button>
-              <button
-                onClick={() => {
-                  setFeedbackTab('executive')
-                  setActivePage(0)
-                  resetTimer()
-                }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${feedbackTab === 'executive'
-                  ? 'bg-[#34E06E] text-slate-950 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
-                  }`}
-              >
-                Executive Statements ({testimonials.filter((t) => !t.cardImage).length})
-              </button>
-              <button
-                onClick={() => {
-                  setFeedbackTab('all')
-                  setActivePage(0)
-                  resetTimer()
-                }}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${feedbackTab === 'all'
-                  ? 'bg-[#34E06E] text-slate-950 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
-                  }`}
-              >
-                All Feedback ({testimonials.length})
-              </button>
+            <div className="inline-flex items-center p-1.5 bg-slate-100/90 rounded-2xl sm:rounded-full border border-slate-200/90 shadow-2xs gap-1 sm:gap-1.5 flex-wrap">
+              {[
+                {
+                  id: 'visual',
+                  label: c.testimonialsSection.visualTabLabel,
+                  count: testimonials.filter((t) => t.cardImage).length,
+                  icon: RiFlightTakeoffLine
+                },
+                {
+                  id: 'executive',
+                  label: c.testimonialsSection.executiveTabLabel,
+                  count: testimonials.filter((t) => !t.cardImage).length,
+                  icon: RiChatQuoteLine
+                },
+                {
+                  id: 'all',
+                  label: c.testimonialsSection.allTabLabel,
+                  count: testimonials.length,
+                  icon: RiApps2Line
+                }
+              ].map((tab) => {
+                const isActive = feedbackTab === tab.id
+                const Icon = tab.icon
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setFeedbackTab(tab.id)
+                      setActivePage(0)
+                      resetTimer()
+                    }}
+                    className={`relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold font-mono tracking-wide transition-all duration-300 flex items-center gap-2 cursor-pointer select-none group ${
+                      isActive
+                        ? 'bg-slate-950 text-white shadow-md'
+                        : 'text-slate-600 hover:text-slate-950 hover:bg-white/80'
+                    }`}
+                  >
+                    <Icon
+                      className={`w-3.5 h-3.5 transition-colors ${
+                        isActive ? 'text-[#34E06E]' : 'text-slate-400 group-hover:text-slate-700'
+                      }`}
+                    />
+                    <span>{tab.label}</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-tight transition-colors ${
+                        isActive
+                          ? 'bg-white/15 text-[#34E06E]'
+                          : 'bg-slate-200/80 text-slate-600 group-hover:bg-slate-300/80 group-hover:text-slate-900'
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
@@ -1370,55 +1497,71 @@ export function HomePage() {
       <section className="py-16 sm:py-24 bg-white text-rocket-dark border-b border-slate-200/80" data-purpose="training-framework-standards">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left Column: 3 Standard Authority Cards (FAA, EASA, ICAO) */}
-            <div className="lg:col-span-5 flex items-center justify-start gap-4 sm:gap-6">
+            {/* Left Column: 4 Standard Authority Cards (FAA, EASA, ICAO, DGCA) */}
+            <div className="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4">
               {/* FAA Box */}
-              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-3 text-center">
+              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
                 <img
                   src={logoFaa}
                   alt="FAA"
-                  className="h-10 sm:h-12 w-auto max-w-[80px] object-contain select-none mb-1.5"
+                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
                 />
-                <span className="text-xs font-bold text-rocket-dark tracking-wider uppercase">
+                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
                   FAA
                 </span>
+                <span className="text-[10px] font-mono text-slate-400">Part 65</span>
               </div>
 
               {/* EASA Box */}
-              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-3 text-center">
+              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
                 <img
                   src={logoEasa}
                   alt="EASA"
-                  className="h-10 sm:h-12 w-auto max-w-[80px] object-contain select-none mb-1.5"
+                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
                 />
-                <span className="text-xs font-bold text-rocket-dark tracking-wider uppercase">
+                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
                   EASA
                 </span>
+                <span className="text-[10px] font-mono text-slate-400">ORO.GEN 110</span>
               </div>
 
               {/* ICAO Box */}
-              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-3 text-center">
+              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
                 <img
                   src={logoIcao}
                   alt="ICAO"
-                  className="h-10 sm:h-12 w-auto max-w-[80px] object-contain select-none mb-1.5"
+                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
                 />
-                <span className="text-xs font-bold text-rocket-dark tracking-wider uppercase">
+                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
                   ICAO
                 </span>
+                <span className="text-[10px] font-mono text-slate-400">Doc 10106</span>
+              </div>
+
+              {/* DGCA Box */}
+              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
+                <img
+                  src={logoDgca}
+                  alt="DGCA"
+                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
+                />
+                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
+                  DGCA
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">India CAR</span>
               </div>
             </div>
 
             {/* Right Column: Training Framework Narrative */}
             <div className="lg:col-span-7 space-y-4">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                Training Framework
+                {c.framework.eyebrow}
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-                Built on global aviation standards. Designed for real operations.
+                {c.framework.title}
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
-                Our training draws from ICAO, FAA, and EASA frameworks to deliver internationally relevant knowledge, practical operational skills, and scenario-based learning for today’s aviation professionals.
+                {c.framework.desc}
               </p>
             </div>
           </div>
@@ -1436,13 +1579,13 @@ export function HomePage() {
 
             <div className="relative z-10 space-y-2.5 max-w-2xl">
               <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-100 block">
-                OPERATIONAL EXCELLENCE
+                {c.finalCta.eyebrow}
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
-                Train for the operation. Not only for the exam.
+                {c.finalCta.title}
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-emerald-50 max-w-xl font-normal leading-relaxed">
-                Explore individual programs or discuss a customized solution for your organization.
+                {c.finalCta.desc}
               </p>
             </div>
 
@@ -1451,7 +1594,7 @@ export function HomePage() {
                 onClick={() => navigate('/contact')}
                 className="bg-[#34E06E] text-slate-950 hover:bg-[#28c85e] font-extrabold px-7 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-lg hover:shadow-[0_0_25px_rgba(52,224,110,0.4)] transition-all hover:scale-105 inline-flex items-center gap-2.5 cursor-pointer group"
               >
-                <span>Contact IFOA</span>
+                <span>{c.finalCta.ctaLabel}</span>
                 <RiSendPlaneFill className="w-4 h-4 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </div>

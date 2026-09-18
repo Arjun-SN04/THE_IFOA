@@ -39,6 +39,9 @@ export const api = {
   // ---- Contact page enquiry form ----
   sendContact: (payload) => request('/contact', { method: 'POST', body: payload }),
 
+  // ---- Newsletter signup ----
+  subscribeNewsletter: (email) => request('/newsletter', { method: 'POST', body: { email } }),
+
   // ---- Public enrollment form ----
   getCourseForm: (slug) => request(`/courses/${slug}/form`),
   submitCourseForm: (slug, answers) =>
@@ -80,6 +83,13 @@ export const api = {
   adminUpdatePage: (page, data) => request(`/admin/pages/${page}`, { method: 'PUT', body: { data } }),
   adminResetPage: (page) => request(`/admin/pages/${page}`, { method: 'DELETE' }),
 
+  // ---- Admin: per-course chrome overrides (courseDetail/courseEnrollment) ----
+  adminGetCourseContent: (id, page) => request(`/admin/courses/${id}/content/${page}`),
+  adminUpdateCourseContent: (id, page, data) =>
+    request(`/admin/courses/${id}/content/${page}`, { method: 'PUT', body: { data } }),
+  adminResetCourseContent: (id, page) =>
+    request(`/admin/courses/${id}/content/${page}`, { method: 'DELETE' }),
+
   // ---- Admin: submissions ----
   adminListSubmissions: (params = {}) => {
     const qs = new URLSearchParams(
@@ -92,6 +102,18 @@ export const api = {
     request(`/admin/submissions/${id}`, { method: 'PUT', body: payload }),
   adminDeleteSubmission: (id) => request(`/admin/submissions/${id}`, { method: 'DELETE' }),
   adminListLegacyRegistrations: () => request('/admin/registrations/legacy'),
+
+  // ---- Admin: contact form messages ----
+  adminListContactMessages: (params = {}) => {
+    const qs = new URLSearchParams(
+      Object.entries(params).filter(([, v]) => v !== undefined && v !== '' && v !== 'all')
+    ).toString()
+    return request(`/admin/contact-messages${qs ? `?${qs}` : ''}`)
+  },
+  adminGetContactMessage: (id) => request(`/admin/contact-messages/${id}`),
+  adminUpdateContactMessage: (id, payload) =>
+    request(`/admin/contact-messages/${id}`, { method: 'PUT', body: payload }),
+  adminDeleteContactMessage: (id) => request(`/admin/contact-messages/${id}`, { method: 'DELETE' }),
 
   // ---- Admin media (Cloudflare R2) ----
   adminUpload: (files, folder = 'courses') => {

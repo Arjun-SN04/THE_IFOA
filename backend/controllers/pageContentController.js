@@ -1,4 +1,5 @@
 const PageContent = require('../models/PageContent')
+const Course = require('../models/Course')
 const { asyncHandler } = require('../middleware/error')
 const {
   PAGE_KEYS,
@@ -6,8 +7,16 @@ const {
   SCHEMAS,
   DEFAULTS,
   mergeContent,
+  sanitizeContent,
   isValidPage
 } = require('../utils/pageContent')
+
+// Per-course chrome overrides only exist for these two templates — every
+// other page in PAGE_KEYS stays a single shared/global document.
+const COURSE_SCOPED_PAGES = new Set(['courseDetail', 'courseEnrollment'])
+function isValidCoursePage(page) {
+  return COURSE_SCOPED_PAGES.has(page)
+}
 
 // ---------- Public ----------
 
@@ -65,9 +74,14 @@ const adminUpdatePage = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'data must be an object' })
   }
 
+  // Whitelist against SCHEMAS[page] — only known groups/fields/lists are ever
+  // persisted, so an admin (or anyone hitting this endpoint directly) can only
+  // ever change copy, never inject arbitrary keys the frontend might read.
+  const sanitized = sanitizeContent(page, data)
+
   const doc = await PageContent.findOneAndUpdate(
     { page },
-    { $set: { data } },
+    { $set: { data: sanitized } },
     { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
   )
   res.json({ page, data: mergeContent(DEFAULTS[page], doc.data || {}) })
@@ -82,10 +96,71 @@ const adminResetPage = asyncHandler(async (req, res) => {
   res.json({ page, data: DEFAULTS[page] })
 })
 
+// ---------- Admin: per-course chrome overrides (courseDetail/courseEnrollment) ----------
+
+// GET /api/admin/courses/:id/content/:page
+const adminGetCourseContent = asyncHandler(async (req, res) => {
+  const { id, page } = req.params
+  if (!isValidCoursePage(page)) return res.status(400).json({ message: 'Unknown course content page' })
+
+  const course = await Course.findById(id).lean()
+  if (!course) return res.status(404).json({ message: 'Course not found' })
+
+  const override = course.pageContent?.[page] || {}
+  res.json({
+    page,
+    schema: SCHEMAS[page],
+    data: mergeContent(DEFAULTS[page], override),
+    defaults: DEFAULTS[page],
+    customized: Object.keys(override).length > 0
+  })
+})
+
+// PUT /api/admin/courses/:id/content/:page
+const adminUpdateCourseContent = asyncHandler(async (req, res) => {
+  const { id, page } = req.params
+  if (!isValidCoursePage(page)) return res.status(400).json({ message: 'Unknown course content page' })
+
+  const { data } = req.body || {}
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return res.status(400).json({ message: 'data must be an object' })
+  }
+
+  const course = await Course.findById(id)
+  if (!course) return res.status(404).json({ message: 'Course not found' })
+
+  const sanitized = sanitizeContent(page, data)
+  course.pageContent = course.pageContent || {}
+  course.pageContent[page] = sanitized
+  course.markModified('pageContent')
+  await course.save()
+
+  res.json({ page, data: mergeContent(DEFAULTS[page], sanitized) })
+})
+
+// DELETE /api/admin/courses/:id/content/:page — revert this course to defaults.
+const adminResetCourseContent = asyncHandler(async (req, res) => {
+  const { id, page } = req.params
+  if (!isValidCoursePage(page)) return res.status(400).json({ message: 'Unknown course content page' })
+
+  const course = await Course.findById(id)
+  if (!course) return res.status(404).json({ message: 'Course not found' })
+
+  course.pageContent = course.pageContent || {}
+  course.pageContent[page] = {}
+  course.markModified('pageContent')
+  await course.save()
+
+  res.json({ page, data: DEFAULTS[page] })
+})
+
 module.exports = {
   getPublicPage,
   adminListPages,
   adminGetPage,
   adminUpdatePage,
-  adminResetPage
+  adminResetPage,
+  adminGetCourseContent,
+  adminUpdateCourseContent,
+  adminResetCourseContent
 }

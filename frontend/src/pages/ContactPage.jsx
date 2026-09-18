@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  RiBuilding4Line,
+  RiFlightTakeoffLine,
   RiUser3Line,
   RiCheckboxCircleFill,
   RiMailLine,
@@ -32,13 +32,19 @@ const FALLBACK = {
     cards: [
       {
         eyebrow: 'Airlines & Operators',
+        badge: 'For Airlines',
         title: 'Training my team',
-        desc: 'Fleet-wide or role-specific training, built around your ops manual and your regulator.'
+        desc: 'Fleet-wide or role-specific training, built around your ops manual and your regulator.',
+        bullets: ['Fleet-Customized', 'OCC Consulting'],
+        ctaLabel: 'Corporate Training'
       },
       {
         eyebrow: 'Individuals',
+        badge: 'For Individuals',
         title: 'Becoming a dispatcher',
-        desc: 'Certification pathways and course dates for individual applicants.'
+        desc: 'Certification pathways and course dates for individual applicants.',
+        bullets: ['FAA & EASA Path', 'Direct Guidance'],
+        ctaLabel: 'Explore Training'
       }
     ]
   },
@@ -83,7 +89,8 @@ const FALLBACK = {
   },
   newsletter: {
     title: 'Stay informed on operational developments',
-    desc: 'Occasional briefings on regulatory changes, training best practices, and industry analysis. No spam.'
+    desc: 'Occasional briefings on regulatory changes, training best practices, and industry analysis. No spam.',
+    successMessage: 'Subscribed! Check your inbox for confirmation.'
   }
 }
 
@@ -103,6 +110,8 @@ export function ContactPage() {
 
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [newsletterSuccess, setNewsletterSuccess] = useState(false)
+  const [newsletterLoading, setNewsletterLoading] = useState(false)
+  const [newsletterError, setNewsletterError] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -118,11 +127,20 @@ export function ContactPage() {
     }
   }
 
-  const handleNewsletter = (e) => {
+  const handleNewsletter = async (e) => {
     e.preventDefault()
     if (!newsletterEmail) return
-    setNewsletterSuccess(true)
-    setNewsletterEmail('')
+    setNewsletterError('')
+    setNewsletterLoading(true)
+    try {
+      await api.subscribeNewsletter(newsletterEmail)
+      setNewsletterSuccess(true)
+      setNewsletterEmail('')
+    } catch (err) {
+      setNewsletterError(err.message || 'Could not subscribe. Please try again.')
+    } finally {
+      setNewsletterLoading(false)
+    }
   }
 
   const cards = c.hero.cards
@@ -180,20 +198,20 @@ export function ContactPage() {
                     }))
                     document.getElementById('contact-main-section')?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-7 sm:p-8 flex flex-col justify-between space-y-5 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1"
+                  className="rounded-3xl bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-7 sm:p-8 flex flex-col justify-between space-y-5 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1"
                 >
                   <div className="space-y-3.5">
                     {/* Badge Header */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between min-h-[1.75rem]">
                       {isAirline ? (
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-white border-b-2 border-[#34E06E] pb-0.5">
-                          <RiBuilding4Line className="w-3.5 h-3.5 text-slate-300" />
-                          <span>For Airlines</span>
+                          <RiFlightTakeoffLine className="w-3.5 h-3.5 text-slate-300" />
+                          <span>{card.badge || 'For Airlines'}</span>
                         </div>
                       ) : (
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b-2 border-[#34E06E] pb-0.5">
                           <RiUser3Line className="w-3.5 h-3.5 text-[#34E06E]" />
-                          <span>For Individuals</span>
+                          <span>{card.badge || 'For Individuals'}</span>
                         </div>
                       )}
 
@@ -202,49 +220,34 @@ export function ContactPage() {
                       </span>
                     </div>
 
-                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug min-h-[3.25rem] flex items-start">
                       {card.title}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal min-h-[3.75rem]">
                       {card.desc}
                     </p>
 
                     {/* Feature Highlights */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3.5 border-t border-white/10 text-xs text-slate-200 font-medium">
-                      {isAirline ? (
-                        <>
-                          <div className="flex items-center gap-1.5">
-                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                            <span>Fleet-Customized</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                            <span>OCC Consulting</span>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex items-center gap-1.5">
-                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
-                            <span>FAA &amp; EASA Path</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <RiCheckboxCircleFill className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
-                            <span>Direct Guidance</span>
-                          </div>
-                        </>
-                      )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3.5 border-t border-white/10 text-xs text-slate-200 font-medium min-h-[3rem]">
+                      {(card.bullets || []).map((bullet, bIdx) => (
+                        <div key={bIdx} className="flex items-center gap-1.5">
+                          <RiCheckboxCircleFill
+                            className={`w-3.5 h-3.5 shrink-0 ${isAirline ? 'text-slate-300' : 'text-[#34E06E]'}`}
+                          />
+                          <span>{bullet}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="pt-1">
+                  <div className="mt-auto pt-2">
                     {isAirline ? (
                       <button
                         type="button"
                         className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
                       >
-                        <span>Corporate Training</span>
+                        <span>{card.ctaLabel || 'Corporate Training'}</span>
                         <HiArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     ) : (
@@ -252,7 +255,7 @@ export function ContactPage() {
                         type="button"
                         className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit shadow-md hover:shadow-[0_0_15px_rgba(52,224,110,0.4)]"
                       >
-                        <span>Explore Training</span>
+                        <span>{card.ctaLabel || 'Explore Training'}</span>
                         <HiArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     )}
@@ -497,25 +500,31 @@ export function ContactPage() {
             {newsletterSuccess ? (
               <div className="inline-flex items-center gap-2 text-[#34E06E] text-xs font-mono font-bold">
                 <RiCheckboxCircleFill className="w-4 h-4" />
-                <span>Subscribed! Check your inbox for confirmation.</span>
+                <span>{c.newsletter.successMessage}</span>
               </div>
             ) : (
-              <form onSubmit={handleNewsletter} className="flex flex-wrap sm:flex-nowrap gap-3 w-full md:w-auto">
-                <input
-                  type="email"
-                  required
-                  placeholder="you@airline.com"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="w-full sm:w-72 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
-                >
-                  Subscribe
-                </button>
-              </form>
+              <div className="w-full md:w-auto space-y-2">
+                <form onSubmit={handleNewsletter} className="flex flex-wrap sm:flex-nowrap gap-3 w-full md:w-auto">
+                  <input
+                    type="email"
+                    required
+                    placeholder="you@airline.com"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    className="w-full sm:w-72 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
+                  />
+                  <button
+                    type="submit"
+                    disabled={newsletterLoading}
+                    className="w-full sm:w-auto bg-[#34E06E] hover:bg-[#28c85e] disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
+                  >
+                    {newsletterLoading ? 'Subscribing…' : 'Subscribe'}
+                  </button>
+                </form>
+                {newsletterError && (
+                  <p className="text-xs font-mono text-red-400">{newsletterError}</p>
+                )}
+              </div>
             )}
           </div>
         </div>

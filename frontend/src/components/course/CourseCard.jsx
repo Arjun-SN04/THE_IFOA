@@ -4,7 +4,8 @@ import { RiStarFill } from 'react-icons/ri'
 import { TbClockHour4 } from 'react-icons/tb'
 import { HiArrowUpRight } from 'react-icons/hi2'
 
-import bannerDispatcher from '@/assets/courses/course_banner_dispatcher_3d.jpg'
+import bannerDispatcher from '@/assets/courses/easa-hero.png'
+import bannerPart65 from '@/assets/courses/part65-hero.png'
 import bannerGroundOps from '@/assets/courses/course_banner_ground_ops_3d.jpg'
 
 // Single source of truth for the Events & Courses catalog card. Used by the
@@ -16,18 +17,20 @@ const first = (...vals) => vals.find((v) => v !== '' && v !== null && v !== unde
 export function resolveCard(course = {}) {
   const c = course.card || {}
   const isGround = course.category === 'ground' || course.category === 'ramp'
+  const isFaa = course.slug?.includes('part-65') || course.slug?.includes('faa')
+  const defaultBanner = isGround ? bannerGroundOps : (isFaa ? bannerPart65 : bannerDispatcher)
   const rating = first(c.rating, course.rating, 5)
 
   return {
-    image: first(c.image?.url, course.heroImage?.url, isGround ? bannerGroundOps : bannerDispatcher),
-    badge: first(c.badge, course.authority, isGround ? 'IATA ISAGO / EASA' : 'EASA / FAA Part 65'),
+    image: first(c.image?.url, defaultBanner),
+    badge: first(c.badge, course.authority, isGround ? 'IATA ISAGO / EASA' : (isFaa ? 'FAA Part 65' : 'EASA Compliant')),
     badgeTone: isGround ? 'ground' : 'default',
     rating: Number(rating).toFixed(1),
     reviews: first(c.reviewsLabel, '480+ Reviews'),
     duration: first(
       c.durationLabel,
       course.duration,
-      isGround ? '4 Weeks Station Track' : '12 Weeks Hybrid'
+      isGround ? '4 Weeks Station Track' : '5 Weeks Hybrid'
     ),
     blurb: first(
       c.blurb,
@@ -43,11 +46,11 @@ export function CourseCard({ course, preview = false }) {
   const title = course.title || 'Untitled course'
 
   const Banner = (
-    <div className="relative h-[220px] sm:h-[240px] overflow-hidden bg-[#020617] select-none">
+    <div className="relative h-[220px] sm:h-[240px] overflow-hidden bg-white select-none border-b border-slate-100 flex items-center justify-center">
       <img
         src={v.image}
         alt={title}
-        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
+        className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-700 select-none p-2"
       />
     </div>
   )
@@ -56,32 +59,36 @@ export function CourseCard({ course, preview = false }) {
     <div className="group rounded-3xl overflow-hidden border border-slate-200/80 bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
       {Banner}
 
-      <div className="p-5 sm:p-6 text-left space-y-4 bg-white flex-1 flex flex-col justify-between">
-        <div className="space-y-3">
+      <div className="p-5 sm:p-6 text-left bg-white flex-1 flex flex-col justify-between">
+        <div className="space-y-3 flex-1 flex flex-col">
           {/* Top Scope / Tag & Duration row */}
-          <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center justify-between gap-2 min-h-[1.75rem]">
             {v.badge ? (
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200 pb-0.5 inline-block">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200 pb-0.5 inline-block truncate max-w-[150px]">
                 {v.badge}
               </span>
             ) : <span />}
 
             {/* Clean Duration Tag */}
             {v.duration && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full max-w-full">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full shrink-0">
                 <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span className="truncate max-w-[160px] sm:max-w-[200px]">{v.duration}</span>
+                <span className="truncate max-w-[140px] sm:max-w-[170px]">{v.duration}</span>
               </span>
             )}
           </div>
 
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug group-hover:text-black transition-colors line-clamp-2">
-            {title}
-          </h3>
+          <div className="min-h-[3.25rem] flex items-start">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
+              {title}
+            </h3>
+          </div>
 
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-3">
-            {v.blurb}
-          </p>
+          <div className="flex-1 min-h-[3.75rem]">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-3">
+              {v.blurb}
+            </p>
+          </div>
         </div>
 
         <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">

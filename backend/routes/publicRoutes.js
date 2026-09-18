@@ -6,6 +6,7 @@ const submissions = require('../controllers/submissionController')
 const pageContent = require('../controllers/pageContentController')
 const chat = require('../controllers/chatController')
 const contact = require('../controllers/contactController')
+const newsletter = require('../controllers/newsletterController')
 
 const router = express.Router()
 
@@ -47,6 +48,9 @@ router.post('/chat', chatLimiter, chat.ask)
 
 // Contact page enquiry form.
 router.post('/contact', contactLimiter, contact.send)
+
+// Newsletter signup.
+router.post('/newsletter', contactLimiter, newsletter.subscribe)
 
 // Dynamic enrollment form for a course + submission intake.
 router.get('/courses/:slug/form', formSchema.getPublicCourseForm)

@@ -1,177 +1,114 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   Loader2,
   Check,
-  Plus,
-  X,
-  ArrowUp,
-  ArrowDown,
   ArrowLeft,
   RotateCcw,
-  ExternalLink
+  ExternalLink,
+  Pencil,
+  FileText,
+  FileEdit,
+  Eye,
+  RefreshCw,
+  MonitorSmartphone
 } from 'lucide-react'
 import { api } from '@/lib/api'
-import ImageUploader from '@/components/admin/ImageUploader'
+import { clone, ScalarField, StringListField, ListEditor } from '@/components/admin/SchemaFieldEditors'
 
 const PATH_BY_PAGE = {
   services: '/services',
   about: '/about',
   contact: '/contact',
-  events: '/events'
+  events: '/events',
+  foxtrotDelta: '/foxtrot-delta',
+  courseEnrollment: null,
+  courseDetail: null
 }
 
-const clone = (v) => JSON.parse(JSON.stringify(v ?? null))
+// These two pages hold the DEFAULT/SEED chrome template new courses start
+// from — each course can now override its own copy independently — so
+// alongside the template fields, show a picker of the actual courses so the
+// admin can jump straight into editing one course's own content/form from
+// here.
+const SHOWS_COURSE_PICKER = new Set(['courseDetail', 'courseEnrollment'])
 
-function blankItem(list) {
-  const item = {}
-  for (const f of list.fields || []) item[f.k] = f.type === 'image' ? null : ''
-  for (const sl of list.stringLists || []) item[sl.k] = []
-  return item
-}
+function LivePreview({ page, data }) {
+  const iframeRef = useRef(null)
+  const debounceRef = useRef(null)
+  const [iframeKey, setIframeKey] = useState(0)
+  const previewPath = PATH_BY_PAGE[page]
 
-function IconBtn({ onClick, title, disabled, variant = 'default', children }) {
-  const variants = {
-    default: 'border-gray-200 bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-    danger: 'border-red-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-300'
+  const sendContent = () => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'ifoa-preview-content', page, data },
+      window.location.origin
+    )
   }
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      disabled={disabled}
-      className={`inline-flex h-8 items-center justify-center rounded-lg border px-2.5 text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed ${variants[variant]}`}
-    >
-      {children}
-    </button>
-  )
-}
 
-const inputCls =
-  'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-rocket-dark focus:border-ifoa-navy focus:outline-none focus:ring-1 focus:ring-ifoa-navy/20'
+  // Push the latest in-progress edits whenever they change, debounced so we
+  // don't flood the iframe on every keystroke.
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(sendContent, 200)
+    return () => clearTimeout(debounceRef.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, iframeKey])
 
-function ScalarField({ field, value, onChange }) {
-  if (field.type === 'image') {
+  // The iframe tells us when it's mounted and listening, so we can send it
+  // the current state immediately (avoids a race on first load / refresh).
+  useEffect(() => {
+    const onMessage = (event) => {
+      if (event.origin !== window.location.origin) return
+      const msg = event.data
+      if (msg && msg.type === 'ifoa-preview-ready' && msg.page === page) sendContent()
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, data])
+
+  if (!previewPath) {
     return (
-      <div className="space-y-1.5">
-        <label className="block text-xs font-bold text-rocket-dark">{field.label}</label>
-        <ImageUploader value={value || null} onChange={onChange} folder="pages" />
+      <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center text-xs font-semibold text-gray-500">
+        No live preview for shared template pages. Use the per-course "Preview" link below instead.
       </div>
     )
   }
-  return (
-    <div className="space-y-1.5">
-      <label className="block text-xs font-bold text-rocket-dark">{field.label}</label>
-      {field.type === 'textarea' ? (
-        <textarea rows={3} value={value ?? ''} onChange={(e) => onChange(e.target.value)} className={inputCls} />
-      ) : (
-        <input type="text" value={value ?? ''} onChange={(e) => onChange(e.target.value)} className={inputCls} />
-      )}
-    </div>
-  )
-}
 
-function StringListField({ label, value, onChange }) {
-  const arr = Array.isArray(value) ? value : []
-  const setAt = (i, v) => onChange(arr.map((x, idx) => (idx === i ? v : x)))
-  const remove = (i) => onChange(arr.filter((_, idx) => idx !== i))
   return (
-    <div className="space-y-1.5">
-      <label className="block text-xs font-bold text-rocket-dark">{label}</label>
-      <div className="space-y-2">
-        {arr.map((item, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <input type="text" value={item} onChange={(e) => setAt(i, e.target.value)} className={inputCls} />
-            <IconBtn onClick={() => remove(i)} title="Remove" variant="danger">
-              <X className="h-3.5 w-3.5" />
-            </IconBtn>
+    <div className="lg:sticky lg:top-6">
+      <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-[#020617] shadow-xs">
+        <div className="flex items-center justify-between gap-2 px-4 py-2.5">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#34E06E]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34E06E] opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#34E06E]" />
+            </span>
+            <MonitorSmartphone className="h-3.5 w-3.5" /> Live Preview
+          </span>
+          <button
+            type="button"
+            onClick={() => setIframeKey((k) => k + 1)}
+            title="Refresh preview"
+            className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-slate-300 hover:bg-white/10 transition-colors"
+          >
+            <RefreshCw className="h-3 w-3" /> Refresh
+          </button>
+        </div>
+        <div className="border-t border-white/5 bg-slate-900 p-3">
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-white">
+            <iframe
+              key={iframeKey}
+              ref={iframeRef}
+              src={`${previewPath}?__preview=1`}
+              title="Live page preview"
+              className="h-[70vh] w-full"
+              onLoad={sendContent}
+            />
           </div>
-        ))}
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={() => onChange([...arr, ''])}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-gray-300 bg-white px-3 py-1.5 text-xs font-bold text-gray-600 hover:border-ifoa-navy hover:text-ifoa-navy transition-all"
-      >
-        <Plus className="h-3.5 w-3.5" /> Add
-      </button>
-    </div>
-  )
-}
-
-function ListEditor({ list, value, onChange }) {
-  const items = Array.isArray(value) ? value : []
-  const setItem = (i, next) => onChange(items.map((x, idx) => (idx === i ? next : x)))
-  const remove = (i) => onChange(items.filter((_, idx) => idx !== i))
-  const move = (i, dir) => {
-    const j = i + dir
-    if (j < 0 || j >= items.length) return
-    const copy = [...items]
-    ;[copy[i], copy[j]] = [copy[j], copy[i]]
-    onChange(copy)
-  }
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-wider text-gray-500">{list.label}</span>
-        <span className="rounded-md border border-gray-200 bg-white px-2 py-0.5 text-[11px] font-bold text-gray-500">
-          {items.length}
-        </span>
-      </div>
-
-      <div className="space-y-3">
-        {items.map((item, i) => (
-          <div key={i} className="rounded-xl border border-gray-200 bg-white p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                {list.itemLabel || 'Item'} {i + 1}
-              </span>
-              <div className="flex items-center gap-1">
-                <IconBtn onClick={() => move(i, -1)} title="Move up" disabled={i === 0}>
-                  <ArrowUp className="h-3.5 w-3.5" />
-                </IconBtn>
-                <IconBtn onClick={() => move(i, 1)} title="Move down" disabled={i === items.length - 1}>
-                  <ArrowDown className="h-3.5 w-3.5" />
-                </IconBtn>
-                <IconBtn onClick={() => remove(i)} title="Remove" variant="danger">
-                  <X className="h-3.5 w-3.5" />
-                </IconBtn>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {(list.fields || []).map((f) => (
-                <div key={f.k} className={f.type === 'textarea' || f.type === 'image' ? 'sm:col-span-2' : ''}>
-                  <ScalarField
-                    field={f}
-                    value={item[f.k]}
-                    onChange={(v) => setItem(i, { ...item, [f.k]: v })}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {(list.stringLists || []).map((sl) => (
-              <StringListField
-                key={sl.k}
-                label={sl.label}
-                value={item[sl.k]}
-                onChange={(v) => setItem(i, { ...item, [sl.k]: v })}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-
-      <button
-        type="button"
-        onClick={() => onChange([...items, blankItem(list)])}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white py-2.5 text-xs font-bold text-gray-600 hover:border-ifoa-navy hover:text-ifoa-navy transition-all"
-      >
-        <Plus className="h-4 w-4" /> Add {list.itemLabel || 'item'}
-      </button>
     </div>
   )
 }
@@ -186,6 +123,8 @@ export function AdminPageEditorPage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [courses, setCourses] = useState(null)
+  const [coursesError, setCoursesError] = useState('')
 
   async function load() {
     setLoading(true)
@@ -205,6 +144,16 @@ export function AdminPageEditorPage() {
   useEffect(() => {
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
+
+  useEffect(() => {
+    if (!SHOWS_COURSE_PICKER.has(page)) return
+    setCourses(null)
+    setCoursesError('')
+    api
+      .adminListCourses({})
+      .then((res) => setCourses(res.courses || []))
+      .catch((err) => setCoursesError(err.message))
   }, [page])
 
   // recipe mutates a deep clone of `data`
@@ -267,7 +216,7 @@ export function AdminPageEditorPage() {
   const label = page.charAt(0).toUpperCase() + page.slice(1)
 
   return (
-    <div className="space-y-6 pb-20 max-w-4xl mx-auto">
+    <div className="space-y-6 pb-20 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-5 rounded-2xl border border-gray-200/80 shadow-xs">
         <div>
           <Link
@@ -335,6 +284,7 @@ export function AdminPageEditorPage() {
         </div>
       )}
 
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
       <div className="space-y-5">
         {schema.groups.map((group) => {
           const gv = data[group.k] || {}
@@ -380,6 +330,85 @@ export function AdminPageEditorPage() {
           )
         })}
       </div>
+
+      <div className="mt-5 lg:mt-0">
+        <LivePreview page={page} data={data} />
+      </div>
+      </div>
+
+      {SHOWS_COURSE_PICKER.has(page) && (
+        <div className="space-y-3 pt-2">
+          <div className="px-1">
+            <h2 className="text-base font-extrabold text-rocket-dark">Courses using this template</h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              The fields above are the default template new courses start from. Each course can now
+              customize its own copy below.
+            </p>
+          </div>
+
+          {coursesError && (
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-700">
+              {coursesError}
+            </div>
+          )}
+
+          {!courses && !coursesError && (
+            <div className="flex items-center justify-center py-10 text-gray-400">
+              <Loader2 className="h-5 w-5 animate-spin text-ifoa-navy" />
+            </div>
+          )}
+
+          {courses && courses.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center text-xs font-semibold text-gray-500">
+              No courses yet.
+            </div>
+          )}
+
+          {courses && courses.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {courses.map((course) => (
+                <div
+                  key={course._id}
+                  className="rounded-2xl border border-gray-200/90 bg-white p-4 shadow-xs space-y-3"
+                >
+                  <div>
+                    <p className="text-sm font-bold text-rocket-dark leading-snug line-clamp-2">{course.title}</p>
+                    <p className="text-[11px] font-semibold text-gray-400 mt-0.5">{course.slug}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <Link
+                      to={`/admin/courses/${course._id}`}
+                      className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <Pencil className="h-3 w-3" /> Edit Course Info
+                    </Link>
+                    <Link
+                      to={`/admin/courses/${course._id}/content/${page}`}
+                      className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <FileEdit className="h-3 w-3" /> Edit Page Text
+                    </Link>
+                    <Link
+                      to={`/admin/courses/${course._id}/form`}
+                      className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <FileText className="h-3 w-3" /> {course.hasCustomForm ? 'Edit Form' : 'Create Form'}
+                    </Link>
+                    <Link
+                      to={`/admin/courses/${course._id}/preview`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <Eye className="h-3 w-3" /> Preview
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

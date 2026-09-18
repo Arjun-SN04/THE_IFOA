@@ -262,9 +262,10 @@ export function AdminSubmissionsPage() {
                           </button>
                           <Link
                             to={`/admin/submissions/${s._id}`}
-                            className="inline-flex items-center gap-1 rounded-lg bg-ifoa-navy px-3 py-1.5 text-xs font-extrabold text-slate-950 hover:bg-ifoa-navy-light transition-all"
+                            className="inline-flex items-center gap-1 rounded-xl bg-[#020617] hover:bg-[#34E06E] text-white hover:text-black px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wider transition-all shadow-2xs"
                           >
-                            View <ChevronRight className="w-3 h-3" />
+                            <span>View</span>
+                            <ChevronRight className="w-3 h-3" />
                           </Link>
                         </div>
                       </td>

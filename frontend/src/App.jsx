@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
@@ -8,25 +8,27 @@ import { AboutPage } from './pages/AboutPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { EventsPage } from './pages/EventsPage'
 import { ContactPage } from './pages/ContactPage'
-import { AgentForServicePage } from './pages/AgentForServicePage'
 import { CourseDetailPage } from './pages/CourseDetailPage'
 import { CourseEnrollmentPage } from './pages/CourseEnrollmentPage'
 import { FoxtrotDeltaPage } from './pages/FoxtrotDeltaPage'
-import { LoginModal } from './components/modals/LoginModal'
 import { RouteTitle } from './components/common/RouteTitle'
 import { ChatWidget } from './components/common/ChatWidget'
 
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminLoginPage } from './pages/admin/AdminLoginPage'
+import { AdminOverviewPage } from './pages/admin/AdminOverviewPage'
 import { AdminCoursesPage } from './pages/admin/AdminCoursesPage'
 import { AdminCourseFormPage } from './pages/admin/AdminCourseFormPage'
 import { AdminCoursePreviewPage } from './pages/admin/AdminCoursePreviewPage'
 import { AdminSubmissionsPage } from './pages/admin/AdminSubmissionsPage'
 import { AdminSubmissionDetailPage } from './pages/admin/AdminSubmissionDetailPage'
+import { AdminContactMessagesPage } from './pages/admin/AdminContactMessagesPage'
+import { AdminContactMessageDetailPage } from './pages/admin/AdminContactMessageDetailPage'
 import { AdminFormBuilderPage } from './pages/admin/AdminFormBuilderPage'
 import { AdminPagesPage } from './pages/admin/AdminPagesPage'
 import { AdminPageEditorPage } from './pages/admin/AdminPageEditorPage'
+import { AdminCoursePageContentEditor } from './pages/admin/AdminCoursePageContentEditor'
 import { SmoothScroll } from './components/common/SmoothScroll'
 import { RiLoader4Line } from 'react-icons/ri'
 
@@ -67,11 +69,9 @@ function RequireAdmin({ children }) {
 
 // Public site chrome: navbar + footer around the marketing pages.
 function PublicSite() {
-  const [loginModalOpen, setLoginModalOpen] = useState(false)
-
   return (
     <div className="min-h-screen flex flex-col bg-white text-rocket-dark selection:bg-rocket-lime selection:text-black">
-      <Navbar onOpenLogin={() => setLoginModalOpen(true)} />
+      <Navbar />
 
       <main className="grow">
         <Routes>
@@ -98,8 +98,6 @@ function PublicSite() {
       <Footer />
 
       <ChatWidget />
-
-      <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
     </div>
   )
 }
@@ -134,17 +132,20 @@ export function AppRoutes() {
                 </RequireAdmin>
               }
             >
-              <Route index element={<Navigate to="/admin/courses" replace />} />
+              <Route index element={<AdminOverviewPage />} />
               <Route path="courses" element={<AdminCoursesPage />} />
               <Route path="courses/new" element={<AdminCourseFormPage />} />
               <Route path="courses/:id" element={<AdminCourseFormPage />} />
               <Route path="courses/:id/form" element={<AdminFormBuilderPage />} />
+              <Route path="courses/:id/content/:page" element={<AdminCoursePageContentEditor />} />
               <Route path="form-template" element={<AdminFormBuilderPage />} />
               <Route path="pages" element={<AdminPagesPage />} />
               <Route path="pages/:page" element={<AdminPageEditorPage />} />
               <Route path="submissions" element={<AdminSubmissionsPage />} />
               <Route path="submissions/:id" element={<AdminSubmissionDetailPage />} />
               <Route path="registrations" element={<Navigate to="/admin/submissions" replace />} />
+              <Route path="contact-messages" element={<AdminContactMessagesPage />} />
+              <Route path="contact-messages/:id" element={<AdminContactMessageDetailPage />} />
             </Route>
 
             {/* Public site */}

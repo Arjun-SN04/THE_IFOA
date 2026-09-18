@@ -4,6 +4,7 @@ const auth = require('../controllers/authController')
 const courses = require('../controllers/courseController')
 const formSchema = require('../controllers/formSchemaController')
 const submissions = require('../controllers/submissionController')
+const contact = require('../controllers/contactController')
 const pageContent = require('../controllers/pageContentController')
 const uploads = require('../controllers/uploadController')
 const { requireAdmin } = require('../middleware/auth')
@@ -49,6 +50,11 @@ router.get('/pages/:page', pageContent.adminGetPage)
 router.put('/pages/:page', pageContent.adminUpdatePage)
 router.delete('/pages/:page', pageContent.adminResetPage)
 
+// ---- Per-course chrome overrides (courseDetail/courseEnrollment) ----
+router.get('/courses/:id/content/:page', pageContent.adminGetCourseContent)
+router.put('/courses/:id/content/:page', pageContent.adminUpdateCourseContent)
+router.delete('/courses/:id/content/:page', pageContent.adminResetCourseContent)
+
 // ---- Submissions (dynamic enrollment forms) ----
 router.get('/submissions', submissions.list)
 router.get('/submissions/:id', submissions.getOne)
@@ -57,6 +63,12 @@ router.delete('/submissions/:id', submissions.remove)
 
 // ---- Legacy (pre-dynamic-form) registrations, read-only ----
 router.get('/registrations/legacy', submissions.listLegacyRegistrations)
+
+// ---- Contact form enquiries ----
+router.get('/contact-messages', contact.list)
+router.get('/contact-messages/:id', contact.getOne)
+router.put('/contact-messages/:id', contact.update)
+router.delete('/contact-messages/:id', contact.remove)
 
 // ---- Media (Cloudflare R2) ----
 router.post('/uploads', upload.array('files', 10), uploads.uploadImages)

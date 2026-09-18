@@ -65,6 +65,7 @@ const FALLBACK = {
     subtitle:
       'Six disciplines, one standard: training that prepares people to make the right call under pressure.',
     primaryLabel: 'Book a Consultation',
+    whatsappLabel: 'WhatsApp Us',
     image: null
   },
   pathways: {
@@ -151,6 +152,8 @@ const FALLBACK = {
     intro:
       "Build your career with specialized aviation services or strengthen your organization's capabilities with tailored operational solutions. Training, consulting, and expertise designed around what you need.",
     note: '',
+    searchPlaceholder: 'Search disciplines...',
+    disciplineCtaLabel: 'Inquire',
     moreTitle: 'More Information?',
     moreDesc:
       'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
@@ -348,7 +351,7 @@ export function ServicesPage() {
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
               <RiWhatsappFill className="w-4 h-4 text-white" />
-              <span>WhatsApp Us</span>
+              <span>{c.hero.whatsappLabel}</span>
             </a>
           </div>
         </div>
@@ -381,7 +384,7 @@ export function ServicesPage() {
               <RiSearchLine className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search disciplines..."
+                placeholder={c.specialist.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 shadow-2xs transition-all"
@@ -439,7 +442,7 @@ export function ServicesPage() {
                       )}
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-slate-950 transition-colors pt-0.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors pt-0.5">
                       {item.title}
                     </h3>
 
@@ -455,19 +458,19 @@ export function ServicesPage() {
                   </div>
 
                   {/* Audience & Inquire Action Footer */}
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 truncate max-w-[170px] sm:max-w-[190px]">
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                       <RiGroupLine className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate">{item.audience}</span>
+                      <span className="leading-tight">{item.audience}</span>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => navigate('/contact')}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn self-start sm:self-auto"
                     >
-                      <span>Inquire</span>
-                      <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 hover:text-[#34E06E]" />
+                      <span>{c.specialist.disciplineCtaLabel}</span>
+                      <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
                     </button>
                   </div>
                 </div>
@@ -492,49 +495,58 @@ export function ServicesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
             {certificationPathways.map((card, idx) => (
               <div
                 key={idx}
-                className="group rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 p-7 flex flex-col justify-between space-y-6 transition-all duration-300"
+                className="group rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 p-7 flex flex-col justify-between transition-all duration-300 h-full"
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                <div className="flex flex-col flex-1">
+                  {/* Standardized Header Row */}
+                  <div className="flex items-start justify-between gap-2 min-h-[2.5rem] mb-3">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 line-clamp-2 leading-tight flex-1">
                       {card.region}
                     </span>
-                    <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
+                    <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 whitespace-nowrap shrink-0 ml-2">
                       {card.badge2}
                     </span>
                   </div>
 
-                  <div className="h-10 flex items-center gap-3">
+                  {/* Standardized Logo Row */}
+                  <div className="h-10 flex items-center gap-3 shrink-0 mb-4">
                     {card.logo && (
                       <img
                         src={card.logo}
                         alt="Regulator Logo"
-                        className="h-8 max-h-8 w-auto object-contain"
+                        className="h-7 max-h-7 w-auto object-contain"
                       />
                     )}
                     {card.secondLogo && (
                       <img
                         src={card.secondLogo}
                         alt="Second Regulator Logo"
-                        className="h-8 max-h-8 w-auto object-contain"
+                        className="h-7 max-h-7 w-auto object-contain"
                       />
                     )}
                   </div>
 
-                  <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-slate-900 transition-colors">
-                    {card.title}
-                  </h3>
+                  {/* Standardized Title Heading */}
+                  <div className="min-h-[3.25rem] flex items-start shrink-0 mb-3">
+                    <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
+                      {card.title}
+                    </h3>
+                  </div>
 
-                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                    {card.desc}
-                  </p>
+                  {/* Standardized Description Body */}
+                  <div className="flex-1 min-h-[5.5rem] mb-4">
+                    <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed line-clamp-4">
+                      {card.desc}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                {/* Standardized Footer Row */}
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between shrink-0 mt-auto">
                   <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
                     {card.badge1}
                   </span>
@@ -587,15 +599,15 @@ export function ServicesPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <span className="text-[11px] font-mono font-semibold text-slate-500 uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono font-semibold text-slate-500 uppercase tracking-wider block min-h-[1.25rem]">
                       {p.subtitle}
                     </span>
-                    <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-snug">
+                    <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-snug min-h-[3.25rem] flex items-start">
                       {p.title}
                     </h3>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed pt-1">
+                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed pt-1 min-h-[4.75rem]">
                     {p.desc}
                   </p>
                 </div>

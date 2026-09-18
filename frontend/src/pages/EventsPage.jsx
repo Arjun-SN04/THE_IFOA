@@ -8,7 +8,10 @@ import {
   RiNotification3Line,
   RiCheckboxCircleFill,
   RiCalendarEventLine,
-  RiMapPin2Line
+  RiMapPin2Line,
+  RiBuildingLine,
+  RiStackLine,
+  RiComputerLine
 } from 'react-icons/ri'
 import { TbClockHour4 } from 'react-icons/tb'
 import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
@@ -22,6 +25,7 @@ import { Seo } from '@/components/common/Seo'
 import { readPreload } from '@/lib/preload'
 import { graph, organizationSchema, breadcrumbSchema, absoluteUrl } from '@/lib/seo'
 import bannerEventsHero from '@/assets/courses/course_banner_dispatcher_3d.jpg'
+import multipleAirImg from '@/assets/operations/multiple-air.png'
 
 // Content the page ships with; editable at /admin/pages/events.
 const FALLBACK = {
@@ -30,6 +34,7 @@ const FALLBACK = {
     subtitle:
       'Fixed-date, classroom and virtual programs you can register for directly, alongside the custom fleet training we build for airlines and operators.',
     primaryLabel: 'View Open Programs',
+    secondaryLabel: 'Inquire on WhatsApp',
     image: null
   },
   programs: {
@@ -41,17 +46,17 @@ const FALLBACK = {
     emptyTitle: 'No open intakes right now',
     emptyDesc: 'New cohorts are published here as admissions open. Leave your email below to be notified.'
   },
-  alerts: {
-    eyebrow: 'Intake Alerts',
-    title: 'Want intake updates directly in your inbox?',
-    desc: 'Prefer to receive automated schedules? Leave your email to get notified when admissions open.',
-    buttonLabel: 'Notify Me'
+  develop: {
+    eyebrow: 'What You Develop',
+    title: 'Knowledge is only useful when you can apply it operationally.',
+    intro:
+      'The program develops the technical knowledge, situational awareness and operational judgment required to support safe and efficient flight operations.'
   },
   curriculum: {
     eyebrow: 'Curriculum Overview',
     title: 'What the Flight Dispatch program covers',
     intro: 'Organized around operational capability, not a flat list of disconnected subjects.',
-    footnote: '* India delivery includes manual practical flight planning on the Boeing B737-NG.',
+    footnote: '',
     modules: [
       {
         num: '01',
@@ -84,6 +89,13 @@ const FALLBACK = {
         items: ['Situational Awareness', 'Risk Assessment', 'Collaborative Decision-Making', 'Scenario Exercises']
       }
     ]
+  },
+  theoryToAircraft: {
+    eyebrow: 'FROM THEORY TO THE AIRCRAFT',
+    title: 'Know the aircraft. Understand the operation.',
+    intro:
+      'Take aircraft knowledge beyond the classroom. Our training connects aircraft systems, performance, limitations, mass and balance, and flight planning to the operational decisions professionals make every day.',
+    tags: ['AIRCRAFT SYSTEMS', 'PERFORMANCE', 'MASS & BALANCE', 'FLIGHT PLANNING', 'LIMITATIONS']
   },
   recent: {
     eyebrow: 'Recent Cohorts',
@@ -138,6 +150,20 @@ const formatIntakeDate = (isoString) => {
   } catch {
     return null
   }
+}
+
+function getModeIcon(mode = '') {
+  const m = String(mode).toLowerCase()
+  if (m.includes('onsite') || m.includes('in-person') || m.includes('classroom') || m.includes('station')) {
+    return <RiBuildingLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+  }
+  if (m.includes('hybrid') || m.includes('blended')) {
+    return <RiStackLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+  }
+  if (m.includes('online') || m.includes('virtual') || m.includes('distance')) {
+    return <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+  }
+  return <RiGlobeLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
 }
 
 export function EventsPage() {
@@ -214,7 +240,7 @@ export function EventsPage() {
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
               <RiWhatsappFill className="w-4 h-4 text-white" />
-              <span>Inquire on WhatsApp</span>
+              <span>{c.hero.secondaryLabel}</span>
             </a>
           </div>
         </div>
@@ -263,52 +289,50 @@ export function EventsPage() {
               return (
                 <div
                   key={course._id || course.slug || idx}
-                  className="group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-5"
+                  className="group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 p-5 sm:px-7 sm:py-5 flex flex-col md:flex-row md:items-center justify-between gap-5"
                 >
-                  {/* Left Info */}
+                  {/* Left Info Column */}
                   <div className="space-y-2.5 min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500 font-medium">
-                      <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block mr-1">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs">
+                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-md shrink-0 inline-flex items-center justify-center text-center sm:w-[116px]">
                         {course.refCode || `INTAKE 0${idx + 1}`}
                       </span>
-                      <span className="text-slate-300">•</span>
-                      <span className="inline-flex items-center gap-1.5 text-slate-600">
-                        <RiGlobeLine className="w-3.5 h-3.5 text-slate-400" />
-                        {course.schedule?.mode || 'Virtual'}
+
+                      <span className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200/70 px-2.5 py-0.5 rounded-full shrink-0 sm:w-[96px]">
+                        {getModeIcon(course.schedule?.mode)}
+                        <span>{course.schedule?.mode || 'Virtual'}</span>
                       </span>
+
                       {durationLabel && (
-                        <>
-                          <span className="text-slate-300">•</span>
-                          <span className="inline-flex items-center gap-1.5 text-slate-600">
-                            <TbClockHour4 className="w-3.5 h-3.5 text-slate-400" />
-                            {durationLabel}
-                          </span>
-                        </>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-50/80 border border-slate-200/60 px-2.5 py-0.5 rounded-full shrink-0">
+                          <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>{durationLabel}</span>
+                        </span>
                       )}
                     </div>
 
                     <Link
                       to={`/courses/${course.slug}`}
-                      className="block text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#1c8b41] transition-colors"
+                      className="block text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors"
                     >
                       {course.title}
                     </Link>
                   </div>
 
-                  {/* Right Status & Action */}
-                  <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
-                    <div className="flex flex-col md:items-end text-left md:text-right">
+                  {/* Right Status & Action Column (Responsive Stack on Mobile) */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between md:justify-end gap-3 sm:gap-6 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 w-full md:w-auto">
+                    <div className="flex items-center justify-between sm:flex-col sm:items-start md:items-end text-left md:text-right">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                         Next Intake
                       </span>
-                      <span className="text-xs sm:text-sm font-bold text-slate-800">
+                      <span className="text-xs sm:text-sm font-bold text-slate-800 whitespace-nowrap">
                         {nextDate}
                       </span>
                     </div>
 
                     <Link
                       to={`/courses/${course.slug}`}
-                      className="inline-flex items-center justify-center gap-2 bg-[#020617] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-200 shadow-2xs hover:shadow-md cursor-pointer shrink-0"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#020617] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-150 shadow-2xs hover:shadow-md cursor-pointer shrink-0 sm:min-w-[160px]"
                     >
                       <span>Register Interest</span>
                       <HiArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -328,15 +352,15 @@ export function EventsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end justify-between">
             <div className="lg:col-span-7 space-y-3">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                What You Develop
+                {c.develop.eyebrow}
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                Knowledge is only useful when you can apply it operationally.
+                {c.develop.title}
               </h2>
             </div>
             <div className="lg:col-span-5">
               <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-                The program develops the technical knowledge, situational awareness and operational judgment required to support safe and efficient flight operations.
+                {c.develop.intro}
               </p>
             </div>
           </div>
@@ -367,16 +391,16 @@ export function EventsPage() {
             ].map((pillar, idx) => (
               <div
                 key={idx}
-                className="group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
+                className="group rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-4">
-                  <span className="text-xs font-mono font-bold text-slate-950 block">
+                  <span className="text-xs font-mono font-black text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
                     {pillar.num}
                   </span>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-black transition-colors">
+                  <h3 className="text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors min-h-[1.75rem] flex items-start">
                     {pillar.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal min-h-[4.5rem]">
                     {pillar.desc}
                   </p>
                 </div>
@@ -453,61 +477,47 @@ export function EventsPage() {
             <div className="lg:col-span-7 space-y-6">
               <div className="space-y-3">
                 <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#34E06E] inline-block">
-                  FROM THEORY TO THE AIRCRAFT
+                  {c.theoryToAircraft.eyebrow}
                 </span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                  Know the aircraft. Understand the operation.
+                  {c.theoryToAircraft.title}
                 </h2>
               </div>
 
               <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl">
-                Take aircraft knowledge beyond the classroom. Our training connects aircraft systems, performance, limitations, mass and balance, and flight planning to the operational decisions professionals make every day.
+                {c.theoryToAircraft.intro}
               </p>
 
               {/* Module Tags */}
               <div className="flex flex-wrap items-center gap-2.5 pt-2">
-                {[
-                  'AIRCRAFT SYSTEMS',
-                  'PERFORMANCE',
-                  'MASS & BALANCE',
-                  'FLIGHT PLANNING',
-                  'LIMITATIONS'
-                ].map((tag, idx) => (
+                {(c.theoryToAircraft.tags || []).map((tag, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center px-4 py-2 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-slate-200 bg-white/5 border border-white/15 transition-all cursor-default"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-200 bg-slate-900/90 border border-slate-800/90 shadow-2xs hover:border-slate-700 transition-colors cursor-default"
                   >
-                    {tag}
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
+                    <span>{tag}</span>
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Right Card: Minimal B737-NG Aircraft Visual Card */}
+            {/* Right Card: B737-NG Aircraft Visual Card */}
             <div className="lg:col-span-5">
-              <div className="w-full rounded-3xl bg-[#0f172a] border border-slate-800 p-8 sm:p-12 flex flex-col justify-between min-h-[300px] aspect-4/3 shadow-xl relative group">
-                {/* Center Stylized Aircraft Silhouette */}
-                <div className="my-auto py-6 flex items-center justify-center">
-                  <svg
-                    className="w-24 h-24 sm:w-28 sm:h-28 text-white drop-shadow-md transform -rotate-45 transition-transform duration-500 group-hover:scale-105"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
-                  </svg>
-                </div>
-
-                {/* Bottom Left Minimalist Label */}
-                <div className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#34E06E]">
-                  B737-NG · Operational Training
-                </div>
+              <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 bg-[#0f172a] shadow-2xl aspect-video">
+                <img
+                  src={multipleAirImg}
+                  alt="B737-NG Aircraft Fleet Operations"
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-     
+
       {/* 5. FINAL FLEET-WIDE CTA */}
       <section className="py-16 sm:py-24 bg-white text-center" data-purpose="events-final-cta">
         <div className="max-w-[800px] mx-auto px-6 space-y-6">

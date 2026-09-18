@@ -132,21 +132,21 @@ export function AdminSubmissionDetailPage() {
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={() => openEnrollmentPdf(submission)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer shadow-2xs"
             >
-              <FileText className="h-4 w-4 text-gray-500" /> View PDF
+              <FileText className="h-4 w-4 text-slate-500" /> View PDF
             </button>
             <button
               onClick={() => downloadEnrollmentPdf(submission, `IFOA-Enrollment-${id}.pdf`)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer shadow-2xs"
             >
-              <Download className="h-4 w-4 text-gray-500" /> Download
+              <Download className="h-4 w-4 text-slate-500" /> Download
             </button>
             {!editing && (
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-white px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-all disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition-all disabled:opacity-60 cursor-pointer shadow-2xs"
               >
                 <Trash2 className="h-4 w-4" /> {deleting ? 'Deleting…' : 'Delete'}
               </button>
@@ -159,39 +159,39 @@ export function AdminSubmissionDetailPage() {
                     setEditing(false)
                     setError('')
                   }}
-                  className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveAnswers}
                   disabled={saving}
-                  className="flex items-center gap-1.5 rounded-xl bg-ifoa-navy px-5 py-2 text-xs font-extrabold text-slate-950 hover:bg-ifoa-navy-light disabled:opacity-60 transition-all"
+                  className="flex items-center gap-1.5 rounded-xl bg-[#020617] hover:bg-[#34E06E] text-white hover:text-black px-5 py-2 text-xs font-extrabold uppercase tracking-wider disabled:opacity-60 transition-all cursor-pointer shadow-sm"
                 >
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
-                  {saving ? 'Saving…' : 'Save changes'}
+                  <span>{saving ? 'Saving…' : 'Save changes'}</span>
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-ifoa-navy px-4 py-2 text-xs font-extrabold text-slate-950 hover:bg-ifoa-navy-light transition-all"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#020617] hover:bg-[#34E06E] text-white hover:text-black px-4 py-2 text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-sm"
               >
-                <Pencil className="h-3.5 w-3.5" /> Edit answers
+                <Pencil className="h-3.5 w-3.5" /> <span>Edit answers</span>
               </button>
             )}
           </div>
         </div>
 
         {/* Workflow */}
-        <div className="mt-5 pt-5 border-t border-gray-100 grid sm:grid-cols-[200px_1fr] gap-4">
+        <div className="mt-5 pt-5 border-t border-slate-100 grid sm:grid-cols-[200px_1fr] gap-4">
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-400 block mb-1.5">Status</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Status</label>
             <select
               value={submission.status}
               onChange={(e) => patch({ status: e.target.value }, 'Status updated.')}
               disabled={saving}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-rocket-dark focus:outline-none focus:ring-2 focus:ring-rocket-lime"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
             >
               {STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -201,7 +201,7 @@ export function AdminSubmissionDetailPage() {
             </select>
           </div>
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-400 block mb-1.5">Admin notes</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Admin notes</label>
             <textarea
               rows={2}
               defaultValue={submission.adminNotes}
@@ -209,7 +209,7 @@ export function AdminSubmissionDetailPage() {
                 if (e.target.value !== submission.adminNotes) patch({ adminNotes: e.target.value }, 'Notes saved.')
               }}
               placeholder="Internal notes (saved on blur)…"
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-rocket-dark focus:outline-none focus:ring-2 focus:ring-rocket-lime"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
         </div>

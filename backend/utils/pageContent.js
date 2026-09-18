@@ -12,13 +12,17 @@
  *   image values are { url, key, alt } objects (same shape as ImageUploader).
  */
 
-const PAGE_KEYS = ['services', 'about', 'contact', 'events']
+const PAGE_KEYS = ['home', 'services', 'about', 'contact', 'events', 'foxtrotDelta', 'courseEnrollment', 'courseDetail']
 
 const PAGE_LABELS = {
+  home: 'Home',
   services: 'Services',
   about: 'About',
   contact: 'Contact',
-  events: 'Events'
+  events: 'Events',
+  foxtrotDelta: 'Foxtrot Delta',
+  courseEnrollment: 'Course Enrollment',
+  courseDetail: 'Course Detail'
 }
 
 // --------------------------------------------------------------------------
@@ -28,6 +32,141 @@ const PAGE_LABELS = {
 const f = (k, label, type = 'text') => ({ k, label, type })
 
 const SCHEMAS = {
+  home: {
+    groups: [
+      {
+        k: 'hero',
+        label: 'Hero',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title (line 1)'),
+          f('titleHighlight', 'Title (highlighted line 2)'),
+          f('subtitle', 'Subtitle', 'textarea'),
+          f('primaryLabel', 'Primary button label'),
+          f('secondaryLabel', 'Secondary button label')
+        ],
+        lists: [
+          {
+            k: 'stats',
+            label: 'Metric strip',
+            itemLabel: 'Stat',
+            fields: [f('value', 'Value'), f('label', 'Label')]
+          }
+        ]
+      },
+      {
+        k: 'featuredCourses',
+        label: 'Featured courses',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('intro', 'Intro', 'textarea'),
+          f('viewAllLabel', 'View-all link label')
+        ],
+        lists: [
+          {
+            k: 'cards',
+            label: 'Course cards',
+            itemLabel: 'Course card',
+            fields: [
+              f('tag', 'Tag'),
+              f('duration', 'Duration badge'),
+              f('title', 'Title'),
+              f('desc', 'Description', 'textarea'),
+              f('ctaLabel', 'CTA button label')
+            ]
+          }
+        ]
+      },
+      {
+        k: 'trustRating',
+        label: 'Trust & rating banner',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('desc', 'Description', 'textarea'),
+          f('learnMoreLabel', 'Learn-more link label'),
+          f('ratingValue', 'Rating value'),
+          f('ratingSuffix', 'Rating suffix'),
+          f('reviewCountLabel', 'Review-count label'),
+          f('badgeLabel', 'Badge label')
+        ]
+      },
+      {
+        k: 'pathways',
+        label: 'Training pathways carousel',
+        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('seeMoreLabel', 'See-more button label')],
+        lists: [
+          {
+            k: 'cards',
+            label: 'Pathway cards',
+            itemLabel: 'Pathway card',
+            fields: [
+              f('category', 'Category'),
+              f('title', 'Title'),
+              f('desc', 'Description', 'textarea'),
+              f('hours', 'Hours / format'),
+              f('linkText', 'Link label')
+            ]
+          }
+        ]
+      },
+      {
+        k: 'network',
+        label: 'Global airline network',
+        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('intro', 'Intro', 'textarea')]
+      },
+      {
+        k: 'audience',
+        label: 'Audience pathways',
+        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('intro', 'Intro', 'textarea')],
+        lists: [
+          {
+            k: 'cards',
+            label: 'Audience cards',
+            itemLabel: 'Audience card',
+            fields: [
+              f('eyebrow', 'Eyebrow'),
+              f('trackBadge', 'Track badge'),
+              f('title', 'Title'),
+              f('desc', 'Description', 'textarea'),
+              f('bullet1', 'Feature bullet 1'),
+              f('bullet2', 'Feature bullet 2'),
+              f('ctaLabel', 'CTA button label')
+            ]
+          }
+        ]
+      },
+      {
+        k: 'testimonialsSection',
+        label: 'Testimonials section',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('intro', 'Intro', 'textarea'),
+          f('visualTabLabel', 'Tab label: visual showcase'),
+          f('executiveTabLabel', 'Tab label: executive statements'),
+          f('allTabLabel', 'Tab label: all feedback')
+        ]
+      },
+      {
+        k: 'framework',
+        label: 'Training framework',
+        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('desc', 'Description', 'textarea')]
+      },
+      {
+        k: 'finalCta',
+        label: 'Final CTA',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('desc', 'Description', 'textarea'),
+          f('ctaLabel', 'CTA button label')
+        ]
+      }
+    ]
+  },
+
   contact: {
     groups: [
       {
@@ -39,7 +178,14 @@ const SCHEMAS = {
             k: 'cards',
             label: 'Fork cards',
             itemLabel: 'Card',
-            fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('desc', 'Description', 'textarea')]
+            fields: [
+              f('eyebrow', 'Eyebrow'),
+              f('badge', 'Badge label'),
+              f('title', 'Title'),
+              f('desc', 'Description', 'textarea'),
+              f('ctaLabel', 'CTA button label')
+            ],
+            stringLists: [{ k: 'bullets', label: 'Feature bullets' }]
           }
         ]
       },
@@ -75,7 +221,11 @@ const SCHEMAS = {
       {
         k: 'newsletter',
         label: 'Newsletter strip',
-        fields: [f('title', 'Title'), f('desc', 'Description', 'textarea')]
+        fields: [
+          f('title', 'Title'),
+          f('desc', 'Description', 'textarea'),
+          f('successMessage', 'Subscribe success message')
+        ]
       }
     ]
   },
@@ -108,19 +258,6 @@ const SCHEMAS = {
             label: 'Core values',
             itemLabel: 'Value',
             fields: [f('idx', 'Number'), f('title', 'Title'), f('desc', 'Description', 'textarea')]
-          }
-        ]
-      },
-      {
-        k: 'regulatory',
-        label: 'Regulatory alignment',
-        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title', 'textarea'), f('intro', 'Intro', 'textarea')],
-        lists: [
-          {
-            k: 'standards',
-            label: 'Standards cards',
-            itemLabel: 'Standard',
-            fields: [f('title', 'Title'), f('sub', 'Sub-line')]
           }
         ]
       },
@@ -164,6 +301,7 @@ const SCHEMAS = {
           f('title', 'Title'),
           f('subtitle', 'Subtitle', 'textarea'),
           f('primaryLabel', 'Primary button label'),
+          f('whatsappLabel', 'WhatsApp button label'),
           f('image', 'Background image', 'image')
         ]
       },
@@ -220,6 +358,8 @@ const SCHEMAS = {
           f('title', 'Title'),
           f('intro', 'Intro', 'textarea'),
           f('note', 'Note line'),
+          f('searchPlaceholder', 'Search placeholder'),
+          f('disciplineCtaLabel', 'Discipline card CTA label'),
           f('moreTitle', 'More-info title'),
           f('moreDesc', 'More-info description', 'textarea')
         ],
@@ -260,6 +400,7 @@ const SCHEMAS = {
           f('title', 'Title'),
           f('subtitle', 'Subtitle', 'textarea'),
           f('primaryLabel', 'Primary button label'),
+          f('secondaryLabel', 'Secondary button label'),
           f('image', 'Background image', 'image')
         ]
       },
@@ -276,14 +417,9 @@ const SCHEMAS = {
         ]
       },
       {
-        k: 'alerts',
-        label: 'Intake alerts strip',
-        fields: [
-          f('eyebrow', 'Eyebrow'),
-          f('title', 'Title'),
-          f('desc', 'Description', 'textarea'),
-          f('buttonLabel', 'Button label')
-        ]
+        k: 'develop',
+        label: 'What You Develop',
+        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('intro', 'Intro', 'textarea')]
       },
       {
         k: 'curriculum',
@@ -302,6 +438,16 @@ const SCHEMAS = {
             fields: [f('num', 'Number'), f('title', 'Title'), f('iconName', 'Icon name')],
             stringLists: [{ k: 'items', label: 'Topics' }]
           }
+        ]
+      },
+      {
+        k: 'theoryToAircraft',
+        label: 'From Theory to the Aircraft',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('intro', 'Intro', 'textarea'),
+          f('tags', 'Module tags', 'stringList')
         ]
       },
       {
@@ -335,6 +481,187 @@ const SCHEMAS = {
         ]
       }
     ]
+  },
+
+  foxtrotDelta: {
+    groups: [
+      {
+        k: 'hero',
+        label: 'Hero',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('subtitle', 'Subtitle', 'textarea'),
+          f('description', 'Description', 'textarea'),
+          f('exploreLabel', 'Explore bookshelf button label'),
+          f('servicesLabel', 'Explore services button label')
+        ]
+      },
+      {
+        k: 'collection',
+        label: 'Featured collection',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('intro', 'Intro', 'textarea'),
+          f('viewAllLabel', 'View-all button label')
+        ],
+        lists: [
+          {
+            k: 'editions',
+            label: 'Featured editions',
+            itemLabel: 'Edition',
+            fields: [
+              f('id', 'Edition ID'),
+              f('number', 'Issue number'),
+              f('date', 'Date'),
+              f('title', 'Title'),
+              f('subtitle', 'Subtitle', 'textarea'),
+              f('theme', 'Theme'),
+              f('readLabel', 'Read button label')
+            ],
+            stringLists: [{ k: 'highlights', label: 'Highlights' }]
+          }
+        ]
+      },
+      {
+        k: 'finalCta',
+        label: 'Final CTA',
+        fields: [
+          f('title', 'Title'),
+          f('desc', 'Description', 'textarea'),
+          f('exploreLabel', 'Explore programs button label'),
+          f('contactLabel', 'Contact button label')
+        ]
+      }
+    ]
+  },
+
+  courseEnrollment: {
+    groups: [
+      {
+        k: 'breadcrumb',
+        label: 'Breadcrumb',
+        fields: [f('eventsLabel', 'Events link label'), f('enrollLabel', 'Enrollment step label')]
+      },
+      {
+        k: 'header',
+        label: 'Header',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('intro', 'Intro copy', 'textarea'),
+          f('backLabel', 'Back-to-course button label')
+        ]
+      },
+      {
+        k: 'sidebar',
+        label: 'Course summary sidebar',
+        fields: [
+          f('badgeLabel', 'Official intake badge'),
+          f('tuitionLabel', 'Tuition label'),
+          f('durationLabel', 'Duration row label'),
+          f('intakeLabel', 'Next intake row label'),
+          f('locationLabel', 'Location row label'),
+          f('credentialLabel', 'Credential row label'),
+          f('credentialValue', 'Credential value'),
+          f('accreditationLabel', 'Accreditation strip label')
+        ]
+      },
+      {
+        k: 'support',
+        label: 'Admissions support box',
+        fields: [
+          f('title', 'Title'),
+          f('desc', 'Description', 'textarea'),
+          f('ctaLabel', 'WhatsApp CTA label')
+        ]
+      },
+      {
+        k: 'states',
+        label: 'Loading & error states',
+        fields: [
+          f('loadingText', 'Loading text'),
+          f('notFoundTitle', 'Not-found title'),
+          f('notFoundCtaLabel', 'Not-found CTA label')
+        ]
+      }
+    ]
+  },
+
+  courseDetail: {
+    groups: [
+      {
+        k: 'labels',
+        label: 'Static labels & buttons',
+        fields: [
+          f('backLabel', 'Utility bar back link label'),
+          f('previewLabel', 'Preview-mode badge'),
+          f('refFallback', 'Ref code fallback text'),
+          f('easaBadge', 'Utility bar EASA badge'),
+          f('dgcaBadge', 'Utility bar DGCA badge'),
+          f('shareLabel', 'Share button label'),
+          f('copiedLabel', 'Share-copied label'),
+          f('eyebrowPrimary', 'Hero eyebrow (part 1)'),
+          f('eyebrowSecondary', 'Hero eyebrow (part 2)'),
+          f('easaComplianceBadge', 'Hero EASA compliance badge'),
+          f('dgcaComplianceBadge', 'Hero DGCA compliance badge'),
+          f('cbtaBadge', 'Hero CBTA badge'),
+          f('applyOnlineLabel', 'Apply Online button label'),
+          f('viewModulesLabel', 'View Course Modules button label'),
+          f('outcomesEyebrow', 'Outcomes card eyebrow'),
+          f('outcomesTitle', 'Outcomes card title'),
+          f('complianceEyebrow', 'Compliance card eyebrow'),
+          f('complianceTitleEasa', 'Compliance card title (EASA)'),
+          f('complianceTitleDgca', 'Compliance card title (DGCA)'),
+          f('complianceTag1Easa', 'Compliance tag 1 (EASA)'),
+          f('complianceTag1Dgca', 'Compliance tag 1 (DGCA)'),
+          f('complianceTag2', 'Compliance tag 2'),
+          f('complianceTag3', 'Compliance tag 3'),
+          f('eligibilityEyebrow', 'Eligibility card eyebrow'),
+          f('eligibilityTitle', 'Eligibility card title'),
+          f('admissionsEyebrow', 'Admissions banner eyebrow'),
+          f('admissionsTitle', 'Admissions banner title'),
+          f('admissionsDesc', 'Admissions banner description', 'textarea'),
+          f('admissionsApplyLabel', 'Admissions banner apply label'),
+          f('admissionsWhatsappLabel', 'Admissions banner WhatsApp label'),
+          f('sidebarAdmissionsOpenBadge', 'Sidebar admissions-open badge'),
+          f('sidebarOverviewLabel', 'Sidebar overview label'),
+          f('sidebarTuitionLabel', 'Sidebar tuition label'),
+          f('sidebarTuitionNote', 'Sidebar tuition note'),
+          f('sidebarEnrollLabel', 'Sidebar enroll button label'),
+          f('sidebarWhatsappLabel', 'Sidebar WhatsApp button label'),
+          f('sidebarDurationLabel', 'Sidebar duration row label'),
+          f('sidebarIntakeLabel', 'Sidebar next-intake row label'),
+          f('sidebarLocationLabel', 'Sidebar location row label'),
+          f('sidebarDeliveryLabel', 'Sidebar delivery row label'),
+          f('sidebarStandardLabel', 'Sidebar standard row label'),
+          f('sidebarStandardValueEasa', 'Sidebar standard value (EASA)'),
+          f('sidebarStandardValueDgca', 'Sidebar standard value (DGCA)'),
+          f('sidebarCertificateLabel', 'Sidebar certificate row label'),
+          f('sidebarCertificateValue', 'Sidebar certificate value'),
+          f('sidebarSupportTitle', 'Sidebar support box title'),
+          f('sidebarSupportDesc', 'Sidebar support box description', 'textarea')
+        ]
+      },
+      {
+        k: 'curriculum',
+        label: 'Curriculum framework',
+        fields: [
+          f('eyebrow', 'Eyebrow'),
+          f('title', 'Title'),
+          f('subtitle', 'Subtitle')
+        ],
+        lists: [
+          {
+            k: 'phases',
+            label: 'Curriculum phases',
+            itemLabel: 'Phase',
+            fields: [f('num', 'Number'), f('label', 'Phase label'), f('title', 'Title')],
+            stringLists: [{ k: 'topics', label: 'Topics' }]
+          }
+        ]
+      }
+    ]
   }
 }
 
@@ -343,6 +670,161 @@ const SCHEMAS = {
 // --------------------------------------------------------------------------
 
 const DEFAULTS = {
+  home: {
+    hero: {
+      eyebrow: 'International Flight Operations Academy',
+      title: 'Trained for the moment',
+      titleHighlight: 'nothing goes to plan.',
+      subtitle:
+        'IFOA prepares flight dispatchers and OCC teams for the decisions that matter at 3am not just the ones covered on the exam.',
+      primaryLabel: 'Explore Programs',
+      secondaryLabel: 'Our Services',
+      stats: [
+        { value: '500+', label: 'PROFESSIONALS TRAINED ANNUALLY' },
+        { value: '70+', label: 'AVIATION ORGANIZATIONS' },
+        { value: 'FAA', label: 'PART 65 APPROVED TRAINING' },
+        { value: 'Global', label: 'OPERATIONAL DELIVERY' }
+      ]
+    },
+    featuredCourses: {
+      eyebrow: 'Professional Aviation Training',
+      title: 'Industry-led training for aviation professionals.',
+      intro:
+        'Gain the knowledge, practical skills, and operational expertise required to perform with confidence in today’s aviation environment. From initial certification to advanced and recurrent training, our programs are built around real operational requirements.',
+      viewAllLabel: 'View all courses',
+      cards: [
+        {
+          tag: 'FAA Part 65 Certification',
+          duration: '12 Weeks Hybrid',
+          title: 'Part 65 Commercial Flight Dispatcher License Course',
+          desc: 'Comprehensive FAA Part 65 & EASA curriculum with high-stress live OCC flight simulations and guaranteed regulatory exam preparation.',
+          ctaLabel: 'View Course Details'
+        },
+        {
+          tag: 'IATA ISAGO / EASA',
+          duration: '5 Weeks Station Track',
+          title: 'Ground Operations & Ramp Safety Specialist Course',
+          desc: 'Master airside operations, turnaround supervision, dangerous goods regulations, and ground handling collision avoidance.',
+          ctaLabel: 'View Course Details'
+        }
+      ]
+    },
+    trustRating: {
+      eyebrow: 'Verified Post-Training Feedback',
+      title: 'Rated by the People We Trained',
+      desc:
+        "Every course closes with a post-training survey sent straight to our OCC teams and dispatchers. Across 458 completed surveys from 70+ aviation organizations, our training has been rated an average of 4.7 out of 5, with 98% saying they'd recommend IFOA.",
+      learnMoreLabel: 'Learn more',
+      ratingValue: '4.7',
+      ratingSuffix: '/5',
+      reviewCountLabel: '(458 verified post-training surveys)',
+      badgeLabel: '98% Recommendation Rate'
+    },
+    pathways: {
+      eyebrow: 'Global Training Pathways',
+      title: 'Certification Pathways Built for Operations',
+      seeMoreLabel: 'See More',
+      cards: [
+        {
+          category: 'Initial Training',
+          title: 'EASA Standards',
+          desc: 'Flight Dispatch Initial Training aligned with ICAO Doc 10106 and EASA ORO.GEN.110 requirements.',
+          hours: '200 Hours · Hybrid',
+          linkText: 'Explore EASA Training'
+        },
+        {
+          category: 'FAA Approved',
+          title: 'FAA Part 65',
+          desc: 'FAA-approved Aircraft Dispatcher certification training delivered through IFOA USA.',
+          hours: '200 Hours · USA',
+          linkText: 'Explore FAA Training'
+        },
+        {
+          category: 'Multiple Certification',
+          title: 'EASA + FAA',
+          desc: 'Combined pathway integrating FAA Part 65 certification with European operational knowledge.',
+          hours: '200 Hours · Hybrid',
+          linkText: 'Explore Combined Training'
+        },
+        {
+          category: 'Maintain Competency',
+          title: 'Recurrent Training',
+          desc: 'Customized recurrent programs based on the operator, regulatory framework, and fleet.',
+          hours: 'Carrier-Customized',
+          linkText: 'Recurrent Programs'
+        },
+        {
+          category: 'Professional Development',
+          title: 'Advanced Training',
+          desc: 'Scenario-driven development for experienced dispatchers and OCC professionals.',
+          hours: 'Scenario-Driven',
+          linkText: 'Advanced Programs'
+        },
+        {
+          category: 'Operational Teams',
+          title: 'Specialist Training',
+          desc: 'Crew Control, Ground Operations, Dangerous Goods and Train-the-Trainer programs.',
+          hours: 'CBTA Modular Tracks',
+          linkText: 'All Specialist Training'
+        }
+      ]
+    },
+    network: {
+      eyebrow: 'Global Airline Network',
+      title: 'Training Professionals for the Global Aviation Industry',
+      intro:
+        'Our training equips aviation professionals with the skills and expertise to pursue careers across commercial, cargo, and business aviation worldwide.'
+    },
+    audience: {
+      eyebrow: 'Two Different Needs',
+      title: 'Built for careers. Built for operations.',
+      intro: 'Individuals and aviation organizations should not be forced through the same customer journey.',
+      cards: [
+        {
+          eyebrow: 'For Individuals',
+          trackBadge: 'Career Pathway',
+          title: 'Become Ready for the Modern OCC',
+          desc:
+            'Gain the operational knowledge and practical competencies needed to perform confidently in a fast-paced airline Operations Control Centre.',
+          bullet1: 'FAA Part 65 & EASA',
+          bullet2: 'Scenario-Based Drills',
+          ctaLabel: 'Explore Training'
+        },
+        {
+          eyebrow: 'For Airlines',
+          trackBadge: 'Airlines & OCCs',
+          title: 'Training Built Around Your Operations',
+          desc:
+            'Customized initial, recurrent, and advanced training designed around your fleet, manuals, procedures, and operational environment.',
+          bullet1: 'Customized Fleet Training',
+          bullet2: 'OCC Consulting',
+          ctaLabel: 'Corporate Training'
+        }
+      ]
+    },
+    testimonialsSection: {
+      eyebrow: 'Verified Industry Feedback',
+      title: 'Stories from Those Who Know Us Best',
+      intro:
+        'Operational expertise, not generic aviation education. Real-world feedback from flight dispatchers, OCC managers, and airline training leaders.',
+      visualTabLabel: 'Airline Showcase',
+      executiveTabLabel: 'Executive Statements',
+      allTabLabel: 'All Feedback'
+    },
+    framework: {
+      eyebrow: 'Training Framework',
+      title: 'Built on global aviation standards. Designed for real operations.',
+      desc:
+        'Our training draws from ICAO, FAA, and EASA frameworks to deliver internationally relevant knowledge, practical operational skills, and scenario-based learning for today’s aviation professionals.'
+    },
+    finalCta: {
+      eyebrow: 'OPERATIONAL EXCELLENCE',
+      title: 'Train for the operation. Not only for the exam.',
+      desc: 'Explore individual programs or discuss a customized solution for your organization.',
+      ctaLabel: 'Contact IFOA'
+    }
+  },
+
   contact: {
     hero: {
       title: "Let's talk about your operation.",
@@ -351,13 +833,19 @@ const DEFAULTS = {
       cards: [
         {
           eyebrow: 'Airlines & Operators',
+          badge: 'For Airlines',
           title: 'Training my team',
-          desc: 'Fleet-wide or role-specific training, built around your ops manual and your regulator.'
+          desc: 'Fleet-wide or role-specific training, built around your ops manual and your regulator.',
+          bullets: ['Fleet-Customized', 'OCC Consulting'],
+          ctaLabel: 'Corporate Training'
         },
         {
           eyebrow: 'Individuals',
+          badge: 'For Individuals',
           title: 'Becoming a dispatcher',
-          desc: 'Certification pathways and course dates for individual applicants.'
+          desc: 'Certification pathways and course dates for individual applicants.',
+          bullets: ['FAA & EASA Path', 'Direct Guidance'],
+          ctaLabel: 'Explore Training'
         }
       ]
     },
@@ -402,7 +890,8 @@ const DEFAULTS = {
     },
     newsletter: {
       title: 'Prefer to just get the newsletter?',
-      desc: 'One email a month: aviation insight worth reading, plus Foxtrot Delta, free.'
+      desc: 'One email a month: aviation insight worth reading, plus Foxtrot Delta, free.',
+      successMessage: 'Subscribed! Check your inbox for confirmation.'
     }
   },
 
@@ -441,17 +930,6 @@ const DEFAULTS = {
           title: 'Driving innovation',
           desc: 'We anchor our culture in continuous improvement, enhancing the training experience and the value we deliver, year over year.'
         }
-      ]
-    },
-    regulatory: {
-      eyebrow: 'REGULATORY ALIGNMENT',
-      title: 'Designed by active professionals, aligned to the standards that matter',
-      intro:
-        'Our programs are trusted by top-tier airlines, designed by active aviation professionals, and aligned with the latest regulatory frameworks, including being the first aviation training organization to deliver Flight Operation and Flight Dispatch courses following the prerequisites recommended by the new ICAO Doc 10106 manual.',
-      standards: [
-        { title: 'EASA Standards', sub: 'ORO.GEN 110 Aligned' },
-        { title: 'ICAO Standards', sub: 'Doc 10106 Framework' },
-        { title: 'FAA Part 65', sub: 'Approved School' }
       ]
     },
     footprint: {
@@ -494,6 +972,7 @@ const DEFAULTS = {
       subtitle:
         'Six disciplines, one standard: training that prepares people to make the right call under pressure.',
       primaryLabel: 'Book a Consultation',
+      whatsappLabel: 'WhatsApp Us',
       image: null
     },
     pathways: {
@@ -580,6 +1059,8 @@ const DEFAULTS = {
       intro:
         "Build your career with specialized aviation services or strengthen your organization's capabilities with tailored operational solutions. Training, consulting, and expertise designed around what you need.",
       note: '',
+      searchPlaceholder: 'Search disciplines...',
+      disciplineCtaLabel: 'Inquire',
       moreTitle: 'More Information?',
       moreDesc:
         'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
@@ -666,6 +1147,7 @@ const DEFAULTS = {
       subtitle:
         'Fixed-date, classroom and virtual programs you can register for directly, alongside the custom fleet training we build for airlines and operators.',
       primaryLabel: 'View Open Programs',
+      secondaryLabel: 'Inquire on WhatsApp',
       image: null
     },
     programs: {
@@ -678,17 +1160,17 @@ const DEFAULTS = {
       emptyDesc:
         'New cohorts are published here as admissions open. Leave your email below to be notified.'
     },
-    alerts: {
-      eyebrow: 'Intake Alerts',
-      title: 'Want intake updates directly in your inbox?',
-      desc: 'Prefer to receive automated schedules? Leave your email to get notified when admissions open.',
-      buttonLabel: 'Notify Me'
+    develop: {
+      eyebrow: 'What You Develop',
+      title: 'Knowledge is only useful when you can apply it operationally.',
+      intro:
+        'The program develops the technical knowledge, situational awareness and operational judgment required to support safe and efficient flight operations.'
     },
     curriculum: {
       eyebrow: 'Curriculum Overview',
       title: 'What the Flight Dispatch program covers',
       intro: 'Organized around operational capability, not a flat list of disconnected subjects.',
-      footnote: '* India delivery includes manual practical flight planning on the Boeing B737-NG.',
+      footnote: '',
       modules: [
         {
           num: '01',
@@ -721,6 +1203,13 @@ const DEFAULTS = {
           items: ['Situational Awareness', 'Risk Assessment', 'Collaborative Decision-Making', 'Scenario Exercises']
         }
       ]
+    },
+    theoryToAircraft: {
+      eyebrow: 'FROM THEORY TO THE AIRCRAFT',
+      title: 'Know the aircraft. Understand the operation.',
+      intro:
+        'Take aircraft knowledge beyond the classroom. Our training connects aircraft systems, performance, limitations, mass and balance, and flight planning to the operational decisions professionals make every day.',
+      tags: ['AIRCRAFT SYSTEMS', 'PERFORMANCE', 'MASS & BALANCE', 'FLIGHT PLANNING', 'LIMITATIONS']
     },
     recent: {
       eyebrow: 'Recent Cohorts',
@@ -763,6 +1252,211 @@ const DEFAULTS = {
       primaryLabel: 'Talk to Us About Your Team',
       secondaryLabel: 'Browse Training Programs'
     }
+  },
+
+  foxtrotDelta: {
+    hero: {
+      eyebrow: 'The Voice of Operational Control',
+      title: 'Foxtrot Delta Magazine',
+      subtitle: 'Meet the Operational Control Teams that make the Magic happen!',
+      description:
+        'The aviation industry’s first and only publication dedicated exclusively to flight dispatchers, crew controllers, and OCC personnel worldwide, spotlighting the essential roles, daily challenges, and forward-thinking innovations that shape modern aviation.',
+      exploreLabel: 'Explore Digital Bookshelf',
+      servicesLabel: 'Explore Our Services'
+    },
+    collection: {
+      eyebrow: 'The Collection',
+      title: 'Featured Foxtrot Delta Issues',
+      intro:
+        'Highlights from our landmark publications covering OCC leadership, technological breakthroughs, and flight safety science.',
+      viewAllLabel: 'View All on Bookshelf',
+      editions: [
+        {
+          id: 'special-edition',
+          number: 'Special Edition',
+          date: 'May 2023',
+          title: 'Aviation Sustainability',
+          subtitle: 'Can Aviation Kick Its Contrail Habit? & Net Zero for Business Aviation',
+          theme: 'Sustainability & Ecology',
+          readLabel: 'Read Issue',
+          highlights: ['SATAVIA Contrail Science', 'AZZERA Net Zero Pathways', 'Eco-Climb Profiles']
+        },
+        {
+          id: 'issue-02',
+          number: 'Issue N°2',
+          date: 'February 2023',
+          title: 'Jetfly OCC & Fleet Pioneers',
+          subtitle: 'Managing the World’s Largest Pilatus Fleet with High-Precision Dispatch',
+          theme: 'Fleet Operations',
+          readLabel: 'Read Issue',
+          highlights: ['Jetfly 60+ PC-12/PC-24 OCC', 'SITA EWAS Predictive Analytics', 'SATAVIA Meteorology']
+        },
+        {
+          id: 'issue-01',
+          number: 'Issue N°1',
+          date: 'November 2022',
+          title: 'The Indian Ocean Pearl',
+          subtitle: 'Air Mauritius OCC Operations & Threat-Informed Risk Planning',
+          theme: 'Oceanic Operations',
+          readLabel: 'Read Issue',
+          highlights: ['Air Mauritius Isolated Hub', 'Osprey:Sentinel Threat Intel', 'Honeywell Forge Efficiency']
+        }
+      ]
+    },
+    finalCta: {
+      title: 'Ready to enhance your operational competencies?',
+      desc:
+        'Book the most suitable training program to acquire essential decision-making skills, regulatory compliance, and peak operational performance.',
+      exploreLabel: 'Explore Training Programs',
+      contactLabel: 'Contact Us'
+    }
+  },
+
+  courseEnrollment: {
+    breadcrumb: {
+      eventsLabel: 'Events & Programs',
+      enrollLabel: 'Online Enrollment'
+    },
+    header: {
+      eyebrow: 'Official Candidate Intake Portal',
+      intro:
+        'Complete your official admission form below. Once received, our admissions panel reviews prerequisites and issues your official placement offer.',
+      backLabel: 'Back to Course Overview'
+    },
+    sidebar: {
+      badgeLabel: 'Official Intake',
+      tuitionLabel: 'Course Tuition',
+      durationLabel: 'Duration',
+      intakeLabel: 'Next Intake',
+      locationLabel: 'Location',
+      credentialLabel: 'Credential',
+      credentialValue: 'IFOA Flight Dispatch Cert',
+      accreditationLabel: 'Regulatory Framework'
+    },
+    support: {
+      title: 'Need Admissions Assistance?',
+      desc: 'Have questions regarding eligibility, visa letters, or payment schedules?',
+      ctaLabel: 'Chat with Admissions on WhatsApp'
+    },
+    states: {
+      loadingText: 'Loading Official Application Portal…',
+      notFoundTitle: 'Application Portal Not Found',
+      notFoundCtaLabel: 'View All Open Programs'
+    }
+  },
+
+  courseDetail: {
+    labels: {
+      backLabel: 'All Intakes & Events',
+      previewLabel: 'Preview Mode',
+      refFallback: 'IFOA Training',
+      easaBadge: 'EASA Compliant',
+      dgcaBadge: 'DGCA & ICAO Aligned',
+      shareLabel: 'Share',
+      copiedLabel: 'Copied',
+      eyebrowPrimary: 'Professional Aviation Training',
+      eyebrowSecondary: 'Flight Dispatch Curriculum',
+      easaComplianceBadge: 'EASA ORO.GEN.110 Compliant',
+      dgcaComplianceBadge: 'DGCA & ICAO Aligned Training',
+      cbtaBadge: 'Competency-Based Assessment (CBTA)',
+      applyOnlineLabel: 'Apply Online',
+      viewModulesLabel: 'View Course Modules',
+      outcomesEyebrow: 'Competency Outcomes',
+      outcomesTitle: 'Built Around Operational Mastery',
+      complianceEyebrow: 'Regulatory Compliance',
+      complianceTitleEasa: 'EASA Compliant Standards',
+      complianceTitleDgca: 'DGCA & ICAO Aligned Training',
+      complianceTag1Easa: 'EASA ORO.GEN.110',
+      complianceTag1Dgca: 'DGCA CAR Compliant',
+      complianceTag2: 'ICAO Doc 10106',
+      complianceTag3: 'CBTA Framework',
+      eligibilityEyebrow: 'Eligibility Profile',
+      eligibilityTitle: 'Who Should Attend This Training?',
+      admissionsEyebrow: 'Admissions Portal',
+      admissionsTitle: 'Ready to Start Your Dispatch Career?',
+      admissionsDesc: 'Reserve your seat for the upcoming training or connect directly with our team.',
+      admissionsApplyLabel: 'Apply Online ↗',
+      admissionsWhatsappLabel: 'WhatsApp Chat',
+      sidebarAdmissionsOpenBadge: 'Admissions Open',
+      sidebarOverviewLabel: 'Programme Overview',
+      sidebarTuitionLabel: 'Tuition Fee',
+      sidebarTuitionNote: '+ 18% GST / Track · Inclusive of official materials',
+      sidebarEnrollLabel: 'Enroll Now — Apply Online ↗',
+      sidebarWhatsappLabel: 'Inquire on WhatsApp',
+      sidebarDurationLabel: 'Duration',
+      sidebarIntakeLabel: 'Next Intake',
+      sidebarLocationLabel: 'Location',
+      sidebarDeliveryLabel: 'Delivery',
+      sidebarStandardLabel: 'Standard',
+      sidebarStandardValueEasa: 'EASA Compliant',
+      sidebarStandardValueDgca: 'DGCA / EASA Aligned',
+      sidebarCertificateLabel: 'Certificate',
+      sidebarCertificateValue: 'IFOA Verified Certificate',
+      sidebarSupportTitle: 'Admissions Support',
+      sidebarSupportDesc: 'Direct questions regarding admission prerequisites or corporate group bookings.'
+    },
+    curriculum: {
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Flight Dispatch Programme Covers',
+      subtitle: 'Structured around the core competencies required for international airline dispatch.',
+      phases: [
+        {
+          num: '01',
+          label: 'PHASE 01',
+          title: 'The Operating Environment',
+          topics: [
+            'Air Law & Civil Regulations',
+            'ICAO / EASA Alignment',
+            'Air Traffic Management (ATM)',
+            'Aeronautical Communications'
+          ]
+        },
+        {
+          num: '02',
+          label: 'PHASE 02',
+          title: 'Know the Aircraft',
+          topics: [
+            'Aircraft Systems & Avionics',
+            'Flight Instrumentation',
+            'Principles of Flight & Aerodynamics',
+            'Aircraft Performance & Limits'
+          ]
+        },
+        {
+          num: '03',
+          label: 'PHASE 03',
+          title: 'Plan the Flight',
+          topics: [
+            'Aviation Navigation & Routes',
+            'Synoptic Aeronautical Meteorology',
+            'Mass & Balance Calculations',
+            'Operational Flight Planning (OFP)'
+          ]
+        },
+        {
+          num: '04',
+          label: 'PHASE 04',
+          title: 'Control the Operation',
+          topics: [
+            'Live OCC Flight Monitoring',
+            'Standard Operational Procedures',
+            'Crew & Dispatch Human Factors',
+            'OCC Operational Coordination'
+          ]
+        },
+        {
+          num: '05',
+          label: 'PHASE 05',
+          title: 'Make the Decision',
+          topics: [
+            'Tactical Situational Awareness',
+            'Risk Assessment & Mitigation',
+            'Collaborative Decision Making (CDM)',
+            'Complex Scenario Simulator Drills'
+          ]
+        }
+      ]
+    }
   }
 }
 
@@ -791,11 +1485,69 @@ function isValidPage(page) {
   return PAGE_KEYS.includes(page)
 }
 
+// Strip an admin-submitted content blob down to exactly the shape SCHEMAS[page]
+// declares (known groups -> known fields / lists / stringLists only). This is
+// the server-side enforcement that the admin editor can change copy but not
+// inject arbitrary keys the frontend might later read as layout/structure.
+function sanitizeField(type, value) {
+  if (type === 'stringList') {
+    return Array.isArray(value) ? value.filter((s) => typeof s === 'string') : []
+  }
+  if (type === 'image') {
+    if (!value || typeof value !== 'object') return null
+    const { url, key, alt } = value
+    return {
+      url: typeof url === 'string' ? url : null,
+      key: typeof key === 'string' ? key : null,
+      alt: typeof alt === 'string' ? alt : ''
+    }
+  }
+  // text / textarea
+  return typeof value === 'string' ? value : value == null ? value : String(value)
+}
+
+function sanitizeListItem(list, item) {
+  if (!isPlainObject(item)) return null
+  const out = {}
+  for (const field of list.fields || []) {
+    if (item[field.k] !== undefined) out[field.k] = sanitizeField(field.type, item[field.k])
+  }
+  for (const sl of list.stringLists || []) {
+    if (item[sl.k] !== undefined) out[sl.k] = sanitizeField('stringList', item[sl.k])
+  }
+  return out
+}
+
+function sanitizeGroup(group, value) {
+  if (!isPlainObject(value)) return {}
+  const out = {}
+  for (const field of group.fields || []) {
+    if (value[field.k] !== undefined) out[field.k] = sanitizeField(field.type, value[field.k])
+  }
+  for (const list of group.lists || []) {
+    if (Array.isArray(value[list.k])) {
+      out[list.k] = value[list.k].map((item) => sanitizeListItem(list, item)).filter(Boolean)
+    }
+  }
+  return out
+}
+
+function sanitizeContent(page, data) {
+  const schema = SCHEMAS[page]
+  if (!schema || !isPlainObject(data)) return {}
+  const out = {}
+  for (const group of schema.groups || []) {
+    if (data[group.k] !== undefined) out[group.k] = sanitizeGroup(group, data[group.k])
+  }
+  return out
+}
+
 module.exports = {
   PAGE_KEYS,
   PAGE_LABELS,
   SCHEMAS,
   DEFAULTS,
   mergeContent,
+  sanitizeContent,
   isValidPage
 }

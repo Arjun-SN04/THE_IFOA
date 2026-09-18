@@ -125,6 +125,15 @@ const courseSchema = new mongoose.Schema(
     seo: {
       metaTitle: { type: String, default: '' },
       metaDescription: { type: String, default: '' }
+    },
+
+    // Per-course overrides for the shared "courseDetail"/"courseEnrollment"
+    // chrome templates (backend/utils/pageContent.js SCHEMAS/DEFAULTS). Empty
+    // by default, meaning the course shows the shipped defaults untouched;
+    // an admin can customize either independently per course.
+    pageContent: {
+      courseDetail: { type: mongoose.Schema.Types.Mixed, default: {} },
+      courseEnrollment: { type: mongoose.Schema.Types.Mixed, default: {} }
     }
   },
   { timestamps: true }

@@ -47,7 +47,7 @@ export function CourseDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] pt-28 flex items-center justify-center">
         <RiLoader4Line className="w-8 h-8 animate-spin text-rocket-dark" />
       </div>
     )
@@ -55,7 +55,7 @@ export function CourseDetailPage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="min-h-[60vh] pt-28 pb-16 flex flex-col items-center justify-center gap-4 px-6 text-center">
         <Seo
           path={`/courses/${slug}`}
           title="Course not available | IFOA"

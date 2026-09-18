@@ -2,6 +2,7 @@ const Course = require('../models/Course')
 const FormSchema = require('../models/FormSchema')
 const { asyncHandler } = require('../middleware/error')
 const { deleteObject } = require('../config/r2')
+const { DEFAULTS, mergeContent } = require('../utils/pageContent')
 
 // Fields a client is never allowed to set directly.
 const PROTECTED = ['_id', 'createdAt', 'updatedAt', '__v']
@@ -33,6 +34,15 @@ const listPublic = asyncHandler(async (req, res) => {
 const getBySlug = asyncHandler(async (req, res) => {
   const course = await Course.findOne({ slug: req.params.slug, status: 'published' }).lean()
   if (!course) return res.status(404).json({ message: 'Course not found' })
+
+  // Merge this course's own chrome-text overrides on top of the shipped
+  // defaults, so the public page gets its per-course copy in this same
+  // request rather than a second call to the shared pages API.
+  course.content = {
+    courseDetail: mergeContent(DEFAULTS.courseDetail, course.pageContent?.courseDetail || {}),
+    courseEnrollment: mergeContent(DEFAULTS.courseEnrollment, course.pageContent?.courseEnrollment || {})
+  }
+
   res.json({ course })
 })
 
@@ -61,6 +71,14 @@ const listAdmin = asyncHandler(async (req, res) => {
 const getById = asyncHandler(async (req, res) => {
   const course = await Course.findById(req.params.id).lean()
   if (!course) return res.status(404).json({ message: 'Course not found' })
+
+  // Same merged chrome-text shape as the public getBySlug response, so the
+  // admin preview page (which fetches by id) renders identically.
+  course.content = {
+    courseDetail: mergeContent(DEFAULTS.courseDetail, course.pageContent?.courseDetail || {}),
+    courseEnrollment: mergeContent(DEFAULTS.courseEnrollment, course.pageContent?.courseEnrollment || {})
+  }
+
   res.json({ course })
 })
 

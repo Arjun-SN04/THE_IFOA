@@ -25,11 +25,35 @@ export function mergeContent(base, override) {
  *
  * Returns { c, loaded } where `c` is the merged content object.
  */
+function isPreviewMode() {
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('__preview') === '1'
+}
+
 export function usePageContent(page, fallback) {
   const [c, setC] = useState(fallback)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
+    if (isPreviewMode()) {
+      // Inside the admin's live-preview iframe: skip the network entirely and
+      // just wait for postMessage'd in-progress edits from the parent tab.
+      setLoaded(true)
+
+      const onMessage = (event) => {
+        if (event.origin !== window.location.origin) return
+        const msg = event.data
+        if (!msg || msg.type !== 'ifoa-preview-content' || msg.page !== page) return
+        setC(mergeContent(fallback, msg.data))
+      }
+      window.addEventListener('message', onMessage)
+
+      // Tell the parent we're ready so it can (re)send the current edit
+      // state right away, in case we missed an earlier postMessage.
+      window.parent.postMessage({ type: 'ifoa-preview-ready', page }, window.location.origin)
+
+      return () => window.removeEventListener('message', onMessage)
+    }
+
     let alive = true
     api
       .getPage(page)

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   RiMenu4Fill,
   RiCloseLine,
@@ -8,7 +9,8 @@ import {
   RiDashboard3Line,
   RiBookOpenLine,
   RiGroupLine,
-  RiLogoutBoxRLine
+  RiLogoutBoxRLine,
+  RiFlightTakeoffLine
 } from 'react-icons/ri'
 import ifoaLogo from '@/assets/brand/ifoa-logoweb.png'
 import { useAdminAuth } from '@/context/AdminAuthContext'
@@ -43,7 +45,7 @@ function AdminMenu({ admin, onLogout }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 pl-1 pr-2 py-1 hover:bg-white/10 transition"
+        className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 pl-1 pr-2 py-1 hover:bg-white/10 transition cursor-pointer"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -53,14 +55,19 @@ function AdminMenu({ admin, onLogout }) {
         <span className="hidden sm:block text-xs font-semibold text-white/90 max-w-[120px] truncate">
           {admin.name || admin.email}
         </span>
-        <RiArrowDownSLine className={`w-4 h-4 text-white/60 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <RiArrowDownSLine className={`w-4 h-4 text-white/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
 
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 mt-2 w-60 rounded-xl bg-white text-rocket-dark shadow-2xl border border-black/10 overflow-hidden z-50"
-        >
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -6 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            role="menu"
+            className="absolute right-0 mt-2 w-60 rounded-2xl bg-white text-rocket-dark shadow-2xl border border-black/10 overflow-hidden z-50 origin-top-right"
+          >
           <div className="px-4 py-3 border-b border-black/5">
             <p className="text-sm font-bold truncate">{admin.name || 'IFOA Admin'}</p>
             <p className="text-xs text-gray-500 truncate">{admin.email}</p>
@@ -90,22 +97,23 @@ function AdminMenu({ admin, onLogout }) {
                 setOpen(false)
                 onLogout()
               }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer"
               role="menuitem"
             >
               <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
-    </div>
-  )
+    </AnimatePresence>
+  </div>
+)
 }
 
 // variant="fixed" (default) is the marketing sticky header.
 // variant="static" flows in the document - used inside the admin console
 // and course preview so it never overlaps other chrome.
-export function Navbar({ onOpenLogin, variant = 'fixed' }) {
+export function Navbar({ variant = 'fixed' }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
@@ -148,8 +156,8 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
 
   const isActive = (path) => {
     if (path === '/' && location.pathname === '/') return true
-    if (path === '/services' && (location.pathname.startsWith('/services') || location.pathname.startsWith('/courses'))) return true
-    if (path === '/events' && (location.pathname.startsWith('/events') || location.pathname.startsWith('/events-courses'))) return true
+    if (path === '/services' && location.pathname.startsWith('/services')) return true
+    if (path === '/events' && (location.pathname.startsWith('/events') || location.pathname.startsWith('/events-courses') || location.pathname.startsWith('/courses'))) return true
     if (path === '/foxtrot-delta' && (location.pathname.startsWith('/foxtrot-delta') || location.pathname.startsWith('/magazine'))) return true
     if (path !== '/' && !path.startsWith('http') && location.pathname.startsWith(path)) return true
     return false
@@ -164,8 +172,8 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
     <header
       className={`${isStatic ? 'relative' : 'fixed'} top-0 left-0 w-full z-50 text-white transform-gpu will-change-transform transition-[background-color,border-color,box-shadow] duration-200 ${
         isScrolled || mobileMenuOpen
-          ? 'bg-[#020617]/95 backdrop-blur-md border-b border-white/10 shadow-xl'
-          : 'bg-[#020617]/85 backdrop-blur-md border-b border-white/10 shadow-sm'
+          ? 'bg-[#020617] backdrop-blur-md border-b border-white/10 shadow-xl'
+          : 'bg-[#020617] backdrop-blur-md border-b border-white/10 shadow-sm'
       }`}
       data-purpose="sticky-navigation"
     >
@@ -227,9 +235,10 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
             ) : (
               <Link
                 to="/events"
-                className="hidden sm:inline-flex bg-[#34E06E] text-slate-950 px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] hover:shadow-[0_0_20px_rgba(52,224,110,0.45)] transition-all hover:scale-105 shadow-md"
+                className="hidden sm:inline-flex items-center gap-2 bg-[#34E06E] text-slate-950 px-5 sm:px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] hover:shadow-[0_0_20px_rgba(52,224,110,0.45)] transition-all hover:scale-105 shadow-md group cursor-pointer"
               >
-                Enroll Now
+                <RiFlightTakeoffLine className="w-4 h-4 text-slate-950 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                <span>Enroll Now</span>
               </Link>
             )}
 
@@ -246,80 +255,98 @@ export function Navbar({ onOpenLogin, variant = 'fixed' }) {
       </div>
 
       {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-[#020617]/98 backdrop-blur-2xl border-t border-white/10 px-4 sm:px-6 py-6 space-y-4 max-h-[calc(100dvh-5rem)] overflow-y-auto shadow-2xl animate-in slide-in-from-top-2 duration-200">
-          <div className="flex flex-col space-y-2">
-            {navLinks.map((link) => {
-              const active = isActive(link.path)
-              if (link.external) {
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+            className="md:hidden bg-[#020617] border-t border-white/10 px-4 sm:px-6 py-6 space-y-4 max-h-[calc(100dvh-5rem)] overflow-y-auto shadow-2xl"
+          >
+            <div className="flex flex-col space-y-2">
+              {navLinks.map((link, i) => {
+                const active = isActive(link.path)
+                if (link.external) {
+                  return (
+                    <motion.a
+                      key={link.name}
+                      href={link.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, x: -6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.02, duration: 0.14 }}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+                    >
+                      <span>{link.name}</span>
+                      <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
+                    </motion.a>
+                  )
+                }
                 return (
-                  <a
-                    key={link.name}
-                    href={link.path}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.02, duration: 0.14 }}
                   >
-                    <span>{link.name}</span>
-                    <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
-                  </a>
+                    <Link
+                      to={link.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                        active
+                          ? 'bg-white/15 text-white font-bold'
+                          : 'text-white/90 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      <span>{link.name}</span>
+                      <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
+                    </Link>
+                  </motion.div>
                 )
-              }
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                    active
-                      ? 'bg-white/15 text-white font-bold'
-                      : 'text-white/90 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span>{link.name}</span>
-                  <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
-                </Link>
-              )
-            })}
-            {admin ? (
-              <div className="pt-3 mt-2 border-t border-white/10 space-y-1">
-                <div className="px-4 py-2">
-                  <p className="text-sm font-bold text-white truncate">{admin.name || 'IFOA Admin'}</p>
-                  <p className="text-xs text-white/50 truncate">{admin.email}</p>
-                </div>
-                {ADMIN_LINKS.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+              })}
+              {admin ? (
+                <div className="pt-3 mt-2 border-t border-white/10 space-y-1">
+                  <div className="px-4 py-2">
+                    <p className="text-sm font-bold text-white truncate">{admin.name || 'IFOA Admin'}</p>
+                    <p className="text-xs text-white/50 truncate">{admin.email}</p>
+                  </div>
+                  {ADMIN_LINKS.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+                    >
+                      <item.icon className="w-4 h-4 opacity-70" />
+                      {item.name}
+                    </Link>
+                  ))}
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-white/10 transition-colors"
                   >
-                    <item.icon className="w-4 h-4 opacity-70" />
-                    {item.name}
+                    <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
+                  </button>
+                </div>
+              ) : (
+                <div className="pt-4">
+                  <Link
+                    to="/events"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-[#34E06E] text-slate-950 py-3.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] active:scale-[0.99] transition-all shadow-lg"
+                  >
+                    <RiFlightTakeoffLine className="w-4 h-4 text-slate-950" />
+                    <span>Enroll Now</span>
                   </Link>
-                ))}
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-white/10 transition-colors"
-                >
-                  <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
-                </button>
-              </div>
-            ) : (
-              <div className="pt-4">
-                <Link
-                  to="/events"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full block text-center bg-[#34E06E] text-slate-950 py-3.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] active:scale-[0.99] transition-all shadow-lg"
-                >
-                  Enroll Now
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

@@ -20,6 +20,7 @@ import { graph, organizationSchema, breadcrumbSchema } from '@/lib/seo'
 import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
 import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
 import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
+import logoDgca from '@/assets/course/standards-logos/logo-dgca.png'
 
 // Country Flags
 import flagSwitzerland from '@/assets/contact/flag-switzerland.png'
@@ -65,17 +66,6 @@ const FALLBACK = {
         title: 'Driving innovation',
         desc: 'We anchor our culture in continuous improvement, enhancing the training experience and the value we deliver, year over year.'
       }
-    ]
-  },
-  regulatory: {
-    eyebrow: 'REGULATORY ALIGNMENT',
-    title: 'Designed by active professionals, aligned to the standards that matter',
-    intro:
-      'Our programs are trusted by top-tier airlines, designed by active aviation professionals, and aligned with the latest regulatory frameworks, including being the first aviation training organization to deliver Flight Operation and Flight Dispatch courses following the prerequisites recommended by the new ICAO Doc 10106 manual.',
-    standards: [
-      { title: 'EASA Standards', sub: 'ORO.GEN 110 Aligned' },
-      { title: 'ICAO Standards', sub: 'Doc 10106 Framework' },
-      { title: 'FAA Part 65', sub: 'Approved School' }
     ]
   },
   footprint: {
@@ -222,10 +212,10 @@ export function AboutPage() {
                   <span className="text-xs font-mono font-black text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
                     {val.idx}
                   </span>
-                  <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors">
+                  <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors min-h-[3.25rem] flex items-start">
                     {val.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed min-h-[4.5rem]">
                     {val.desc}
                   </p>
                 </div>
@@ -235,7 +225,84 @@ export function AboutPage() {
         </div>
       </section>
 
-     
+      {/* 4. GLOBAL REGULATORY STANDARDS & AUTHORITIES */}
+      <section className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200/80" data-purpose="standards-authorities">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-10">
+          <div className="max-w-2xl space-y-2.5">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
+              Accreditation & Standards
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
+              Trained to World Civil Aviation Frameworks
+            </h2>
+            <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
+              Every course, manual, and flight dispatch syllabus at IFOA is engineered in direct alignment with the world's most recognized civil aviation authority standards.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-5">
+              <div className="space-y-3.5">
+                <div className="h-12 flex items-center justify-start">
+                  <img src={logoFaa} alt="FAA" className="h-10 w-auto object-contain" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">FAA Part 65</h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                  FAA-approved Aircraft Dispatcher training school and official US Agent for Service operations.
+                </p>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider block pt-3 border-t border-slate-100">
+                United States FAA #IPIN
+              </span>
+            </div>
+
+            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-5">
+              <div className="space-y-3.5">
+                <div className="h-12 flex items-center justify-start">
+                  <img src={logoEasa} alt="EASA" className="h-10 w-auto object-contain" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">EASA ORO.GEN.110</h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                  European flight operations standard curriculum, syllabus frameworks, and recurrent training protocols.
+                </p>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider block pt-3 border-t border-slate-100">
+                European Union Aviation Safety
+              </span>
+            </div>
+
+            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-5">
+              <div className="space-y-3.5">
+                <div className="h-12 flex items-center justify-start">
+                  <img src={logoIcao} alt="ICAO" className="h-10 w-auto object-contain" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">ICAO Doc 10106</h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                  Competency-based training and assessment (CBTA) framework for international flight operations officers.
+                </p>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider block pt-3 border-t border-slate-100">
+                UN Civil Aviation Organization
+              </span>
+            </div>
+
+            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-5">
+              <div className="space-y-3.5">
+                <div className="h-12 flex items-center justify-start">
+                  <img src={logoDgca} alt="DGCA" className="h-10 w-auto object-contain" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">DGCA India</h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                  Civil Aviation Requirements (CAR) aligned flight operations curricula delivered onsite in New Delhi.
+                </p>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider block pt-3 border-t border-slate-100">
+                Directorate General of Civil Aviation
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* 5. GLOBAL FOOTPRINT */}
       <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="global-footprint">
@@ -278,8 +345,8 @@ export function AboutPage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/75 to-transparent" />
                   </div>
 
-                  <div className="relative z-10 space-y-2 max-w-sm">
-                    <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block">
+                  <div className="relative z-10 space-y-2 max-w-sm min-h-[5.5rem] flex flex-col justify-start">
+                    <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block w-fit">
                       {reg.name}
                     </span>
                     <h3 className="text-2xl font-bold text-white tracking-tight pt-1">
@@ -290,7 +357,7 @@ export function AboutPage() {
                     </p>
                   </div>
 
-                  <p className="relative z-10 text-xs sm:text-sm text-slate-300 font-normal leading-relaxed pt-3 border-t border-white/10">
+                  <p className="relative z-10 text-xs sm:text-sm text-slate-300 font-normal leading-relaxed pt-3 border-t border-white/10 min-h-[4.5rem]">
                     {reg.desc}
                   </p>
                 </div>

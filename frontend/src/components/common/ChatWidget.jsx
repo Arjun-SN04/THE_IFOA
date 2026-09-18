@@ -617,15 +617,15 @@ export function ChatWidget() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 15 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute bottom-0 right-0 bg-white rounded-2xl overflow-hidden flex flex-col max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)] max-h-[calc(100vh-90px)] sm:max-h-[calc(100vh-120px)] shadow-[0_24px_80px_rgba(0,0,0,0.20),_0_4px_16px_rgba(0,0,0,0.10)] border border-gray-200"
+            initial={{ opacity: 0, y: 24, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.94 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+            className="absolute bottom-0 right-0 bg-white rounded-3xl overflow-hidden flex flex-col max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)] max-h-[calc(100vh-90px)] sm:max-h-[calc(100vh-120px)] shadow-[0_24px_80px_rgba(0,0,0,0.22),_0_4px_16px_rgba(0,0,0,0.12)] border border-gray-200/90 origin-bottom-right"
             style={{
               width: currentWidth,
               height: 600,
-              transition: 'width 0.25s cubic-bezier(0.4,0,0.2,1), height 0.25s cubic-bezier(0.4,0,0.2,1)',
+              transition: 'width 0.28s cubic-bezier(0.16, 1, 0.3, 1), height 0.28s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
             {/* Header */}
