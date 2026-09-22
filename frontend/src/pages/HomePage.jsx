@@ -784,24 +784,15 @@ export function HomePage() {
                   {/* Divider */}
                   <div className="border-t border-slate-100" />
 
-                  {/* 2-Column Intake & Fee */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
-                    <div className="flex items-start gap-2.5">
-                      <RiCalendarEventLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">NEXT INTAKE</span>
-                        <span className="text-sm sm:text-base font-bold text-slate-900 block mt-0.5">To be announced</span>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2.5">
-                      <RiCoinsLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
-                        <span className="text-lg sm:text-xl font-extrabold text-slate-950 block mt-0.5">€3,500</span>
-                        <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">
-                          Travel, accommodation, meals and visa costs not included.
-                        </span>
-                      </div>
+                  {/* Training Fee */}
+                  <div className="flex items-start gap-2.5">
+                    <RiCoinsLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
+                      <span className="text-lg sm:text-xl font-extrabold text-slate-950 block mt-0.5">€3,500</span>
+                      <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">
+                        Travel, accommodation, meals and visa costs not included.
+                      </span>
                     </div>
                   </div>
 
@@ -901,24 +892,15 @@ export function HomePage() {
                   {/* Divider */}
                   <div className="border-t border-slate-100" />
 
-                  {/* 2-Column Intake & Fee */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
-                    <div className="flex items-start gap-2.5">
-                      <RiCalendarEventLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">NEXT INTAKE</span>
-                        <span className="text-sm sm:text-base font-bold text-slate-900 block mt-0.5">To be announced</span>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2.5">
-                      <RiCoinsLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
-                        <span className="text-lg sm:text-xl font-extrabold text-slate-950 block mt-0.5">$4,500</span>
-                        <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">
-                          ADX examination ($175), examiner fee ($600), travel, accommodation, meals and visa costs not included.
-                        </span>
-                      </div>
+                  {/* Training Fee */}
+                  <div className="flex items-start gap-2.5">
+                    <RiCoinsLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
+                      <span className="text-lg sm:text-xl font-extrabold text-slate-950 block mt-0.5">$4,500</span>
+                      <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">
+                        ADX examination ($175), examiner fee ($600), travel, accommodation, meals and visa costs not included.
+                      </span>
                     </div>
                   </div>
 

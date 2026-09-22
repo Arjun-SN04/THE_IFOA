@@ -241,9 +241,9 @@ const courses = [
           admissionsApplyLabel: 'Apply Online'
         },
         curriculum: {
-          eyebrow: '14 CFR Part 65 · Appendix A',
-          title: 'What the programme covers',
-          subtitle: 'All eight FAA-required knowledge areas, presented in the same order as Appendix A.',
+          eyebrow: 'Curriculum Framework',
+          title: 'What the Aircraft Dispatcher Programme Covers',
+          subtitle: 'All eight FAA-required knowledge areas from 14 CFR Part 65 Appendix A, presented in the same order.',
           phases: [
             {
               num: 'I',
@@ -351,6 +351,45 @@ const courses = [
       ]
     },
     trainingStandards: { intro: `${ICAO_INTRO} Compliant with the ICAO CBTA framework for recurrent training.`, logos: [] },
+    curriculum: {
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Recurrent Refresher Programme Covers',
+      subtitle: 'The regulatory and tactical areas that change most between annual cycles, refreshed against this year\'s standards.',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'Adverse Weather, Volcanic Ash & Space Weather Hazard Mitigation',
+          focus: 'Evolving winter and high-altitude hazards',
+          description:
+            'A refresher on adverse weather decision-making, volcanic ash advisory response, and the growing operational relevance of space weather on HF communications and GPS-based navigation.'
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Advanced Fuel Management Policies & Contingency Fuel Reductions',
+          focus: 'What changed since last year\'s policy',
+          description:
+            'Updated contingency fuel reduction methods and advanced fuel management policy, reviewed against the current operator fuel policy rather than last year\'s.'
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Live OCC Crisis Management & Diversion Decision-Making Simulations',
+          focus: 'Decision drills under time pressure',
+          description:
+            'Live simulation of irregular operations and diversion scenarios, run under realistic time pressure to keep crisis decision-making current rather than theoretical.'
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Updated EASA / FAA Airspace & Operational Dispatch Regulations',
+          focus: 'This cycle\'s regulatory changes',
+          description:
+            'A focused review of the airspace and operational dispatch regulation changes issued since the previous recertification cycle, under both EASA and FAA frameworks.'
+        }
+      ]
+    },
     whoShouldAttend: {
       intro: 'Designed for licensed personnel maintaining operational currency. Ideal for:',
       points: ['Active airline flight dispatchers', 'Flight followers and OCC officers', 'Operations control supervisors'],
@@ -413,9 +452,9 @@ const courses = [
     trainingStandards: { intro: `${ICAO_INTRO} Aligned with IATA Dangerous Goods Regulations (DGR) and ICAO Annex 18 (Safe Transport of Dangerous Goods by Air).`, logos: [] },
     curriculum: {
       eyebrow: 'Curriculum Framework',
-      title: '7 modules, adapted to your role and your operation',
+      title: 'What the Dangerous Goods Programme Covers',
       subtitle:
-        'Same core competencies, different scenarios. Acceptance and loading modules shift with your operation, not padded with procedures you will never use.',
+        '7 modules, adapted to your role and your operation. Acceptance and loading modules shift with your operation, not padded with procedures you will never use.',
       layout: 'accordion',
       phases: [
         {
@@ -609,6 +648,45 @@ const courses = [
       ]
     },
     trainingStandards: { intro: `${ICAO_INTRO} Aligned with IATA ISAGO and EASA ground handling standards.`, logos: [] },
+    curriculum: {
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Ground Operations Programme Covers',
+      subtitle: 'Structured around aircraft turnaround supervision, airside safety and ramp-level hazard awareness.',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'Aircraft Turnaround Supervision & Critical Path Monitoring',
+          focus: 'On-time, safe turnarounds',
+          description:
+            'Coordinating the ramp during a live turnaround, monitoring the critical path, and recognizing the point where a delay risks becoming a safety issue rather than just a schedule issue.'
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Airside Safety Management Systems & Hazard Identification',
+          focus: 'Spotting hazards before they become incidents',
+          description:
+            'Applying SMS principles at ramp level: identifying airside hazards, GSE collision risks and foreign object debris before they escalate into an incident.'
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Dangerous Goods Regulations (DGR Cat 10 Awareness)',
+          focus: 'Ramp-level DG awareness',
+          description:
+            'Category 10 dangerous goods awareness for ramp and ground handling staff: recognizing DG in cargo and baggage, and knowing when to escalate to a DG specialist.'
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Baggage & Cargo Loading Supervision, Weight & Balance Crosscheck',
+          focus: 'Catching load errors before departure',
+          description:
+            'Supervising baggage and cargo loading against the load plan, and cross-checking weight and balance documentation before the aircraft is released.'
+        }
+      ]
+    },
     whoShouldAttend: {
       intro: 'Built for airside and station personnel. Ideal for:',
       points: ['Ramp agents and load controllers', 'Station operations staff', 'Ground handling supervisors', 'FBO and GSE personnel'],
@@ -670,8 +748,8 @@ const courses = [
       { label: 'Certificate', value: 'IFOA Certificate' }
     ],
     curriculum: {
-      eyebrow: 'COURSE CURRICULUM',
-      title: 'What the Crew Control programme covers',
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Crew Control Programme Covers',
       subtitle: 'A focused regulatory and fatigue-management programme for personnel working with crew legality and rostering.',
       phases: [
         {
@@ -760,8 +838,8 @@ const courses = [
       outro: ''
     },
     bottomBanner: {
-      eyebrow: 'IFOA CORPORATE TRAINING',
-      title: 'Bring Crew Control Training to your operation',
+      eyebrow: 'Admissions Portal',
+      title: 'Ready to bring Crew Control training to your operation?',
       desc: '2 days · Online or on-site · Custom corporate rate',
       ctaLabel: 'Request a Corporate Quote'
     },
@@ -811,8 +889,8 @@ const courses = [
       { label: 'Certificate', value: 'IFOA Certificate of Completion' }
     ],
     curriculum: {
-      eyebrow: 'Course Curriculum',
-      title: 'What the programme covers',
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Train the Trainer Programme Covers',
       subtitle: 'Eight modules, from adult-learning theory through to a practical delivery assessment.',
       layout: 'accordion',
       phases: [
@@ -996,10 +1074,10 @@ const courses = [
       { label: 'Next Cohort', value: '[Next cohort start date]' }
     ],
     curriculum: {
-      eyebrow: 'Course Curriculum',
-      title: '11 modules, every one of them OCC-specific',
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Human Factors Programme Covers',
       subtitle:
-        'Every classic Human Factors topic, rebuilt around what it actually looks like on your floor - not a generic aviation module with "OCC" pasted on the title slide.',
+        '11 modules, every one of them OCC-specific. Every classic Human Factors topic, rebuilt around what it actually looks like on your floor - not a generic aviation module with "OCC" pasted on the title slide.',
       layout: 'accordion',
       phases: [
         {
@@ -1191,6 +1269,45 @@ const courses = [
       ]
     },
     trainingStandards: { intro: `${ICAO_INTRO} Built against ICAO Annex 19 and the FAA SMS Rule.`, logos: [] },
+    curriculum: {
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Aviation SMS Programme Covers',
+      subtitle: 'The operational safety management lifecycle, from hazard modeling through post-incident review.',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'Safety Risk Assessment & Bow-Tie Hazard Modeling',
+          focus: 'Modeling risk, not just listing it',
+          description:
+            'Building bow-tie hazard models that connect a threat through to its consequences, with the barriers and controls that sit between them made explicit rather than implied.'
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Fatigue Risk Management Systems (FRMS) for 24/7 OCC Shift Rostering',
+          focus: 'FRMS built for a 24/7 floor',
+          description:
+            'Designing a working fatigue risk management system for continuous shift-based operations, not a policy document that never touches the actual roster.'
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Just Culture Implementation & Internal Audit Management',
+          focus: 'A reporting pipeline people actually use',
+          description:
+            'Implementing a Just Culture reporting pipeline that staff trust enough to use, paired with the internal audit management that keeps it credible.'
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Emergency Response Planning (ERP) Coordination & Post-Incident Review',
+          focus: 'From response to real learning',
+          description:
+            'Coordinating emergency response planning across the operation, and running a post-incident review process that produces genuine corrective action, not just a filed report.'
+        }
+      ]
+    },
     whoShouldAttend: {
       intro: 'Aimed at those accountable for operational safety. Ideal for:',
       points: ['Safety and compliance managers', 'Quality assurance auditors', 'OCC managers and risk analysts', 'Accountable managers'],
@@ -1246,6 +1363,45 @@ const courses = [
       ]
     },
     trainingStandards: { intro: 'Advisory work is scoped against ICAO, EASA and the operator’s national authority requirements.', logos: [] },
+    curriculum: {
+      eyebrow: 'Curriculum Framework',
+      title: 'What the Engagement Covers',
+      subtitle: 'A typical engagement runs from on-site assessment through to a fully redesigned operational workflow.',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'OCC Ergonomics, Multi-Screen Flight Following & Console Setup',
+          focus: 'A floor built for real flight following',
+          description:
+            'Assessing and redesigning the physical and digital OCC floor: console layout, multi-screen flight-following ergonomics, and the information architecture that supports it.'
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Flight Operations Manual (FOM/OM-A) Drafting & Regulator Compliance',
+          focus: 'Regulator-ready documentation',
+          description:
+            'Drafting or updating the Flight Operations Manual (FOM/OM-A) to reflect how the operation actually runs, structured to satisfy the national authority reviewing it.'
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Dispatch & Flight Planning Software Evaluation, Selection & Integration',
+          focus: 'Choosing and integrating the right tools',
+          description:
+            'Evaluating dispatch and flight-planning software against the operation\'s actual requirements, then managing selection and integration into the live workflow.'
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'OCC Staffing Models, Competency Audits & Efficiency Benchmarking',
+          focus: 'Sizing the team against real demand',
+          description:
+            'Building a staffing model sized against real operational demand, backed by competency audits and efficiency benchmarking against comparable operations.'
+        }
+      ]
+    },
     whoShouldAttend: {
       intro: 'For operators building or rebuilding an operational control centre. Ideal for:',
       points: ['Startup airlines preparing for AOC award', 'Expanding charter and business aviation operators', 'Cargo carriers modernising an existing OCC', 'Post-holders in flight operations'],
