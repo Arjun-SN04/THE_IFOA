@@ -1,6 +1,6 @@
 // Server-side validation of a submitted `answers` object against a form's
 // `sections`. Mirrors the client-side rules in
-// frontend/src/components/formEngine/formSchema.js — keep the two in sync.
+// frontend/src/components/formEngine/formSchema.js - keep the two in sync.
 
 function isEmpty(field, value) {
   if (field.type === 'checkbox') return value !== true
@@ -35,7 +35,7 @@ function validateAnswers(sections, answers) {
   for (const section of sections) {
     const sectionAnswers = (answers && answers[section.id]) || {}
     for (const field of section.fields) {
-      // `intake` options depend on the course, not the schema — the controller
+      // `intake` options depend on the course, not the schema - the controller
       // enforces it separately once it knows the course's active intakes.
       if (field.type === 'staticText' || field.type === 'intake') continue
       if (field.visibleIf && !conditionMet(field.visibleIf, sectionAnswers)) continue

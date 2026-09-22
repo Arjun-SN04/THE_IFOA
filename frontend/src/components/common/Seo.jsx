@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   SITE_NAME,
+  SITE_NOINDEX,
   DEFAULT_OG_IMAGE,
   absoluteUrl,
   clampDescription
@@ -11,7 +12,7 @@ import {
  * the tree into <head>, so pages can drop this in at their top level.
  *
  * `path` must be the canonical path for the route (no query string, no trailing
- * slash) — duplicate canonicals across routes are what split ranking signals.
+ * slash) - duplicate canonicals across routes are what split ranking signals.
  */
 export function Seo({
   title,
@@ -33,7 +34,7 @@ export function Seo({
       <link rel="canonical" href={url} />
       <meta
         name="robots"
-        content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}
+        content={noindex || SITE_NOINDEX ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}
       />
 
       <meta property="og:site_name" content={SITE_NAME} />

@@ -387,7 +387,7 @@ export function AdminFormBuilderPage() {
             {isCourseMode ? (
               <>
                 {meta.course?.title}
-                {' — '}
+                {' - '}
                 {meta.usingTemplate ? (
                   <span className="text-amber-600 font-semibold">currently using the default template</span>
                 ) : (

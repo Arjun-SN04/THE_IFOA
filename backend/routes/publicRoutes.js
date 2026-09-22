@@ -10,7 +10,7 @@ const newsletter = require('../controllers/newsletterController')
 
 const router = express.Router()
 
-// Chat bot — keep bursts in check per IP.
+// Chat bot - keep bursts in check per IP.
 const chatLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   limit: 40,
@@ -19,7 +19,7 @@ const chatLimiter = rateLimit({
   message: { message: 'Too many messages. Give it a minute and try again.' }
 })
 
-// Public form — cap submissions per IP.
+// Public form - cap submissions per IP.
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 10,
@@ -28,7 +28,7 @@ const registerLimiter = rateLimit({
   message: { message: 'Too many registrations from this address. Try again later.' }
 })
 
-// Contact form — cap messages per IP.
+// Contact form - cap messages per IP.
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 10,

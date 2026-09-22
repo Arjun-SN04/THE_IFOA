@@ -33,8 +33,8 @@ export function CourseDetailPage() {
       .then((data) => {
         if (!cancelled) setCourse(data.course)
       })
-      .catch((err) => {
-        if (!cancelled) setError(err.message)
+      .catch(() => {
+        if (!cancelled) setError('This course could not be found.')
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -48,7 +48,7 @@ export function CourseDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] pt-28 flex items-center justify-center">
-        <RiLoader4Line className="w-8 h-8 animate-spin text-rocket-dark" />
+        <RiLoader4Line className="w-8 h-8 animate-spin text-[#34E06E]" />
       </div>
     )
   }
@@ -82,7 +82,7 @@ export function CourseDetailPage() {
         description={clampDescription(
           course.seo?.metaDescription || course.summary || course.whatYouWillLearn?.intro
         )}
-        image={course.heroImage?.url || course.image}
+        image={course.card?.image?.url || course.heroImage?.url}
         jsonLd={graph(
           organizationSchema(),
           courseSchema(course),

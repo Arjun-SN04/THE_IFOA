@@ -328,3 +328,23 @@ html {
     animation: none;
   }
 }
+
+/* Admin inline-edit mode (only ever present inside the admin's live-preview
+   iframe, see components/admin/CmsEditable.jsx) — visually marks editable
+   text regions without affecting the real public site. */
+.ifoa-cms-editable {
+  outline: 1px dashed transparent;
+  outline-offset: 3px;
+  border-radius: 4px;
+  cursor: text;
+  transition: outline-color 0.15s ease, background-color 0.15s ease;
+}
+.ifoa-cms-editable:hover {
+  outline-color: rgba(52, 224, 110, 0.6);
+  background-color: rgba(52, 224, 110, 0.06);
+}
+.ifoa-cms-editable:focus {
+  outline: 2px solid #34E06E;
+  outline-offset: 3px;
+  background-color: rgba(52, 224, 110, 0.08);
+}

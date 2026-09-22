@@ -41,8 +41,11 @@ const BLANK = {
   delivery: { intro: '', items: [] },
   trainingStandards: { intro: '', logos: [] },
   whoShouldAttend: { intro: '', points: [], outro: '' },
+  entryRequirements: { intro: '', points: [] },
   courseContent: { intro: '', modules: [], note: '' },
   certification: { text: '', points: [] },
+  additionalCosts: { intro: '', items: [], note: '' },
+  trainingPhilosophy: { eyebrow: '', title: '', intro: '', cards: [] },
   registrationOpen: true,
   seats: '',
   intakes: [],
@@ -242,15 +245,33 @@ export function AdminCourseFormPage() {
             </Link>
           )}
           {isEdit && (
-            <a
-              href={`/admin/courses/${id}/preview`}
-              target="_blank"
-              rel="noreferrer"
-              title="Opens the last saved version in a new tab"
-              className="inline-flex items-center gap-2 border border-gray-300 text-rocket-dark font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
+            <button
+              type="button"
+              onClick={() => {
+                // Stashed so the preview tab (a separate browsing context - no
+                // shared React state) can show the draft as currently edited,
+                // not just what's saved in the DB. Read once and dropped by
+                // AdminCoursePreviewPage so a later plain reload/share of that
+                // tab correctly falls back to the real saved version.
+                //
+                // localStorage, not sessionStorage: sessionStorage is only
+                // cloned into a new tab when that tab has an opener
+                // relationship, which `noopener` below deliberately breaks.
+                // localStorage is shared by every tab on the origin regardless
+                // of how it was opened, so it survives that.
+                try {
+                  localStorage.setItem(`course-draft-preview:${id}`, JSON.stringify(form))
+                } catch {
+                  // localStorage unavailable (private mode, quota) - preview
+                  // still works, just shows the last saved version instead.
+                }
+                window.open(`/admin/courses/${id}/preview`, '_blank', 'noopener')
+              }}
+              title="Preview your current unsaved edits"
+              className="inline-flex items-center gap-2 border border-gray-300 text-rocket-dark font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <Eye className="w-4 h-4" /> Preview
-            </a>
+            </button>
           )}
           <button
             type="submit"
@@ -265,7 +286,8 @@ export function AdminCourseFormPage() {
 
       {isEdit && (
         <p className="text-xs text-gray-400 -mt-2">
-          Preview opens the last <span className="font-semibold">saved</span> version - save first to see recent edits.
+          Preview shows your current edits, saved or not - it just won't survive a refresh of that tab
+          until you hit <span className="font-semibold">Save Course</span>.
         </p>
       )}
 
@@ -345,18 +367,10 @@ export function AdminCourseFormPage() {
         </div>
       </Card>
 
-      <Card title="Hero Image">
-        <ImageUploader
-          value={form.heroImage}
-          onChange={(v) => setForm((prev) => ({ ...prev, heroImage: v }))}
-          folder="courses"
-        />
-      </Card>
-
       <Card title="Catalog Card">
         <p className="text-[11px] text-gray-400 -mt-1">
-          Controls how this course looks on the Events &amp; Courses grid. Blank fields fall back to
-          the hero image, summary, authority and duration above.
+          Controls how this course looks on the Events &amp; Courses grid, and is also the image shown
+          on the course's own page. Blank fields fall back to summary, authority and duration above.
         </p>
 
         <div className="grid lg:grid-cols-2 gap-6 items-start">
@@ -492,7 +506,7 @@ export function AdminCourseFormPage() {
         </p>
         {form.intakes.map((intake, i) => (
           <div key={i} className="rounded-lg border border-black/10 p-4 grid sm:grid-cols-[1fr_170px_auto_auto] gap-3 items-end">
-            <Field label="Label" hint="e.g. March 2026 — New Delhi">
+            <Field label="Label" hint="e.g. March 2026 - New Delhi">
               <input
                 className={input}
                 value={intake.label}
@@ -552,7 +566,7 @@ export function AdminCourseFormPage() {
       {isEdit && (
         <Card title="Enrollment Form">
           <p className="text-sm text-gray-600 -mt-1">
-            The multi-section form candidates fill on the course page. Fully customisable — sections, fields,
+            The multi-section form candidates fill on the course page. Fully customisable - sections, fields,
             field types, required flags and order.
           </p>
           <Link
@@ -648,16 +662,6 @@ export function AdminCourseFormPage() {
                 }}
               />
             </Field>
-            <ImageUploader
-              label="Logo"
-              value={item.image}
-              folder="delivery"
-              onChange={(image) => {
-                const items = [...form.delivery.items]
-                items[i] = { ...item, image }
-                setForm((prev) => ({ ...prev, delivery: { ...prev.delivery, items } }))
-              }}
-            />
           </div>
         ))}
 
@@ -668,7 +672,7 @@ export function AdminCourseFormPage() {
               ...prev,
               delivery: {
                 ...prev.delivery,
-                items: [...prev.delivery.items, { label: '', title: '', description: '', image: null }]
+                items: [...prev.delivery.items, { label: '', title: '', description: '' }]
               }
             }))
           }
@@ -687,15 +691,6 @@ export function AdminCourseFormPage() {
             onChange={setNested('trainingStandards', 'intro')}
           />
         </Field>
-        <ImageUploader
-          label="Accreditation logos"
-          multiple
-          folder="standards"
-          value={form.trainingStandards.logos}
-          onChange={(logos) =>
-            setForm((prev) => ({ ...prev, trainingStandards: { ...prev.trainingStandards, logos } }))
-          }
-        />
       </Card>
 
       <Card title="Who Should Attend">
@@ -722,6 +717,29 @@ export function AdminCourseFormPage() {
             onChange={setNested('whoShouldAttend', 'outro')}
           />
         </Field>
+      </Card>
+
+      <Card title="Entry Requirements">
+        <p className="text-[11px] text-gray-400 -mt-1">
+          Actual admission prerequisites (language, age, equipment, prior experience) - different
+          from "Who Should Attend" above, which is the target audience. Only list requirements you
+          can actually confirm; leave blank rather than guessing.
+        </p>
+        <Field label="Intro">
+          <textarea
+            rows={2}
+            className={input}
+            value={form.entryRequirements.intro}
+            onChange={setNested('entryRequirements', 'intro')}
+          />
+        </Field>
+        <StringList
+          label="Requirements"
+          items={form.entryRequirements.points}
+          onChange={(points) =>
+            setForm((prev) => ({ ...prev, entryRequirements: { ...prev.entryRequirements, points } }))
+          }
+        />
       </Card>
 
       <Card title="Course Content">
@@ -765,6 +783,134 @@ export function AdminCourseFormPage() {
             setForm((prev) => ({ ...prev, certification: { ...prev.certification, points } }))
           }
         />
+      </Card>
+
+      <Card title="Additional Certification Costs">
+        <p className="text-[11px] text-gray-400 -mt-1">
+          Third-party exam/examiner fees not included in the tuition above (e.g. FAA ADX knowledge
+          test). Shown in the sidebar only when at least one item is added.
+        </p>
+        <Field label="Intro / heading">
+          <input className={input} value={form.additionalCosts.intro} onChange={setNested('additionalCosts', 'intro')} />
+        </Field>
+        {form.additionalCosts.items.map((item, i) => (
+          <div key={i} className="grid grid-cols-[1fr_auto_auto] gap-3 items-end">
+            <Field label="Label">
+              <input
+                className={input}
+                value={item.label}
+                onChange={(e) => {
+                  const items = [...form.additionalCosts.items]
+                  items[i] = { ...item, label: e.target.value }
+                  setForm((prev) => ({ ...prev, additionalCosts: { ...prev.additionalCosts, items } }))
+                }}
+              />
+            </Field>
+            <Field label="Amount">
+              <input
+                className={`${input} w-28`}
+                value={item.amount}
+                onChange={(e) => {
+                  const items = [...form.additionalCosts.items]
+                  items[i] = { ...item, amount: e.target.value }
+                  setForm((prev) => ({ ...prev, additionalCosts: { ...prev.additionalCosts, items } }))
+                }}
+              />
+            </Field>
+            <button
+              type="button"
+              onClick={() => {
+                const items = form.additionalCosts.items.filter((_, x) => x !== i)
+                setForm((prev) => ({ ...prev, additionalCosts: { ...prev.additionalCosts, items } }))
+              }}
+              className="text-gray-400 hover:text-red-600 pb-2.5"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() =>
+            setForm((prev) => ({
+              ...prev,
+              additionalCosts: { ...prev.additionalCosts, items: [...prev.additionalCosts.items, { label: '', amount: '' }] }
+            }))
+          }
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-rocket-dark hover:underline"
+        >
+          <Plus className="w-3.5 h-3.5" /> Add cost item
+        </button>
+        <Field label="Note" hint="e.g. who the fee is paid to, and that it's excluded from tuition">
+          <input className={input} value={form.additionalCosts.note} onChange={setNested('additionalCosts', 'note')} />
+        </Field>
+      </Card>
+
+      <Card title="Training Philosophy">
+        <p className="text-[11px] text-gray-400 -mt-1">
+          Optional section - only shown on the course page when a title is set.
+        </p>
+        <Field label="Eyebrow">
+          <input className={input} value={form.trainingPhilosophy.eyebrow} onChange={setNested('trainingPhilosophy', 'eyebrow')} />
+        </Field>
+        <Field label="Title">
+          <input className={input} value={form.trainingPhilosophy.title} onChange={setNested('trainingPhilosophy', 'title')} />
+        </Field>
+        <Field label="Intro">
+          <textarea rows={2} className={input} value={form.trainingPhilosophy.intro} onChange={setNested('trainingPhilosophy', 'intro')} />
+        </Field>
+        {form.trainingPhilosophy.cards.map((card, i) => (
+          <div key={i} className="rounded-lg border border-black/10 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Card {i + 1}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const cards = form.trainingPhilosophy.cards.filter((_, x) => x !== i)
+                  setForm((prev) => ({ ...prev, trainingPhilosophy: { ...prev.trainingPhilosophy, cards } }))
+                }}
+                className="text-gray-400 hover:text-red-600"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+            <Field label="Title">
+              <input
+                className={input}
+                value={card.title}
+                onChange={(e) => {
+                  const cards = [...form.trainingPhilosophy.cards]
+                  cards[i] = { ...card, title: e.target.value }
+                  setForm((prev) => ({ ...prev, trainingPhilosophy: { ...prev.trainingPhilosophy, cards } }))
+                }}
+              />
+            </Field>
+            <Field label="Description">
+              <textarea
+                rows={2}
+                className={input}
+                value={card.desc}
+                onChange={(e) => {
+                  const cards = [...form.trainingPhilosophy.cards]
+                  cards[i] = { ...card, desc: e.target.value }
+                  setForm((prev) => ({ ...prev, trainingPhilosophy: { ...prev.trainingPhilosophy, cards } }))
+                }}
+              />
+            </Field>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() =>
+            setForm((prev) => ({
+              ...prev,
+              trainingPhilosophy: { ...prev.trainingPhilosophy, cards: [...prev.trainingPhilosophy.cards, { title: '', desc: '' }] }
+            }))
+          }
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-rocket-dark hover:underline"
+        >
+          <Plus className="w-3.5 h-3.5" /> Add card
+        </button>
       </Card>
 
       <Card title="SEO">

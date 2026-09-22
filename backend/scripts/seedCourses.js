@@ -1,5 +1,5 @@
 // Seeds one fully-populated course so the public detail page and the admin
-// editor have real data to work with. Safe to re-run — it upserts by slug.
+// editor have real data to work with. Safe to re-run - it upserts by slug.
 // Run: npm run seed:courses
 require('dotenv').config()
 

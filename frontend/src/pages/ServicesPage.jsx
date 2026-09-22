@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { api } from '@/lib/api'
 import {
   RiWhatsappFill,
   RiSearchLine,
@@ -28,25 +26,27 @@ import {
 } from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
+import { Reveal } from '@/components/common/Reveal'
 import { CourseCard } from '@/components/course/CourseCard'
 import { AviationIcon } from '@/components/common/AviationIcon'
 import { usePageContent } from '@/hooks/usePageContent'
 import { Seo } from '@/components/common/Seo'
 import { graph, organizationSchema, breadcrumbSchema } from '@/lib/seo'
+import { CmsText, CmsRemoveItem, CmsAddItem, isPreviewEditMode } from '@/components/admin/CmsEditable'
 
 // Standards Logos
-import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
-import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
-import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
+import logoFaa from '@/assets/shared/standards-logos/logo-faa.webp'
+import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
+import logoIcao from '@/assets/shared/standards-logos/logo-icao.webp'
 
 // Official Discipline Media
-import imgFlightDispatch from '@/assets/services/01_flight_dispatch.png'
-import imgDgr from '@/assets/services/02_dangerous_goods.png'
-import imgTrainTrainer from '@/assets/services/03_train_trainer.png'
-import imgHumanFactors from '@/assets/services/04_human_factors.png'
-import imgCrewControl from '@/assets/services/05_crew_control.png'
-import imgConsulting from '@/assets/services/06_consulting.png'
-import imgOccLarge from '@/assets/profile_media/occ-flight-dispatch-large.jpg'
+import imgFlightDispatch from '@/assets/services/01_flight_dispatch.webp'
+import imgDgr from '@/assets/services/02_dangerous_goods.webp'
+import imgTrainTrainer from '@/assets/services/03_train_trainer.webp'
+import imgHumanFactors from '@/assets/services/04_human_factors.webp'
+import imgCrewControl from '@/assets/services/05_crew_control.webp'
+import imgConsulting from '@/assets/services/06_consulting.webp'
+import imgOccLarge from '@/assets/services/occ-flight-dispatch-large.jpg'
 
 // Discipline card images stay bundled; matched to a discipline by its number.
 const DISCIPLINE_IMG_BY_ID = {
@@ -134,7 +134,7 @@ const FALLBACK = {
         idx: '03',
         title: 'Training That Fits Your Operation',
         subtitle: 'ONSITE, VIRTUAL & HYBRID',
-        desc: 'Choose the delivery format that works for you—onsite, virtual, or hybrid—without compromising the quality or practical focus of the training.',
+        desc: 'Choose the delivery format that works for you (onsite, virtual, or hybrid) without compromising the quality or practical focus of the training.',
         iconName: 'occ-console'
       },
       {
@@ -173,7 +173,13 @@ const FALLBACK = {
         category: 'flight-ops',
         tag: 'Flight Operations',
         iconName: 'dispatcher-headset',
-        image: null
+        image: null,
+        // Two pathways exist for this discipline - the card offers both
+        // rather than picking one for the visitor.
+        courseChoices: [
+          { label: 'EASA', courseSlug: 'flight-dispatcher-initial-certification' },
+          { label: 'FAA Part 65', courseSlug: 'aircraft-dispatcher-training-faa-part-65' }
+        ]
       },
       {
         id: '02',
@@ -184,7 +190,8 @@ const FALLBACK = {
         category: 'flight-ops',
         tag: 'DGR Compliance',
         iconName: 'dgr-flame',
-        image: null
+        image: null,
+        courseSlug: 'dangerous-goods-regulations-cbta-initial'
       },
       {
         id: '03',
@@ -195,18 +202,20 @@ const FALLBACK = {
         category: 'train-trainer',
         tag: 'Instructional Pedagogy',
         iconName: 'instructor-board',
-        image: null
+        image: null,
+        courseSlug: 'train-the-trainer-icao-cbta-instructor'
       },
       {
         id: '04',
-        title: 'Human Factors',
+        title: 'Human Factors for OCC',
         subtitle: 'Performance under pressure starts with people.',
         desc: 'Strengthen decision-making, communication, teamwork, and resilience for demanding aviation environments.',
         audience: 'OCC & Flight Operations Personnel',
         category: 'flight-ops',
-        tag: 'Resilience & CRM',
+        tag: 'Human Factors for OCC',
         iconName: 'human-brain-crm',
-        image: null
+        image: null,
+        courseSlug: 'human-factors-in-the-occ'
       },
       {
         id: '05',
@@ -217,7 +226,8 @@ const FALLBACK = {
         category: 'flight-ops',
         tag: 'Crew Scheduling',
         iconName: 'crew-roster',
-        image: null
+        image: null,
+        courseSlug: 'airline-crew-control-flight-rostering'
       },
       {
         id: '06',
@@ -228,7 +238,8 @@ const FALLBACK = {
         category: 'consulting',
         tag: 'Aviation Advisory',
         iconName: 'airline-audit',
-        image: null
+        image: null,
+        courseSlug: 'airline-occ-setup-operational-consulting'
       }
     ]
   }
@@ -239,14 +250,6 @@ export function ServicesPage() {
   const { c } = usePageContent('services', FALLBACK)
   const [selectedDiscipline, setSelectedDiscipline] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [liveCourses, setLiveCourses] = useState([])
-
-  useEffect(() => {
-    api
-      .listCourses()
-      .then((data) => setLiveCourses(data.courses || []))
-      .catch(() => setLiveCourses([]))
-  }, [])
 
   const REG_LOGOS = [
     { logo: logoEasa },
@@ -254,18 +257,29 @@ export function ServicesPage() {
     { logo: logoEasa, secondLogo: logoFaa },
     { logo: logoIcao }
   ]
+  // Each card keeps a `_path` back into the underlying content array (its
+  // position there, not its position in this possibly-filtered/reordered
+  // display list) so inline edits and remove/add controls write to the
+  // right storage slot.
   const certificationPathways = c.pathways.cards.map((card, i) => ({
     ...card,
-    ...(REG_LOGOS[i] || {})
+    ...(REG_LOGOS[i] || {}),
+    _path: `pathways.cards.${i}`,
+    _index: i
   }))
 
-  const cbtaPillars = c.cbta?.pillars || FALLBACK.cbta.pillars
+  const cbtaPillars = (c.cbta?.pillars || FALLBACK.cbta.pillars).map((p, i) => ({
+    ...p,
+    _path: `cbta.pillars.${i}`,
+    _index: i
+  }))
 
   const EXCLUDED_DISCIPLINES = new Set(['ground operations', 'aviation sustainability'])
 
   const disciplines = (c.specialist?.disciplines || FALLBACK.specialist.disciplines)
-    .filter((d) => !EXCLUDED_DISCIPLINES.has((d.title || '').trim().toLowerCase()))
-    .map((d, index) => {
+    .map((d, originalIndex) => ({ d, originalIndex }))
+    .filter(({ d }) => !EXCLUDED_DISCIPLINES.has((d.title || '').trim().toLowerCase()))
+    .map(({ d, originalIndex }, index) => {
       const formattedId = String(index + 1).padStart(2, '0')
       const lowerTitle = (d.title || '').toLowerCase()
       let category = d.category
@@ -277,7 +291,9 @@ export function ServicesPage() {
         ...d,
         id: formattedId,
         category,
-        image: d.image?.url || DISCIPLINE_IMG_BY_ID[formattedId] || DISCIPLINE_IMG_BY_ID[d.id] || imgConsulting
+        image: d.image?.url || DISCIPLINE_IMG_BY_ID[formattedId] || DISCIPLINE_IMG_BY_ID[d.id] || imgConsulting,
+        _path: `specialist.disciplines.${originalIndex}`,
+        _originalIndex: originalIndex
       }
     })
 
@@ -307,7 +323,7 @@ export function ServicesPage() {
       <Seo
         path="/services"
         title="Aviation Training Services: Dispatch, DGR & OCC | IFOA"
-        description="Flight dispatch, dangerous goods, train the trainer, human factors, crew control and OCC consulting — competency-based training for airlines and operators."
+        description="Flight dispatch, dangerous goods, train the trainer, human factors, crew control and OCC consulting. Competency-based training for airlines and operators."
         jsonLd={graph(
           organizationSchema(),
           breadcrumbSchema([
@@ -330,11 +346,11 @@ export function ServicesPage() {
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-            {c.hero.title}
+            <CmsText path="hero.title" value={c.hero.title} />
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
-            {c.hero.subtitle}
+            <CmsText path="hero.subtitle" value={c.hero.subtitle} />
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -342,7 +358,7 @@ export function ServicesPage() {
               onClick={() => navigate('/contact')}
               className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-7 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-lg hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:scale-105 cursor-pointer"
             >
-              {c.hero.primaryLabel}
+              <CmsText path="hero.primaryLabel" value={c.hero.primaryLabel} />
             </button>
             <a
               href="https://wa.me/41782273103"
@@ -351,30 +367,30 @@ export function ServicesPage() {
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
               <RiWhatsappFill className="w-4 h-4 text-white" />
-              <span>{c.hero.whatsappLabel}</span>
+              <CmsText path="hero.whatsappLabel" value={c.hero.whatsappLabel} />
             </a>
           </div>
         </div>
       </section>
 
       {/* 2. SPECIALIST & OPERATIONAL SERVICES (TOP SHOWCASE) */}
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="specialist-operational-training">
+      <Reveal as="section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="specialist-operational-training">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
             <div className="max-w-2xl space-y-2.5">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                {c.specialist.eyebrow}
+                <CmsText path="specialist.eyebrow" value={c.specialist.eyebrow} />
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                {c.specialist.title}
+                <CmsText path="specialist.title" value={c.specialist.title} />
               </h2>
               <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-                {c.specialist.intro}
+                <CmsText path="specialist.intro" value={c.specialist.intro} />
               </p>
-              {c.specialist.note ? (
+              {c.specialist.note || isPreviewEditMode() ? (
                 <p className="text-xs sm:text-sm text-slate-500 font-medium italic">
-                  {c.specialist.note}
+                  <CmsText path="specialist.note" value={c.specialist.note} />
                 </p>
               ) : null}
             </div>
@@ -415,8 +431,9 @@ export function ServicesPage() {
             {filteredDisciplines.map((item) => (
               <div
                 key={item.id}
-                className="group rounded-3xl bg-white border border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                className="group relative rounded-3xl bg-white border border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
+                <CmsRemoveItem listPath="specialist.disciplines" index={item._originalIndex} label="Remove discipline" />
                 {/* Top Media Container */}
                 <div className="relative aspect-3/2 w-full overflow-hidden bg-slate-100 shrink-0">
                   <img
@@ -433,7 +450,7 @@ export function ServicesPage() {
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-mono font-black text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
-                        // {item.id}
+                        {item.id}
                       </span>
                       {item.tag && (
                         <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md">
@@ -443,17 +460,17 @@ export function ServicesPage() {
                     </div>
 
                     <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors pt-0.5">
-                      {item.title}
+                      <CmsText path={`${item._path}.title`} value={item.title} />
                     </h3>
 
-                    {item.subtitle && (
+                    {item.subtitle || isPreviewEditMode() ? (
                       <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">
-                        {item.subtitle}
+                        <CmsText path={`${item._path}.subtitle`} value={item.subtitle} />
                       </p>
-                    )}
+                    ) : null}
 
                     <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                      {item.desc}
+                      <CmsText path={`${item._path}.desc`} value={item.desc} />
                     </p>
                   </div>
 
@@ -461,37 +478,67 @@ export function ServicesPage() {
                   <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                       <RiGroupLine className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="leading-tight">{item.audience}</span>
+                      <span className="leading-tight">
+                        <CmsText path={`${item._path}.audience`} value={item.audience} />
+                      </span>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => navigate('/contact')}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn self-start sm:self-auto"
-                    >
-                      <span>{c.specialist.disciplineCtaLabel}</span>
-                      <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
-                    </button>
+                    {item.courseChoices?.length ? (
+                      <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+                        {item.courseChoices.map((choice) => (
+                          <Link
+                            key={choice.courseSlug}
+                            to={`/courses/${choice.courseSlug}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer group/btn"
+                          >
+                            <span>{choice.label}</span>
+                            <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <Link
+                        to={item.courseSlug ? `/courses/${item.courseSlug}` : '/events'}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn self-start sm:self-auto"
+                      >
+                        <span>{item.linkText || (item.courseSlug ? 'View Course' : c.specialist.disciplineCtaLabel)}</span>
+                        <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
+            <CmsAddItem
+              listPath="specialist.disciplines"
+              label="Add discipline"
+              blank={{
+                title: 'New Discipline',
+                subtitle: '',
+                desc: '',
+                audience: '',
+                category: 'flight-ops',
+                tag: '',
+                iconName: 'dispatcher-headset',
+                image: null
+              }}
+            />
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 3. CHOOSE YOUR CERTIFICATION PATH */}
-      <section className="py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200/80" data-purpose="certification-pathways">
+      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200/80" data-purpose="certification-pathways">
         <div className="max-w-[1280px] mx-auto px-6 space-y-10">
           <div className="max-w-2xl space-y-2">
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.pathways.eyebrow}
+              <CmsText path="pathways.eyebrow" value={c.pathways.eyebrow} />
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-              {c.pathways.title}
+              <CmsText path="pathways.title" value={c.pathways.title} />
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-              {c.pathways.intro}
+              <CmsText path="pathways.intro" value={c.pathways.intro} />
             </p>
           </div>
 
@@ -499,16 +546,17 @@ export function ServicesPage() {
             {certificationPathways.map((card, idx) => (
               <div
                 key={idx}
-                className="group rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 p-7 flex flex-col justify-between transition-all duration-300 h-full"
+                className="group relative rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 p-7 flex flex-col justify-between transition-all duration-300 h-full"
               >
+                <CmsRemoveItem listPath="pathways.cards" index={card._index} label="Remove card" />
                 <div className="flex flex-col flex-1">
                   {/* Standardized Header Row */}
                   <div className="flex items-start justify-between gap-2 min-h-[2.5rem] mb-3">
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 line-clamp-2 leading-tight flex-1">
-                      {card.region}
+                      <CmsText path={`${card._path}.region`} value={card.region} />
                     </span>
                     <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 whitespace-nowrap shrink-0 ml-2">
-                      {card.badge2}
+                      <CmsText path={`${card._path}.badge2`} value={card.badge2} />
                     </span>
                   </div>
 
@@ -533,14 +581,14 @@ export function ServicesPage() {
                   {/* Standardized Title Heading */}
                   <div className="min-h-[3.25rem] flex items-start shrink-0 mb-3">
                     <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
-                      {card.title}
+                      <CmsText path={`${card._path}.title`} value={card.title} />
                     </h3>
                   </div>
 
                   {/* Standardized Description Body */}
                   <div className="flex-1 min-h-[5.5rem] mb-4">
                     <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed line-clamp-4">
-                      {card.desc}
+                      <CmsText path={`${card._path}.desc`} value={card.desc} />
                     </p>
                   </div>
                 </div>
@@ -548,35 +596,42 @@ export function ServicesPage() {
                 {/* Standardized Footer Row */}
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between shrink-0 mt-auto">
                   <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
-                    {card.badge1}
+                    <CmsText path={`${card._path}.badge1`} value={card.badge1} />
                   </span>
                   <button
                     onClick={() => navigate('/contact')}
                     className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-rocket-dark group-hover:text-slate-900 transition-colors cursor-pointer group/btn"
                   >
-                    <span>{card.action}</span>
+                    <span>
+                      <CmsText path={`${card._path}.action`} value={card.action} />
+                    </span>
                     <HiArrowRight className="w-3.5 h-3.5 text-rocket-dark group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
             ))}
+            <CmsAddItem
+              listPath="pathways.cards"
+              label="Add path"
+              blank={{ region: 'New Region', title: 'New Path', desc: '', badge1: '', badge2: '', action: 'Explore' }}
+            />
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 4. THE CBTA OPERATIONAL APPROACH (MODERN EXECUTIVE METHODOLOGY) */}
-      <section className="py-20 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="cbta-approach">
+      <Reveal as="section" className="py-20 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="cbta-approach">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Header Row */}
           <div className="max-w-3xl space-y-3">
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.cbta.eyebrow}
+              <CmsText path="cbta.eyebrow" value={c.cbta.eyebrow} />
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              {c.cbta.title}
+              <CmsText path="cbta.title" value={c.cbta.title} />
             </h2>
             <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-              {c.cbta.intro}
+              <CmsText path="cbta.intro" value={c.cbta.intro} />
             </p>
           </div>
 
@@ -585,8 +640,9 @@ export function ServicesPage() {
             {cbtaPillars.map((p, idx) => (
               <div
                 key={idx}
-                className="group rounded-3xl bg-slate-50/70 border border-slate-200/90 hover:bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between space-y-5"
+                className="group relative rounded-3xl bg-slate-50/70 border border-slate-200/90 hover:bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between space-y-5"
               >
+                <CmsRemoveItem listPath="cbta.pillars" index={p._index} label="Remove pillar" />
                 <div className="space-y-4">
                   {/* Top Step & Icon */}
                   <div className="flex items-center justify-between gap-2">
@@ -594,25 +650,30 @@ export function ServicesPage() {
                       <AviationIcon name={p.iconName} className="w-6 h-6" />
                     </div>
                     <span className="text-xs font-mono font-bold text-slate-400 group-hover:text-slate-900 transition-colors">
-                      // {p.idx}
+                      {p.idx}
                     </span>
                   </div>
 
                   <div className="space-y-1">
                     <span className="text-[11px] font-mono font-semibold text-slate-500 uppercase tracking-wider block min-h-[1.25rem]">
-                      {p.subtitle}
+                      <CmsText path={`${p._path}.subtitle`} value={p.subtitle} />
                     </span>
                     <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-snug min-h-[3.25rem] flex items-start">
-                      {p.title}
+                      <CmsText path={`${p._path}.title`} value={p.title} />
                     </h3>
                   </div>
 
                   <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed pt-1 min-h-[4.75rem]">
-                    {p.desc}
+                    <CmsText path={`${p._path}.desc`} value={p.desc} />
                   </p>
                 </div>
               </div>
             ))}
+            <CmsAddItem
+              listPath="cbta.pillars"
+              label="Add pillar"
+              blank={{ idx: '05', title: 'New Pillar', subtitle: '', desc: '', iconName: 'flight-route' }}
+            />
           </div>
 
           {/* Integrated Standards & Compliance Bar */}
@@ -620,10 +681,10 @@ export function ServicesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
               <div>
                 <h4 className="text-base font-bold text-slate-900">
-                  {c.cbta.complianceTitle}
+                  <CmsText path="cbta.complianceTitle" value={c.cbta.complianceTitle} />
                 </h4>
                 <p className="text-xs text-slate-500">
-                  {c.cbta.complianceDesc}
+                  <CmsText path="cbta.complianceDesc" value={c.cbta.complianceDesc} />
                 </p>
               </div>
               <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-fit">
@@ -661,10 +722,10 @@ export function ServicesPage() {
             <div className="pt-4 border-t border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="space-y-1 text-center md:text-left">
                 <h5 className="text-sm sm:text-base font-bold text-slate-900">
-                  {c.specialist.moreTitle}
+                  <CmsText path="specialist.moreTitle" value={c.specialist.moreTitle} />
                 </h5>
                 <p className="text-xs text-slate-600">
-                  {c.specialist.moreDesc}
+                  <CmsText path="specialist.moreDesc" value={c.specialist.moreDesc} />
                 </p>
               </div>
 
@@ -686,7 +747,7 @@ export function ServicesPage() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
     </div>
   )
 }

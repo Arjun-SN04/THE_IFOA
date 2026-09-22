@@ -1,6 +1,13 @@
-// Canonical host. Must stay in sync with the redirect rules in public/.htaccess
-// and with scripts/generate-sitemap.mjs.
-export const SITE_URL = 'https://theifoa.com'
+// Canonical host. Defaults to production so a normal build is still correct;
+// set VITE_SITE_URL (and SITE_URL for scripts/prerender.mjs) to override for a
+// staging build so canonical/OG/sitemap URLs point at that origin instead.
+// Must stay in sync with the redirect rules in public/.htaccess and with
+// scripts/generate-sitemap.mjs.
+export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://theifoa.com'
+// Off by default (production stays indexable as before). Set VITE_NOINDEX=true
+// on a staging build (and NOINDEX=true for scripts/prerender.mjs's robots.txt)
+// so search engines aren't invited to index a pre-launch environment.
+export const SITE_NOINDEX = import.meta.env.VITE_NOINDEX === 'true'
 export const SITE_NAME = 'IFOA'
 export const SITE_LEGAL_NAME = 'IFOA International Flight Operations Academy'
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.jpg`
@@ -21,7 +28,7 @@ export function clampDescription(text, limit = 155) {
 export const OFFICES = [
   {
     id: 'ch',
-    name: `${SITE_LEGAL_NAME} — Europe HQ`,
+    name: `${SITE_LEGAL_NAME} - Europe HQ`,
     street: 'Oberdorf 26',
     postalCode: '4314',
     city: 'Zeiningen',
@@ -113,6 +120,18 @@ export function breadcrumbSchema(trail = []) {
       position: i + 1,
       name: item.name,
       item: absoluteUrl(item.path)
+    }))
+  }
+}
+
+export function faqSchema(items = []) {
+  if (!items.length) return null
+  return {
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer }
     }))
   }
 }

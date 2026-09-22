@@ -9,10 +9,9 @@ import {
   RiDashboard3Line,
   RiBookOpenLine,
   RiGroupLine,
-  RiLogoutBoxRLine,
-  RiFlightTakeoffLine
+  RiLogoutBoxRLine
 } from 'react-icons/ri'
-import ifoaLogo from '@/assets/brand/ifoa-logoweb.png'
+import ifoaLogo from '@/assets/shared/brand/ifoa-logoweb.webp'
 import { useAdminAuth } from '@/context/AdminAuthContext'
 
 const ADMIN_LINKS = [
@@ -68,46 +67,46 @@ function AdminMenu({ admin, onLogout }) {
             role="menu"
             className="absolute right-0 mt-2 w-60 rounded-2xl bg-white text-rocket-dark shadow-2xl border border-black/10 overflow-hidden z-50 origin-top-right"
           >
-          <div className="px-4 py-3 border-b border-black/5">
-            <p className="text-sm font-bold truncate">{admin.name || 'IFOA Admin'}</p>
-            <p className="text-xs text-gray-500 truncate">{admin.email}</p>
-            <span className="mt-1 inline-block text-[10px] font-bold uppercase tracking-wider bg-rocket-lime/30 text-rocket-dark px-2 py-0.5 rounded">
-              {admin.role || 'admin'}
-            </span>
-          </div>
+            <div className="px-4 py-3 border-b border-black/5">
+              <p className="text-sm font-bold truncate">{admin.name || 'IFOA Admin'}</p>
+              <p className="text-xs text-gray-500 truncate">{admin.email}</p>
+              <span className="mt-1 inline-block text-[10px] font-bold uppercase tracking-wider bg-rocket-lime/30 text-rocket-dark px-2 py-0.5 rounded">
+                {admin.role || 'admin'}
+              </span>
+            </div>
 
-          <div className="py-1">
-            {ADMIN_LINKS.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition"
+            <div className="py-1">
+              {ADMIN_LINKS.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition"
+                  role="menuitem"
+                >
+                  <item.icon className="w-4 h-4 text-gray-400" />
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+
+            <div className="border-t border-black/5 py-1">
+              <button
+                onClick={() => {
+                  setOpen(false)
+                  onLogout()
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer"
                 role="menuitem"
               >
-                <item.icon className="w-4 h-4 text-gray-400" />
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
-          <div className="border-t border-black/5 py-1">
-            <button
-              onClick={() => {
-                setOpen(false)
-                onLogout()
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer"
-              role="menuitem"
-            >
-              <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-)
+                <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
 }
 
 // variant="fixed" (default) is the marketing sticky header.
@@ -148,18 +147,15 @@ export function Navbar({ variant = 'fixed' }) {
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
     { name: 'Events', path: '/events' },
-    { name: 'Foxtrot Delta', path: '/foxtrot-delta' },
-    { name: 'Agent for Service', path: 'https://agent.theifoa.com/', external: true },
-    { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ]
 
   const isActive = (path) => {
     if (path === '/' && location.pathname === '/') return true
-    if (path === '/services' && location.pathname.startsWith('/services')) return true
-    if (path === '/events' && (location.pathname.startsWith('/events') || location.pathname.startsWith('/events-courses') || location.pathname.startsWith('/courses'))) return true
+    if (path === '/services' && (location.pathname === '/services' || location.pathname.startsWith('/services/'))) return true
+    if (path === '/events' && (location.pathname === '/events' || location.pathname.startsWith('/events/'))) return true
     if (path === '/foxtrot-delta' && (location.pathname.startsWith('/foxtrot-delta') || location.pathname.startsWith('/magazine'))) return true
-    if (path !== '/' && !path.startsWith('http') && location.pathname.startsWith(path)) return true
+    if (path === '/contact' && (location.pathname === '/contact' || location.pathname.startsWith('/contact/'))) return true
     return false
   }
 
@@ -207,8 +203,20 @@ export function Navbar({ variant = 'fixed' }) {
                   </a>
                 )
               }
+              if (link.name === 'Contact') {
+                // Always-visible green pill, not just a hover/active underline - the one nav item that should stand out regardless of state.
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className="inline-flex items-center bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-bold px-4 py-1.5 rounded-full text-sm transition-colors duration-200 outline-none focus:outline-none"
+                  >
+                    {link.name}
+                  </Link>
+                )
+              }
               return (
-                <NavLink
+                <Link
                   key={link.path}
                   to={link.path}
                   className={`group relative py-2 text-sm font-medium transition-colors duration-200 outline-none focus:outline-none ${
@@ -223,24 +231,14 @@ export function Navbar({ variant = 'fixed' }) {
                         : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100'
                     }`}
                   />
-                </NavLink>
+                </Link>
               )
             })}
           </nav>
 
           {/* CTA Button / Admin badge & Mobile Toggle */}
           <div className="flex items-center gap-3">
-            {admin ? (
-              <AdminMenu admin={admin} onLogout={handleLogout} />
-            ) : (
-              <Link
-                to="/events"
-                className="hidden sm:inline-flex items-center gap-2 bg-[#34E06E] text-slate-950 px-5 sm:px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] hover:shadow-[0_0_20px_rgba(52,224,110,0.45)] transition-all hover:scale-105 shadow-md group cursor-pointer"
-              >
-                <RiFlightTakeoffLine className="w-4 h-4 text-slate-950 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
-                <span>Enroll Now</span>
-              </Link>
-            )}
+            {admin && <AdminMenu admin={admin} onLogout={handleLogout} />}
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -295,11 +293,10 @@ export function Navbar({ variant = 'fixed' }) {
                     <Link
                       to={link.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                        active
+                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${active
                           ? 'bg-white/15 text-white font-bold'
                           : 'text-white/90 hover:bg-white/10 hover:text-white'
-                      }`}
+                        }`}
                     >
                       <span>{link.name}</span>
                       <RiArrowRightSLine className="w-5 h-5 text-rocket-lime" />
@@ -331,18 +328,7 @@ export function Navbar({ variant = 'fixed' }) {
                     <RiLogoutBoxRLine className="w-4 h-4" /> Sign out
                   </button>
                 </div>
-              ) : (
-                <div className="pt-4">
-                  <Link
-                    to="/events"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-[#34E06E] text-slate-950 py-3.5 rounded-full text-xs font-extrabold uppercase tracking-widest hover:bg-[#28c85e] active:scale-[0.99] transition-all shadow-lg"
-                  >
-                    <RiFlightTakeoffLine className="w-4 h-4 text-slate-950" />
-                    <span>Enroll Now</span>
-                  </Link>
-                </div>
-              )}
+              ) : null}
             </div>
           </motion.div>
         )}

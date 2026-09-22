@@ -24,7 +24,7 @@ function SummaryRow({ label, value, fullWidth = false, uppercaseLabels = true })
             {value}
           </a>
         ) : (
-          value || '—'
+          value || ' - '
         )}
       </div>
     </div>

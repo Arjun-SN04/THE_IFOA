@@ -12,7 +12,7 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-// Mongoose 9 does not pass `next` to async hooks — resolve/throw instead.
+// Mongoose 9 does not pass `next` to async hooks - resolve/throw instead.
 adminSchema.pre('save', async function hashPassword() {
   if (!this.isModified('password')) return
   this.password = await bcrypt.hash(this.password, 12)

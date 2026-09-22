@@ -18,7 +18,7 @@ import {
   X
 } from 'lucide-react'
 import { useAdminAuth } from '@/context/AdminAuthContext'
-import ifoaWhiteLogo from '@/assets/brand/ifoa-logoweb.png'
+import ifoaWhiteLogo from '@/assets/shared/brand/ifoa-logoweb.webp'
 
 function NavItem({ to, icon: Icon, children, end, badge }) {
   return (
@@ -439,6 +439,9 @@ export function AdminLayout() {
                 <NavItem to="/admin" icon={LayoutDashboard} end>
                   Overview
                 </NavItem>
+                <NavItem to="/admin/pages" icon={LayoutTemplate}>
+                  Pages
+                </NavItem>
               </div>
 
               <div className="space-y-1">
@@ -451,6 +454,9 @@ export function AdminLayout() {
                 <NavItem to="/admin/courses/new" icon={Plus}>
                   Add New Course
                 </NavItem>
+                <NavItem to="/admin/form-template" icon={FileText}>
+                  Form Template
+                </NavItem>
               </div>
 
               <div className="space-y-1">
@@ -462,18 +468,6 @@ export function AdminLayout() {
                 </NavItem>
                 <NavItem to="/admin/contact-messages" icon={Mail}>
                   Contact Messages
-                </NavItem>
-                <NavItem to="/admin/form-template" icon={FileText}>
-                  Form Template
-                </NavItem>
-              </div>
-
-              <div className="space-y-1">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-3 pb-1">
-                  Site &amp; Content
-                </div>
-                <NavItem to="/admin/pages" icon={LayoutTemplate}>
-                  Site Pages CMS
                 </NavItem>
               </div>
             </nav>
@@ -520,7 +514,7 @@ export function AdminLayout() {
         </main>
       </div>
 
-      {/* Help modal — structured step-by-step guidance for every admin page */}
+      {/* Help modal - structured step-by-step guidance for every admin page */}
       <AnimatePresence>
         {helpOpen && (
           <div

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Loader2, X, Pencil } from 'lucide-react'
 
@@ -14,8 +14,48 @@ export function AdminCoursePreviewPage() {
   const [course, setCourse] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  // true when we're showing the editor's in-memory draft (via localStorage)
+  // rather than what's actually saved in the DB.
+  const [isDraft, setIsDraft] = useState(false)
+  // Guards the draft read below against React StrictMode's dev-only double
+  // effect invocation: the read is destructive (it deletes the key so a later
+  // reload of this tab falls back to the real saved version), so a naive
+  // effect would consume it on the first invocation and then, on the second,
+  // find nothing and fall through to fetching + overwriting with stale DB
+  // data. The ref persists across both invocations, so only the first one
+  // actually runs the consume-and-set logic.
+  const consumedDraftRef = useRef(false)
 
   useEffect(() => {
+    if (consumedDraftRef.current) return
+    consumedDraftRef.current = true
+
+    // The editor tab stashes its current unsaved form state here right before
+    // opening this tab (a separate browsing context with no shared React
+    // state).
+    //
+    // localStorage, not sessionStorage: sessionStorage only carries over into
+    // a new tab when that tab has an opener relationship, which the editor's
+    // `window.open(..., 'noopener')` deliberately breaks. localStorage is
+    // shared by every tab on the origin regardless of how it was opened.
+    let draft = null
+    try {
+      const raw = localStorage.getItem(`course-draft-preview:${id}`)
+      if (raw) {
+        draft = JSON.parse(raw)
+        localStorage.removeItem(`course-draft-preview:${id}`)
+      }
+    } catch {
+      // localStorage unavailable - fall through to the API fetch below.
+    }
+
+    if (draft) {
+      setCourse(draft)
+      setIsDraft(true)
+      setLoading(false)
+      return
+    }
+
     api
       .adminGetCourse(id)
       .then(({ course: c }) => setCourse(c))
@@ -37,9 +77,11 @@ export function AdminCoursePreviewPage() {
           {course && (
             <span className="font-normal">
               {' - '}
-              {course.status === 'published'
-                ? 'this is the live version'
-                : 'draft, not visible to the public yet'}
+              {isDraft
+                ? 'showing your unsaved edits'
+                : course.status === 'published'
+                  ? 'this is the live version'
+                  : 'draft, not visible to the public yet'}
             </span>
           )}
         </span>

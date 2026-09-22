@@ -44,7 +44,7 @@ export function AdminSubmissionDetailPage() {
   if (error && !submission) {
     return (
       <div className="max-w-3xl mx-auto rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-        {error} — <Link to="/admin/submissions" className="underline font-semibold">back to submissions</Link>
+        {error} - <Link to="/admin/submissions" className="underline font-semibold">back to submissions</Link>
       </div>
     )
   }

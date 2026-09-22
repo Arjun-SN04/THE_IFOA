@@ -21,7 +21,7 @@ import {
 } from 'react-icons/ri'
 import { MdOutlineMail } from 'react-icons/md'
 import { api } from '@/lib/api'
-import ifoaLogo from '@/assets/ifoa-logo.png'
+import ifoaLogo from '@/assets/shared/brand/ifoa-logo.webp'
 
 const SUGGESTIONS = [
   'What flight dispatch programs do you offer?',
@@ -238,7 +238,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
 
   // ── Rich text: links, bold, numbered steps, bullet lists, course chips ─────
   const LINK_RE = /(https?:\/\/[^\s]+|\/courses\/[a-z0-9/-]+|\/events\b|\/contact\b)/gi
-  const COURSE_RE = /^(.{2,120}?)\s+[—–-]\s+((?:https?:\/\/[^\s]+)|(?:\/courses\/[a-z0-9/-]+))\s*$/i
+  const COURSE_RE = /^(.{2,120}?)\s+[ - –-]\s+((?:https?:\/\/[^\s]+)|(?:\/courses\/[a-z0-9/-]+))\s*$/i
   const STEP_RE = /^\s*(\d{1,2})[.)]\s+(.*)$/
   const BULLET_RE = /^\s*[-•*]\s+(.*)$/
 
@@ -518,13 +518,19 @@ export function ChatWidget() {
   const { pathname } = useLocation()
   const isAdminPage = pathname.startsWith('/admin')
 
+  // Sticky one-way reveal: once the visitor has scrolled past the hero on
+  // any page, keep the launcher visible for the rest of the session. This
+  // widget persists across route changes (it doesn't remount), but
+  // ScrollToTop resets window.scrollY to 0 on every navigation - a two-way
+  // toggle here would re-hide the launcher on every page change, which reads
+  // as the chat "vanishing" when browsing from page to page.
   useEffect(() => {
     let ticking = false
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const isPast = window.scrollY > Math.min(window.innerHeight * 0.7, 450)
-          setScrolledPastHero((prev) => (prev !== isPast ? isPast : prev))
+          if (isPast) setScrolledPastHero(true)
           ticking = false
         })
         ticking = true
@@ -646,7 +652,7 @@ export function ChatWidget() {
                 {/* Width toggle */}
                 <button
                   onClick={cycleWidth}
-                  title={`Width: ${currentWidth}px — click to resize`}
+                  title={`Width: ${currentWidth}px - click to resize`}
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
                 >
                   {widthIndex === WIDTH_SIZES.length - 1 ? (

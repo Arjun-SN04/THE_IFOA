@@ -56,7 +56,7 @@ const sectionSchema = new mongoose.Schema(
 
 const formSchemaSchema = new mongoose.Schema(
   {
-    // Exactly one document has isTemplate:true — the default cloned into new courses.
+    // Exactly one document has isTemplate:true - the default cloned into new courses.
     isTemplate: { type: Boolean, default: false, index: true },
     // The course this schema belongs to. Absent on the template.
     course: {

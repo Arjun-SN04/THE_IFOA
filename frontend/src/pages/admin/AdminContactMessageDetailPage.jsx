@@ -27,7 +27,7 @@ export function AdminContactMessageDetailPage() {
   if (error && !message) {
     return (
       <div className="max-w-3xl mx-auto rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-        {error} — <Link to="/admin/contact-messages" className="underline font-semibold">back to contact messages</Link>
+        {error} - <Link to="/admin/contact-messages" className="underline font-semibold">back to contact messages</Link>
       </div>
     )
   }

@@ -106,7 +106,8 @@ const SCHEMAS = {
               f('title', 'Title'),
               f('desc', 'Description', 'textarea'),
               f('hours', 'Hours / format'),
-              f('linkText', 'Link label')
+              f('linkText', 'Link label'),
+              f('courseSlug', 'Links to course (slug)')
             ]
           }
         ]
@@ -225,6 +226,19 @@ const SCHEMAS = {
           f('title', 'Title'),
           f('desc', 'Description', 'textarea'),
           f('successMessage', 'Subscribe success message')
+        ]
+      },
+      {
+        k: 'faq',
+        label: 'FAQ',
+        fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('intro', 'Intro', 'textarea')],
+        lists: [
+          {
+            k: 'items',
+            label: 'Questions',
+            itemLabel: 'Question',
+            fields: [f('question', 'Question'), f('answer', 'Answer', 'textarea')]
+          }
         ]
       }
     ]
@@ -383,7 +397,9 @@ const SCHEMAS = {
               f('category', 'Category ID'),
               f('tag', 'Tag'),
               f('iconName', 'Icon name'),
-              f('image', 'Image', 'image')
+              f('image', 'Image', 'image'),
+              f('courseSlug', 'Inquire button course slug', 'text'),
+              f('courseChoices', 'Course choices (e.g. EASA / FAA dual link)', 'choiceList')
             ]
           }
         ]
@@ -605,6 +621,7 @@ const SCHEMAS = {
           f('eyebrowSecondary', 'Hero eyebrow (part 2)'),
           f('easaComplianceBadge', 'Hero EASA compliance badge'),
           f('dgcaComplianceBadge', 'Hero DGCA compliance badge'),
+          f('faaComplianceBadge', 'Hero FAA compliance badge'),
           f('cbtaBadge', 'Hero CBTA badge'),
           f('applyOnlineLabel', 'Apply Online button label'),
           f('viewModulesLabel', 'View Course Modules button label'),
@@ -613,12 +630,25 @@ const SCHEMAS = {
           f('complianceEyebrow', 'Compliance card eyebrow'),
           f('complianceTitleEasa', 'Compliance card title (EASA)'),
           f('complianceTitleDgca', 'Compliance card title (DGCA)'),
+          f('complianceTitleFaa', 'Compliance card title (FAA)'),
           f('complianceTag1Easa', 'Compliance tag 1 (EASA)'),
           f('complianceTag1Dgca', 'Compliance tag 1 (DGCA)'),
+          f('complianceTag1Faa', 'Compliance tag 1 (FAA)'),
           f('complianceTag2', 'Compliance tag 2'),
           f('complianceTag3', 'Compliance tag 3'),
+          f('glanceLabel', 'Programme-at-a-glance eyebrow'),
           f('eligibilityEyebrow', 'Eligibility card eyebrow'),
           f('eligibilityTitle', 'Eligibility card title'),
+          f('entryReqEyebrow', 'Entry requirements eyebrow'),
+          f('entryReqTitle', 'Entry requirements title'),
+          f('assessmentEyebrow', 'Assessment eyebrow'),
+          f('assessmentTitle', 'Assessment title'),
+          f('certEyebrow', 'Certification eyebrow'),
+          f('certTitle', 'Certification title'),
+          f('datesEyebrow', 'Upcoming courses eyebrow'),
+          f('datesTitle', 'Upcoming courses title'),
+          f('faqEyebrow', 'FAQ eyebrow'),
+          f('faqTitle', 'FAQ title'),
           f('admissionsEyebrow', 'Admissions banner eyebrow'),
           f('admissionsTitle', 'Admissions banner title'),
           f('admissionsDesc', 'Admissions banner description', 'textarea'),
@@ -637,6 +667,7 @@ const SCHEMAS = {
           f('sidebarStandardLabel', 'Sidebar standard row label'),
           f('sidebarStandardValueEasa', 'Sidebar standard value (EASA)'),
           f('sidebarStandardValueDgca', 'Sidebar standard value (DGCA)'),
+          f('sidebarStandardValueFaa', 'Sidebar standard value (FAA)'),
           f('sidebarCertificateLabel', 'Sidebar certificate row label'),
           f('sidebarCertificateValue', 'Sidebar certificate value'),
           f('sidebarSupportTitle', 'Sidebar support box title'),
@@ -687,27 +718,11 @@ const DEFAULTS = {
       ]
     },
     featuredCourses: {
-      eyebrow: 'Professional Aviation Training',
-      title: 'Industry-led training for aviation professionals.',
+      eyebrow: 'OPEN-ENROLLMENT PROGRAMS',
+      title: 'Your Next Step in Aviation Starts Here',
       intro:
-        'Gain the knowledge, practical skills, and operational expertise required to perform with confidence in today’s aviation environment. From initial certification to advanced and recurrent training, our programs are built around real operational requirements.',
-      viewAllLabel: 'View all courses',
-      cards: [
-        {
-          tag: 'FAA Part 65 Certification',
-          duration: '12 Weeks Hybrid',
-          title: 'Part 65 Commercial Flight Dispatcher License Course',
-          desc: 'Comprehensive FAA Part 65 & EASA curriculum with high-stress live OCC flight simulations and guaranteed regulatory exam preparation.',
-          ctaLabel: 'View Course Details'
-        },
-        {
-          tag: 'IATA ISAGO / EASA',
-          duration: '5 Weeks Station Track',
-          title: 'Ground Operations & Ramp Safety Specialist Course',
-          desc: 'Master airside operations, turnaround supervision, dangerous goods regulations, and ground handling collision avoidance.',
-          ctaLabel: 'View Course Details'
-        }
-      ]
+        'Explore our range of open-enrollment programs, developed to build practical knowledge, professional skills, and operational capability across aviation. Find your program and join an upcoming intake.',
+      badgeLabel: 'International Open Enrollment'
     },
     trustRating: {
       eyebrow: 'Verified Post-Training Feedback',
@@ -726,18 +741,20 @@ const DEFAULTS = {
       seeMoreLabel: 'See More',
       cards: [
         {
-          category: 'Initial Training',
-          title: 'EASA Standards',
-          desc: 'Flight Dispatch Initial Training aligned with ICAO Doc 10106 and EASA ORO.GEN.110 requirements.',
-          hours: '200 Hours · Hybrid',
-          linkText: 'Explore EASA Training'
+          category: 'Flight Dispatcher Training',
+          title: 'EASA-Compliant Flight Dispatcher Training',
+          desc: 'Comprehensive 5-week programme developing the technical knowledge, operational skills and decision-making competencies required for professional Flight Dispatch.',
+          hours: '5 Weeks · Hybrid',
+          linkText: 'View Course Details',
+          courseSlug: 'flight-dispatcher-initial-certification'
         },
         {
-          category: 'FAA Approved',
-          title: 'FAA Part 65',
-          desc: 'FAA-approved Aircraft Dispatcher certification training delivered through IFOA USA.',
-          hours: '200 Hours · USA',
-          linkText: 'Explore FAA Training'
+          category: 'FAA Part 65',
+          title: 'Aircraft Dispatcher Training',
+          desc: 'FAA-approved 200-hour programme developing the knowledge, procedures and practical skills required to become an Aircraft Dispatcher.',
+          hours: '200 Hours',
+          linkText: 'View Course Details',
+          courseSlug: 'aircraft-dispatcher-training-faa-part-65'
         },
         {
           category: 'Multiple Certification',
@@ -892,6 +909,43 @@ const DEFAULTS = {
       title: 'Prefer to just get the newsletter?',
       desc: 'One email a month: aviation insight worth reading, plus Foxtrot Delta, free.',
       successMessage: 'Subscribed! Check your inbox for confirmation.'
+    },
+    faq: {
+      eyebrow: 'FAQ',
+      title: 'Common questions',
+      intro: "Can't find what you're looking for? Send us a message and we'll get back to you directly.",
+      items: [
+        {
+          question: 'Do you train individuals, or only airlines and operators?',
+          answer:
+            "Both. Individuals can enroll directly in our open-enrollment certification pathways, while airlines and operators can book fleet-wide or role-specific training built around their own ops manual and regulator."
+        },
+        {
+          question: 'Is training delivered online, in person, or both?',
+          answer:
+            'Most programs are hybrid: online modules plus onsite practical sessions at one of our hubs. Some courses run fully virtual. Delivery mode is listed on each course page.'
+        },
+        {
+          question: 'Which regulatory standards do your certifications follow?',
+          answer:
+            'Our Flight Dispatcher programs are built to EASA ORO.GEN.110 and ICAO Doc 10106, and our US school is FAA Part 65 approved.'
+        },
+        {
+          question: 'Where are your training locations?',
+          answer:
+            'We operate three regional hubs: Basel, Switzerland (Europe HQ); Daytona Beach, Florida (IFOA USA); and New Delhi, India (IFOA India), alongside virtual classroom delivery worldwide.'
+        },
+        {
+          question: 'How do I enroll, and what happens after I apply?',
+          answer:
+            "Apply online for the intake you want. Our admissions team reviews your prerequisites and sends an official placement offer with payment and onboarding details."
+        },
+        {
+          question: 'Can you build a custom program for our airline or operation?',
+          answer:
+            "Yes. Airlines and operators don't have to wait for a public intake date: talk to us and we'll schedule fleet-wide or role-specific training around your operation."
+        }
+      ]
     }
   },
 
@@ -906,7 +960,7 @@ const DEFAULTS = {
     },
     executive: {
       heading:
-        'In just four years, we became the leading aviation training company in Europe for the education and development of flight dispatchers.',
+        'In just five years, we became the leading aviation training company in Europe for the education and development of flight dispatchers.',
       sub: 'A position earned through relentless commitment to quality, industry relevance, and real-world results.'
     },
     mission: {
@@ -1041,7 +1095,7 @@ const DEFAULTS = {
           idx: '03',
           title: 'Training That Fits Your Operation',
           subtitle: 'ONSITE, VIRTUAL & HYBRID',
-          desc: 'Choose the delivery format that works for you—onsite, virtual, or hybrid—without compromising the quality or practical focus of the training.',
+          desc: 'Choose the delivery format that works for you (onsite, virtual, or hybrid) without compromising the quality or practical focus of the training.',
           iconName: 'occ-console'
         },
         {
@@ -1080,7 +1134,11 @@ const DEFAULTS = {
           category: 'flight-ops',
           tag: 'Flight Operations',
           iconName: 'dispatcher-headset',
-          image: null
+          image: null,
+          courseChoices: [
+            { label: 'EASA', courseSlug: 'flight-dispatcher-initial-certification' },
+            { label: 'FAA Part 65', courseSlug: 'aircraft-dispatcher-training-faa-part-65' }
+          ]
         },
         {
           id: '02',
@@ -1091,7 +1149,8 @@ const DEFAULTS = {
           category: 'flight-ops',
           tag: 'DGR Compliance',
           iconName: 'dgr-flame',
-          image: null
+          image: null,
+          courseSlug: 'dangerous-goods-regulations-cbta-initial'
         },
         {
           id: '03',
@@ -1102,18 +1161,20 @@ const DEFAULTS = {
           category: 'train-trainer',
           tag: 'Instructional Pedagogy',
           iconName: 'instructor-board',
-          image: null
+          image: null,
+          courseSlug: 'train-the-trainer-icao-cbta-instructor'
         },
         {
           id: '04',
-          title: 'Human Factors',
+          title: 'Human Factors for OCC',
           subtitle: 'Performance under pressure starts with people.',
           desc: 'Strengthen decision-making, communication, teamwork, and resilience for demanding aviation environments.',
           audience: 'OCC & Flight Operations Personnel',
           category: 'flight-ops',
-          tag: 'Resilience & CRM',
+          tag: 'Human Factors for OCC',
           iconName: 'human-brain-crm',
-          image: null
+          image: null,
+          courseSlug: 'human-factors-in-the-occ'
         },
         {
           id: '05',
@@ -1124,7 +1185,8 @@ const DEFAULTS = {
           category: 'flight-ops',
           tag: 'Crew Scheduling',
           iconName: 'crew-roster',
-          image: null
+          image: null,
+          courseSlug: 'airline-crew-control-flight-rostering'
         },
         {
           id: '06',
@@ -1135,7 +1197,8 @@ const DEFAULTS = {
           category: 'consulting',
           tag: 'Aviation Advisory',
           iconName: 'airline-audit',
-          image: null
+          image: null,
+          courseSlug: 'airline-occ-setup-operational-consulting'
         }
       ]
     }
@@ -1356,22 +1419,36 @@ const DEFAULTS = {
       copiedLabel: 'Copied',
       eyebrowPrimary: 'Professional Aviation Training',
       eyebrowSecondary: 'Flight Dispatch Curriculum',
-      easaComplianceBadge: 'EASA ORO.GEN.110 Compliant',
+      easaComplianceBadge: 'EASA ORO.GEN.110 Aligned',
       dgcaComplianceBadge: 'DGCA & ICAO Aligned Training',
-      cbtaBadge: 'Competency-Based Assessment (CBTA)',
-      applyOnlineLabel: 'Apply Online',
+      faaComplianceBadge: 'FAA Part 65 Aligned',
+      cbtaBadge: 'Competency-Based Training',
+      applyOnlineLabel: 'View Programme',
       viewModulesLabel: 'View Course Modules',
       outcomesEyebrow: 'Competency Outcomes',
-      outcomesTitle: 'Built Around Operational Mastery',
-      complianceEyebrow: 'Regulatory Compliance',
-      complianceTitleEasa: 'EASA Compliant Standards',
-      complianceTitleDgca: 'DGCA & ICAO Aligned Training',
+      outcomesTitle: 'Built for Operational Control',
+      complianceEyebrow: 'Regulatory & Training Framework',
+      complianceTitleEasa: 'EASA & ICAO Training Framework',
+      complianceTitleDgca: 'DGCA & ICAO Training Framework',
+      complianceTitleFaa: 'FAA & ICAO Training Framework',
       complianceTag1Easa: 'EASA ORO.GEN.110',
-      complianceTag1Dgca: 'DGCA CAR Compliant',
+      complianceTag1Dgca: 'DGCA CAR',
+      complianceTag1Faa: 'FAA 14 CFR Part 65',
       complianceTag2: 'ICAO Doc 10106',
       complianceTag3: 'CBTA Framework',
+      glanceLabel: 'Programme at a Glance',
       eligibilityEyebrow: 'Eligibility Profile',
-      eligibilityTitle: 'Who Should Attend This Training?',
+      eligibilityTitle: 'Who Should Attend?',
+      entryReqEyebrow: 'Admissions',
+      entryReqTitle: 'Entry Requirements',
+      assessmentEyebrow: 'Evaluation',
+      assessmentTitle: 'Assessment',
+      certEyebrow: 'On Completion',
+      certTitle: 'Certification',
+      datesEyebrow: 'Schedule',
+      datesTitle: 'Upcoming Courses',
+      faqEyebrow: 'Questions',
+      faqTitle: 'Frequently Asked Questions',
       admissionsEyebrow: 'Admissions Portal',
       admissionsTitle: 'Ready to Start Your Dispatch Career?',
       admissionsDesc: 'Reserve your seat for the upcoming training or connect directly with our team.',
@@ -1379,21 +1456,22 @@ const DEFAULTS = {
       admissionsWhatsappLabel: 'WhatsApp Chat',
       sidebarAdmissionsOpenBadge: 'Admissions Open',
       sidebarOverviewLabel: 'Programme Overview',
-      sidebarTuitionLabel: 'Tuition Fee',
+      sidebarTuitionLabel: 'Training Fee',
       sidebarTuitionNote: '+ 18% GST / Track · Inclusive of official materials',
-      sidebarEnrollLabel: 'Enroll Now — Apply Online ↗',
+      sidebarEnrollLabel: 'Enroll Now - Apply Online ↗',
       sidebarWhatsappLabel: 'Inquire on WhatsApp',
       sidebarDurationLabel: 'Duration',
-      sidebarIntakeLabel: 'Next Intake',
-      sidebarLocationLabel: 'Location',
-      sidebarDeliveryLabel: 'Delivery',
+      sidebarIntakeLabel: 'Next Course',
+      sidebarLocationLabel: 'Training Location',
+      sidebarDeliveryLabel: 'Format',
       sidebarStandardLabel: 'Standard',
-      sidebarStandardValueEasa: 'EASA Compliant',
+      sidebarStandardValueEasa: 'EASA-Compliant',
       sidebarStandardValueDgca: 'DGCA / EASA Aligned',
+      sidebarStandardValueFaa: 'FAA Part 65',
       sidebarCertificateLabel: 'Certificate',
-      sidebarCertificateValue: 'IFOA Verified Certificate',
+      sidebarCertificateValue: 'IFOA Certificate',
       sidebarSupportTitle: 'Admissions Support',
-      sidebarSupportDesc: 'Direct questions regarding admission prerequisites or corporate group bookings.'
+      sidebarSupportDesc: 'Questions about eligibility or group bookings?'
     },
     curriculum: {
       eyebrow: 'Curriculum Framework',
@@ -1492,6 +1570,14 @@ function isValidPage(page) {
 function sanitizeField(type, value) {
   if (type === 'stringList') {
     return Array.isArray(value) ? value.filter((s) => typeof s === 'string') : []
+  }
+  if (type === 'choiceList') {
+    // Array of { label, courseSlug } - e.g. the Flight Dispatch discipline
+    // card's EASA / FAA Part 65 dual links.
+    if (!Array.isArray(value)) return []
+    return value
+      .filter((v) => isPlainObject(v) && typeof v.label === 'string' && typeof v.courseSlug === 'string')
+      .map((v) => ({ label: v.label, courseSlug: v.courseSlug }))
   }
   if (type === 'image') {
     if (!value || typeof value !== 'object') return null

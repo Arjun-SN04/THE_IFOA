@@ -18,14 +18,16 @@ import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
 import { MdOutlineMail } from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
+import { Reveal } from '@/components/common/Reveal'
+import { CmsText, CmsRemoveItem } from '@/components/admin/CmsEditable'
 import { CourseCard } from '@/components/course/CourseCard'
 import { AviationIcon } from '@/components/common/AviationIcon'
 import { usePageContent } from '@/hooks/usePageContent'
 import { Seo } from '@/components/common/Seo'
 import { readPreload } from '@/lib/preload'
 import { graph, organizationSchema, breadcrumbSchema, absoluteUrl } from '@/lib/seo'
-import bannerEventsHero from '@/assets/courses/course_banner_dispatcher_3d.jpg'
-import multipleAirImg from '@/assets/operations/multiple-air.png'
+import bannerEventsHero from '@/assets/events/course_banner_dispatcher_3d.jpg'
+import multipleAirImg from '@/assets/events/multiple-air.webp'
 
 // Content the page ships with; editable at /admin/pages/events.
 const FALLBACK = {
@@ -166,20 +168,23 @@ function getModeIcon(mode = '') {
   return <RiGlobeLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
 }
 
+// Events lists fixed-date, open-enrollment cohorts. Every other discipline
+// (Crew Control, Dangerous Goods, Train the Trainer, etc.) is discovered from
+// the Services page instead, so only the flagship Flight Dispatch programmes
+// (EASA and FAA) show here.
+const EVENTS_SLUGS = ['flight-dispatcher-initial-certification', 'aircraft-dispatcher-training-faa-part-65']
+
 export function EventsPage() {
   const navigate = useNavigate()
-  const [liveCourses, setLiveCourses] = useState(() => readPreload('courses') || [])
+  const [liveCourses, setLiveCourses] = useState(() => (readPreload('courses') || []).filter((course) => EVENTS_SLUGS.includes(course.slug)))
   const { c } = usePageContent('events', FALLBACK)
 
   useEffect(() => {
     api
       .listCourses()
-      .then((data) => setLiveCourses(data.courses || []))
+      .then((data) => setLiveCourses((data.courses || []).filter((course) => EVENTS_SLUGS.includes(course.slug))))
       .catch(() => setLiveCourses([]))
   }, [])
-
-  const curriculumModules = c.curriculum.modules
-  const recentCohorts = c.recent.cohorts
 
   return (
     <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="events-page">
@@ -219,11 +224,11 @@ export function EventsPage() {
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-            {c.hero.title}
+            <CmsText path="hero.title" value={c.hero.title} />
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
-            {c.hero.subtitle}
+            <CmsText path="hero.subtitle" value={c.hero.subtitle} />
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -231,7 +236,7 @@ export function EventsPage() {
               href="#open-enrollment-programs"
               className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-7 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-lg hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:scale-105 cursor-pointer"
             >
-              {c.hero.primaryLabel}
+              <CmsText path="hero.primaryLabel" value={c.hero.primaryLabel} />
             </a>
             <a
               href="https://wa.me/41782273103"
@@ -240,42 +245,47 @@ export function EventsPage() {
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
             >
               <RiWhatsappFill className="w-4 h-4 text-white" />
-              <span>{c.hero.secondaryLabel}</span>
+              <span>
+                <CmsText path="hero.secondaryLabel" value={c.hero.secondaryLabel} />
+              </span>
             </a>
           </div>
         </div>
       </section>
 
       {/* 2. OPEN ENROLLMENTS & INTAKES */}
-      <section id="open-enrollment-programs" className="py-20 sm:py-24 bg-slate-50/60 border-b border-slate-200/80 scroll-mt-24" data-purpose="open-enrollment-programs">
+      <Reveal as="section" id="open-enrollment-programs" className="py-20 sm:py-24 bg-slate-50/60 border-b border-slate-200/80 scroll-mt-24" data-purpose="open-enrollment-programs">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {/* Header Row */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
             <div className="max-w-2xl space-y-2.5">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                {c.programs.eyebrow}
+                <CmsText path="programs.eyebrow" value={c.programs.eyebrow} />
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                {c.programs.title}
+                <CmsText path="programs.title" value={c.programs.title} />
               </h2>
               <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-                {c.programs.intro}
+                <CmsText path="programs.intro" value={c.programs.intro} />
               </p>
             </div>
 
             <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-500 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-2xs">
-
-              <span>{c.programs.badge}</span>
+              <span>
+                <CmsText path="programs.badge" value={c.programs.badge} />
+              </span>
             </div>
           </div>
 
-          {/* Intakes Cards List — driven by published courses from the admin console */}
+          {/* Intakes Cards List - driven by published courses from the admin console */}
           <div className="space-y-4">
             {liveCourses.length === 0 && (
               <div className="rounded-3xl bg-white border border-dashed border-slate-300 p-10 text-center space-y-2">
-                <p className="text-base font-bold text-slate-900">{c.programs.emptyTitle}</p>
+                <p className="text-base font-bold text-slate-900">
+                  <CmsText path="programs.emptyTitle" value={c.programs.emptyTitle} />
+                </p>
                 <p className="text-sm text-slate-600">
-                  {c.programs.emptyDesc}
+                  <CmsText path="programs.emptyDesc" value={c.programs.emptyDesc} />
                 </p>
               </div>
             )}
@@ -343,24 +353,24 @@ export function EventsPage() {
             })}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 3. WHAT YOU DEVELOP */}
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="what-you-develop">
+      <Reveal as="section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="what-you-develop">
         <div className="max-w-[1280px] mx-auto px-6 space-y-12">
           {/* Header Row */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end justify-between">
             <div className="lg:col-span-7 space-y-3">
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                {c.develop.eyebrow}
+                <CmsText path="develop.eyebrow" value={c.develop.eyebrow} />
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                {c.develop.title}
+                <CmsText path="develop.title" value={c.develop.title} />
               </h2>
             </div>
             <div className="lg:col-span-5">
               <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-                {c.develop.intro}
+                <CmsText path="develop.intro" value={c.develop.intro} />
               </p>
             </div>
           </div>
@@ -408,84 +418,25 @@ export function EventsPage() {
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      {/* 4. CURRICULUM OVERVIEW */}
-      <section className="py-16 sm:py-24 bg-slate-50/60 border-b border-slate-200/80" data-purpose="curriculum-overview">
-        <div className="max-w-[1280px] mx-auto px-6 space-y-12">
-          <div className="max-w-2xl space-y-2.5">
-            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.curriculum.eyebrow}
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-              {c.curriculum.title}
-            </h2>
-            <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
-              {c.curriculum.intro}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
-            {curriculumModules.map((mod, idx) => (
-              <div
-                key={idx}
-                className="group rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between space-y-4"
-              >
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200 shadow-2xs group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900 transition-colors">
-                        <AviationIcon name={mod.iconName} className="w-4 h-4" />
-                      </div>
-                      <span className="text-xs font-mono font-bold text-slate-700">
-                        {mod.num}
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
-                      PHASE {mod.num}
-                    </span>
-                  </div>
-                  <h3 className="text-base font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-slate-900 transition-colors min-h-[42px] flex items-center">
-                    {mod.title}
-                  </h3>
-                  <div className="space-y-1.5 pt-3 border-t border-slate-100">
-                    {mod.items.map((item, i) => (
-                      <div
-                        key={i}
-                        className="py-1.5 px-2.5 rounded-xl bg-slate-50/80 text-slate-700 text-xs font-medium border border-slate-100"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-xs text-slate-500 font-mono">
-            {c.curriculum.footnote}
-          </p>
-        </div>
-      </section>
-
-      {/* 5. FROM THEORY TO THE AIRCRAFT (B737-NG OPERATIONAL TRAINING) */}
-      <section className="py-16 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
+      {/* 4. FROM THEORY TO THE AIRCRAFT (B737-NG OPERATIONAL TRAINING) */}
+      <Reveal as="section" className="py-16 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
               <div className="space-y-3">
                 <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#34E06E] inline-block">
-                  {c.theoryToAircraft.eyebrow}
+                  <CmsText path="theoryToAircraft.eyebrow" value={c.theoryToAircraft.eyebrow} />
                 </span>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                  {c.theoryToAircraft.title}
+                  <CmsText path="theoryToAircraft.title" value={c.theoryToAircraft.title} />
                 </h2>
               </div>
 
               <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl">
-                {c.theoryToAircraft.intro}
+                <CmsText path="theoryToAircraft.intro" value={c.theoryToAircraft.intro} />
               </p>
 
               {/* Module Tags */}
@@ -493,10 +444,13 @@ export function EventsPage() {
                 {(c.theoryToAircraft.tags || []).map((tag, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-200 bg-slate-900/90 border border-slate-800/90 shadow-2xs hover:border-slate-700 transition-colors cursor-default"
+                    className="relative inline-flex items-center gap-2 pl-3.5 pr-6 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-200 bg-slate-900/90 border border-slate-800/90 shadow-2xs hover:border-slate-700 transition-colors cursor-default"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
-                    <span>{tag}</span>
+                    <span>
+                      <CmsText path={`theoryToAircraft.tags.${idx}`} value={tag} />
+                    </span>
+                    <CmsRemoveItem listPath="theoryToAircraft.tags" index={idx} label="Remove tag" />
                   </span>
                 ))}
               </div>
@@ -515,17 +469,17 @@ export function EventsPage() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
 
       {/* 5. FINAL FLEET-WIDE CTA */}
-      <section className="py-16 sm:py-24 bg-white text-center" data-purpose="events-final-cta">
+      <Reveal as="section" className="py-16 sm:py-24 bg-white text-center" data-purpose="events-final-cta">
         <div className="max-w-[800px] mx-auto px-6 space-y-6">
           <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-            {c.finalCta.title}
+            <CmsText path="finalCta.title" value={c.finalCta.title} />
           </h2>
           <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-xl mx-auto">
-            {c.finalCta.desc}
+            <CmsText path="finalCta.desc" value={c.finalCta.desc} />
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -533,18 +487,20 @@ export function EventsPage() {
               onClick={() => navigate('/contact')}
               className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:scale-105 cursor-pointer"
             >
-              {c.finalCta.primaryLabel}
+              <CmsText path="finalCta.primaryLabel" value={c.finalCta.primaryLabel} />
             </button>
             <Link
               to="/services"
               className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 group"
             >
-              <span>{c.finalCta.secondaryLabel}</span>
+              <span>
+                <CmsText path="finalCta.secondaryLabel" value={c.finalCta.secondaryLabel} />
+              </span>
               <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
         </div>
-      </section>
+      </Reveal>
     </div>
   )
 }

@@ -1,14 +1,14 @@
 # Magazine News
 
 ## Headings & Structure
-- **H1**: Foxtrot Delta —
-- **H2**: Recognizing the Hidden Actors
-- **H2**: The Collection
-- **H3**: IFOA Activities Review – Q2 2023
-- **H3**: Special Edition — Aviation Sustainability
-- **H3**: Edition 2 — Jetfly OCC & World's Largest Pilatus Fleet
-- **H3**: IFOA 2022 Review — A Year of Global Growth
-- **H3**: Edition 1 — The Indian Ocean Pearl: Air Mauritius
+- **H1**: Foxtrot Delta:
+- **H2**: Dedicated Aviation Magazine
+- **H2**: Latest Editions
+- **H2**: Stay Updated
+- **H3**: Special Edition: Aviation Sustainability
+- **H3**: Edition 2: Jetfly OCC & World's Largest Pilatus Fleet
+- **H3**: IFOA 2022 Review: A Year of Global Growth
+- **H3**: Edition 1: The Indian Ocean Pearl: Air Mauritius
 - **H3**: IFOA Activities Review – Q1 2023
 - **H2**: Join Our Newsletter
 - **H4**: Platform
@@ -24,7 +24,7 @@ Global Standards Hub
 
 The Voice of Operational Control
 
-Foxtrot Delta is the first and only magazine in the aviation industry dedicated exclusively to Operational Control personnel—the hidden professionals who keep aviation moving safely and efficiently behind the scenes.
+Foxtrot Delta is the first and only magazine in the aviation industry dedicated exclusively to Operational Control personnel, the hidden professionals who keep aviation moving safely and efficiently behind the scenes.
 
 Each issue delivers in-depth articles, expert interviews, regulatory insights, and real-world stories celebrating the people at the heart of airline performance. From Flight Dispatchers to OCC Managers and Crew Schedulers, we shine a spotlight on the practices and innovations shaping modern aviation.
 

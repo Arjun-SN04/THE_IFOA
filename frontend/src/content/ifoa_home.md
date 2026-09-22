@@ -82,7 +82,7 @@ OCC Manager / DHL Austria
 
 Deputy Ground Operations Manager / Air Alsie
 
-"We selected The International Flight Operations Academy due to the fact that we rely on high-quality training for our Dispatch staff. The training we received from IFOA was very professional and fully met our expectations — IFOA is highly recommendable."
+"We selected The International Flight Operations Academy due to the fact that we rely on high-quality training for our Dispatch staff. The training we received from IFOA was very professional and fully met our expectations: IFOA is highly recommendable."
 
 First & Only Dedicated OCC Magazine
 

@@ -1,4 +1,4 @@
-// Seeds (or refreshes) the default enrollment-form template — the schema new
+// Seeds (or refreshes) the default enrollment-form template - the schema new
 // courses start from. Safe to re-run.
 //   npm run seed:form-template            # create only if missing
 //   npm run seed:form-template -- --force # overwrite the existing template

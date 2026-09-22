@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   RiFlightTakeoffLine,
   RiUser3Line,
@@ -7,21 +8,24 @@ import {
   RiMailLine,
   RiPhoneLine,
   RiMapPin2Line,
-  RiSendPlaneFill
+  RiSendPlaneFill,
+  RiArrowDownSLine
 } from 'react-icons/ri'
 import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
 import { MdOutlineMail } from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
+import { Reveal } from '@/components/common/Reveal'
+import { CmsText, CmsRemoveItem, CmsAddItem } from '@/components/admin/CmsEditable'
 import { CustomSelect } from '@/components/ui/CustomSelect'
 import { usePageContent } from '@/hooks/usePageContent'
 import { Seo } from '@/components/common/Seo'
-import { graph, organizationSchema, localBusinessSchemas, breadcrumbSchema } from '@/lib/seo'
+import { graph, organizationSchema, localBusinessSchemas, breadcrumbSchema, faqSchema } from '@/lib/seo'
 import { api } from '@/lib/api'
-import flagSwitzerland from '@/assets/contact/flag-switzerland.png'
-import flagUsa from '@/assets/contact/flag-usa.png'
-import flagIndia from '@/assets/contact/flag-india.jpg'
-import bannerContactHero from '@/assets/partners/IOFA-banner_10@1920x1280.jpg'
+import flagSwitzerland from '@/assets/shared/flags/flag-switzerland.webp'
+import flagUsa from '@/assets/shared/flags/flag-usa.webp'
+import flagIndia from '@/assets/shared/flags/flag-india.jpg'
+import bannerContactHero from '@/assets/shared/photos/IOFA-banner_10@1920x1280.jpg'
 
 // Content the page ships with; the admin can override any of it via /admin/pages/contact.
 const FALLBACK = {
@@ -91,6 +95,43 @@ const FALLBACK = {
     title: 'Stay informed on operational developments',
     desc: 'Occasional briefings on regulatory changes, training best practices, and industry analysis. No spam.',
     successMessage: 'Subscribed! Check your inbox for confirmation.'
+  },
+  faq: {
+    eyebrow: 'FAQ',
+    title: 'Common questions',
+    intro: "Can't find what you're looking for? Send us a message and we'll get back to you directly.",
+    items: [
+      {
+        question: 'Do you train individuals, or only airlines and operators?',
+        answer:
+          "Both. Individuals can enroll directly in our open-enrollment certification pathways, while airlines and operators can book fleet-wide or role-specific training built around their own ops manual and regulator."
+      },
+      {
+        question: 'Is training delivered online, in person, or both?',
+        answer:
+          'Most programs are hybrid: online modules plus onsite practical sessions at one of our hubs. Some courses run fully virtual. Delivery mode is listed on each course page.'
+      },
+      {
+        question: 'Which regulatory standards do your certifications follow?',
+        answer:
+          'Our Flight Dispatcher programs are built to EASA ORO.GEN.110 and ICAO Doc 10106, and our US school is FAA Part 65 approved.'
+      },
+      {
+        question: 'Where are your training locations?',
+        answer:
+          'We operate three regional hubs: Basel, Switzerland (Europe HQ); Daytona Beach, Florida (IFOA USA); and New Delhi, India (IFOA India), alongside virtual classroom delivery worldwide.'
+      },
+      {
+        question: 'How do I enroll, and what happens after I apply?',
+        answer:
+          "Apply online for the intake you want. Our admissions team reviews your prerequisites and sends an official placement offer with payment and onboarding details."
+      },
+      {
+        question: 'Can you build a custom program for our airline or operation?',
+        answer:
+          "Yes. Airlines and operators don't have to wait for a public intake date: talk to us and we'll schedule fleet-wide or role-specific training around your operation."
+      }
+    ]
   }
 }
 
@@ -112,6 +153,8 @@ export function ContactPage() {
   const [newsletterSuccess, setNewsletterSuccess] = useState(false)
   const [newsletterLoading, setNewsletterLoading] = useState(false)
   const [newsletterError, setNewsletterError] = useState('')
+
+  const [openFaqIndex, setOpenFaqIndex] = useState(0)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -143,8 +186,8 @@ export function ContactPage() {
     }
   }
 
-  const cards = c.hero.cards
-  const offices = c.offices.items
+  const cards = c.hero.cards.map((card, i) => ({ ...card, _path: `hero.cards.${i}`, _index: i }))
+  const offices = c.offices.items.map((o, i) => ({ ...o, _path: `offices.items.${i}`, _index: i }))
 
   return (
     <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="contact-page">
@@ -158,7 +201,8 @@ export function ContactPage() {
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'Contact', path: '/contact' }
-          ])
+          ]),
+          faqSchema(c.faq.items)
         )}
       />
       {/* 1. HERO SECTION */}
@@ -175,11 +219,11 @@ export function ContactPage() {
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-            {c.hero.title}
+            <CmsText path="hero.title" value={c.hero.title} />
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
-            {c.hero.subtitle}
+            <CmsText path="hero.subtitle" value={c.hero.subtitle} />
           </p>
 
           {/* Clean 2-Column Audience Direct Routing Cards */}
@@ -198,34 +242,39 @@ export function ContactPage() {
                     }))
                     document.getElementById('contact-main-section')?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="rounded-3xl bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-7 sm:p-8 flex flex-col justify-between space-y-5 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1"
+                  className="relative rounded-3xl bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-7 sm:p-8 flex flex-col justify-between space-y-5 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1"
                 >
+                  <CmsRemoveItem listPath="hero.cards" index={card._index} label="Remove card" />
                   <div className="space-y-3.5">
                     {/* Badge Header */}
                     <div className="flex items-center justify-between min-h-[1.75rem]">
                       {isAirline ? (
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-white border-b-2 border-[#34E06E] pb-0.5">
                           <RiFlightTakeoffLine className="w-3.5 h-3.5 text-slate-300" />
-                          <span>{card.badge || 'For Airlines'}</span>
+                          <span>
+                            <CmsText path={`${card._path}.badge`} value={card.badge} />
+                          </span>
                         </div>
                       ) : (
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b-2 border-[#34E06E] pb-0.5">
                           <RiUser3Line className="w-3.5 h-3.5 text-[#34E06E]" />
-                          <span>{card.badge || 'For Individuals'}</span>
+                          <span>
+                            <CmsText path={`${card._path}.badge`} value={card.badge} />
+                          </span>
                         </div>
                       )}
 
                       <span className="text-[11px] text-slate-400 font-semibold tracking-wide uppercase font-mono">
-                        {card.eyebrow || (isAirline ? 'Airlines & OCCs' : 'Career Pathway')}
+                        <CmsText path={`${card._path}.eyebrow`} value={card.eyebrow} />
                       </span>
                     </div>
 
                     <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug min-h-[3.25rem] flex items-start">
-                      {card.title}
+                      <CmsText path={`${card._path}.title`} value={card.title} />
                     </h3>
 
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal min-h-[3.75rem]">
-                      {card.desc}
+                      <CmsText path={`${card._path}.desc`} value={card.desc} />
                     </p>
 
                     {/* Feature Highlights */}
@@ -235,7 +284,9 @@ export function ContactPage() {
                           <RiCheckboxCircleFill
                             className={`w-3.5 h-3.5 shrink-0 ${isAirline ? 'text-slate-300' : 'text-[#34E06E]'}`}
                           />
-                          <span>{bullet}</span>
+                          <span>
+                            <CmsText path={`${card._path}.bullets.${bIdx}`} value={bullet} />
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -247,7 +298,9 @@ export function ContactPage() {
                         type="button"
                         className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
                       >
-                        <span>{card.ctaLabel || 'Corporate Training'}</span>
+                        <span>
+                          <CmsText path={`${card._path}.ctaLabel`} value={card.ctaLabel} />
+                        </span>
                         <HiArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     ) : (
@@ -255,7 +308,9 @@ export function ContactPage() {
                         type="button"
                         className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit shadow-md hover:shadow-[0_0_15px_rgba(52,224,110,0.4)]"
                       >
-                        <span>{card.ctaLabel || 'Explore Training'}</span>
+                        <span>
+                          <CmsText path={`${card._path}.ctaLabel`} value={card.ctaLabel} />
+                        </span>
                         <HiArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     )}
@@ -268,17 +323,17 @@ export function ContactPage() {
       </section>
 
       {/* 2. MAIN CONTACT SECTION (FORM + REGIONAL OFFICES) */}
-      <section id="contact-main-section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80 scroll-mt-20" data-purpose="contact-main">
+      <Reveal as="section" id="contact-main-section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80 scroll-mt-20" data-purpose="contact-main">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
             {/* Left: Contact Form */}
             <div className="lg:col-span-7 flex flex-col space-y-6 h-full">
               <div className="space-y-2">
                 <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                  {c.form.eyebrow}
+                  <CmsText path="form.eyebrow" value={c.form.eyebrow} />
                 </span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark">
-                  {c.form.title}
+                  <CmsText path="form.title" value={c.form.title} />
                 </h2>
               </div>
 
@@ -410,10 +465,10 @@ export function ContactPage() {
             <div className="lg:col-span-5 flex flex-col space-y-6 h-full">
               <div className="space-y-2">
                 <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                  {c.offices.eyebrow}
+                  <CmsText path="offices.eyebrow" value={c.offices.eyebrow} />
                 </span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark">
-                  {c.offices.title}
+                  <CmsText path="offices.title" value={c.offices.title} />
                 </h2>
               </div>
 
@@ -431,8 +486,9 @@ export function ContactPage() {
                   return (
                     <div
                       key={idx}
-                      className="group rounded-3xl bg-[#020617] border border-white/10 hover:border-white/25 shadow-xl hover:shadow-2xl transition-all duration-300 p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4 relative overflow-hidden text-white min-h-[190px]"
+                      className="group relative rounded-3xl bg-[#020617] border border-white/10 hover:border-white/25 shadow-xl hover:shadow-2xl transition-all duration-300 p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4 overflow-hidden text-white min-h-[190px]"
                     >
+                      <CmsRemoveItem listPath="offices.items" index={office._index} label="Remove office" />
                       {/* Ambient Flag Background Art */}
                       <div className="absolute right-0 top-0 bottom-0 w-3/5 sm:w-1/2 overflow-hidden pointer-events-none z-0">
                         <img
@@ -445,13 +501,13 @@ export function ContactPage() {
 
                       <div className="relative z-10 space-y-1.5 max-w-sm">
                         <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block">
-                          {office.region}
+                          <CmsText path={`${office._path}.region`} value={office.region} />
                         </span>
                         <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight pt-1">
-                          {office.country}
+                          <CmsText path={`${office._path}.country`} value={office.country} />
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed pt-0.5">
-                          {office.address}
+                          <CmsText path={`${office._path}.address`} value={office.address} />
                         </p>
                       </div>
 
@@ -462,7 +518,7 @@ export function ContactPage() {
                             href={`tel:${office.phone.replace(/[^0-9+]/g, '')}`}
                             className="font-semibold text-white hover:text-[#34E06E] transition-colors"
                           >
-                            {office.phone}
+                            <CmsText path={`${office._path}.phone`} value={office.phone} />
                           </a>
                         </div>
                         <div className="flex items-center justify-between">
@@ -471,36 +527,43 @@ export function ContactPage() {
                             href={`mailto:${office.email}`}
                             className="font-semibold text-white hover:text-[#34E06E] transition-colors"
                           >
-                            {office.email}
+                            <CmsText path={`${office._path}.email`} value={office.email} />
                           </a>
                         </div>
                       </div>
                     </div>
                   )
                 })}
+                <CmsAddItem
+                  listPath="offices.items"
+                  label="Add office"
+                  blank={{ region: 'New Region', country: 'New Country', address: '', phone: '', email: 'info@theifoa.com' }}
+                />
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 3. NEWSLETTER BOX */}
-      <section className="py-16 sm:py-20 bg-slate-50/60" data-purpose="newsletter-strip">
+      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/60" data-purpose="newsletter-strip">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="rounded-3xl bg-[#020617] text-white p-8 sm:p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="space-y-2 max-w-lg">
               <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                {c.newsletter.title}
+                <CmsText path="newsletter.title" value={c.newsletter.title} />
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                {c.newsletter.desc}
+                <CmsText path="newsletter.desc" value={c.newsletter.desc} />
               </p>
             </div>
 
             {newsletterSuccess ? (
               <div className="inline-flex items-center gap-2 text-[#34E06E] text-xs font-mono font-bold">
                 <RiCheckboxCircleFill className="w-4 h-4" />
-                <span>{c.newsletter.successMessage}</span>
+                <span>
+                  <CmsText path="newsletter.successMessage" value={c.newsletter.successMessage} />
+                </span>
               </div>
             ) : (
               <div className="w-full md:w-auto space-y-2">
@@ -528,7 +591,65 @@ export function ContactPage() {
             )}
           </div>
         </div>
-      </section>
+      </Reveal>
+
+      {/* 4. FAQ */}
+      <Reveal as="section" className="py-16 sm:py-20 bg-white border-t border-slate-100" data-purpose="contact-faq">
+        <div className="max-w-[900px] mx-auto px-6 space-y-10">
+          <div className="text-center space-y-2.5">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
+              <CmsText path="faq.eyebrow" value={c.faq.eyebrow} />
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
+              <CmsText path="faq.title" value={c.faq.title} />
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-xl mx-auto">
+              <CmsText path="faq.intro" value={c.faq.intro} />
+            </p>
+          </div>
+
+          <div className="divide-y divide-slate-200 border-y border-slate-200">
+            {c.faq.items.map((item, idx) => {
+              const open = openFaqIndex === idx
+              const itemPath = `faq.items.${idx}`
+              return (
+                <div key={idx} className="relative">
+                  <CmsRemoveItem listPath="faq.items" index={idx} label="Remove FAQ" />
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(open ? -1 : idx)}
+                    aria-expanded={open}
+                    className="w-full flex items-center justify-between gap-4 py-5 text-left cursor-pointer"
+                  >
+                    <span className="text-sm sm:text-base font-bold text-slate-900">
+                      <CmsText path={`${itemPath}.question`} value={item.question} />
+                    </span>
+                    <motion.span
+                      animate={{ rotate: open ? 180 : 0 }}
+                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                      className="text-slate-400 group-hover:text-slate-700 transition-colors shrink-0 flex items-center justify-center ml-2"
+                    >
+                      <RiArrowDownSLine className="w-5 h-5" />
+                    </motion.span>
+                  </button>
+                  <div
+                    className={`grid transition-all duration-200 ease-out ${
+                      open ? 'grid-rows-[1fr] opacity-100 pb-5' : 'grid-rows-[0fr] opacity-0'
+                    }`}
+                  >
+                    <p className="overflow-hidden text-sm text-slate-600 leading-relaxed">
+                      <CmsText path={`${itemPath}.answer`} value={item.answer} />
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+            <div className="py-4">
+              <CmsAddItem listPath="faq.items" label="Add FAQ" blank={{ question: 'New question?', answer: '' }} />
+            </div>
+          </div>
+        </div>
+      </Reveal>
     </div>
   )
 }

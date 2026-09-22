@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   Loader2,
   Users,
@@ -41,12 +41,15 @@ function Stat({ label, value, icon: Icon, tone }) {
 }
 
 export function AdminSubmissionsPage() {
+  const [searchParams] = useSearchParams()
   const [submissions, setSubmissions] = useState([])
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [status, setStatus] = useState('all')
-  const [course, setCourse] = useState('')
+  // Deep-linkable from the page-editor's cross-link panel, e.g.
+  // /admin/submissions?course=<courseId>.
+  const [course, setCourse] = useState(() => searchParams.get('course') || '')
   const [q, setQ] = useState('')
   const [busyId, setBusyId] = useState(null)
   const [legacy, setLegacy] = useState(null)
@@ -217,9 +220,9 @@ export function AdminSubmissionsPage() {
                         <p className="text-xs text-gray-400">{info.email || 'no email'}</p>
                       </td>
                       <td className="px-5 py-4 text-xs font-semibold text-gray-600">
-                        {s.course?.title || s.courseTitle || '—'}
+                        {s.course?.title || s.courseTitle || ' - '}
                       </td>
-                      <td className="px-5 py-4 text-xs text-gray-500">{s.intake || '—'}</td>
+                      <td className="px-5 py-4 text-xs text-gray-500">{s.intake || ' - '}</td>
                       <td className="px-5 py-4">
                         <span
                           className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border ${
@@ -311,7 +314,7 @@ export function AdminSubmissionsPage() {
                         </td>
                         <td className="px-3 py-2 text-gray-500">{r.email}</td>
                         <td className="px-3 py-2 text-gray-500">
-                          {r.course?.title || r.courseTitle || '—'}
+                          {r.course?.title || r.courseTitle || ' - '}
                         </td>
                         <td className="px-3 py-2 capitalize text-gray-500">{r.status}</td>
                         <td className="px-3 py-2 text-gray-400">

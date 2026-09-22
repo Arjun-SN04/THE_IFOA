@@ -11,7 +11,7 @@ const {
   isValidPage
 } = require('../utils/pageContent')
 
-// Per-course chrome overrides only exist for these two templates — every
+// Per-course chrome overrides only exist for these two templates - every
 // other page in PAGE_KEYS stays a single shared/global document.
 const COURSE_SCOPED_PAGES = new Set(['courseDetail', 'courseEnrollment'])
 function isValidCoursePage(page) {
@@ -20,7 +20,7 @@ function isValidCoursePage(page) {
 
 // ---------- Public ----------
 
-// GET /api/pages/:page — merged content the marketing page renders from.
+// GET /api/pages/:page - merged content the marketing page renders from.
 const getPublicPage = asyncHandler(async (req, res) => {
   const { page } = req.params
   if (!isValidPage(page)) return res.status(404).json({ message: 'Unknown page' })
@@ -31,7 +31,7 @@ const getPublicPage = asyncHandler(async (req, res) => {
 
 // ---------- Admin ----------
 
-// GET /api/admin/pages — list of editable pages + last-updated.
+// GET /api/admin/pages - list of editable pages + last-updated.
 const adminListPages = asyncHandler(async (req, res) => {
   const docs = await PageContent.find({ page: { $in: PAGE_KEYS } })
     .select('page updatedAt')
@@ -48,7 +48,7 @@ const adminListPages = asyncHandler(async (req, res) => {
   })
 })
 
-// GET /api/admin/pages/:page — schema + current (merged) values + defaults.
+// GET /api/admin/pages/:page - schema + current (merged) values + defaults.
 const adminGetPage = asyncHandler(async (req, res) => {
   const { page } = req.params
   if (!isValidPage(page)) return res.status(404).json({ message: 'Unknown page' })
@@ -64,7 +64,7 @@ const adminGetPage = asyncHandler(async (req, res) => {
   })
 })
 
-// PUT /api/admin/pages/:page — replace the stored override blob.
+// PUT /api/admin/pages/:page - replace the stored override blob.
 const adminUpdatePage = asyncHandler(async (req, res) => {
   const { page } = req.params
   if (!isValidPage(page)) return res.status(404).json({ message: 'Unknown page' })
@@ -74,7 +74,7 @@ const adminUpdatePage = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'data must be an object' })
   }
 
-  // Whitelist against SCHEMAS[page] — only known groups/fields/lists are ever
+  // Whitelist against SCHEMAS[page] - only known groups/fields/lists are ever
   // persisted, so an admin (or anyone hitting this endpoint directly) can only
   // ever change copy, never inject arbitrary keys the frontend might read.
   const sanitized = sanitizeContent(page, data)
@@ -87,7 +87,7 @@ const adminUpdatePage = asyncHandler(async (req, res) => {
   res.json({ page, data: mergeContent(DEFAULTS[page], doc.data || {}) })
 })
 
-// DELETE /api/admin/pages/:page — revert to shipped defaults.
+// DELETE /api/admin/pages/:page - revert to shipped defaults.
 const adminResetPage = asyncHandler(async (req, res) => {
   const { page } = req.params
   if (!isValidPage(page)) return res.status(404).json({ message: 'Unknown page' })
@@ -138,7 +138,7 @@ const adminUpdateCourseContent = asyncHandler(async (req, res) => {
   res.json({ page, data: mergeContent(DEFAULTS[page], sanitized) })
 })
 
-// DELETE /api/admin/courses/:id/content/:page — revert this course to defaults.
+// DELETE /api/admin/courses/:id/content/:page - revert this course to defaults.
 const adminResetCourseContent = asyncHandler(async (req, res) => {
   const { id, page } = req.params
   if (!isValidCoursePage(page)) return res.status(400).json({ message: 'Unknown course content page' })

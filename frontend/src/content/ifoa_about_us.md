@@ -87,7 +87,7 @@ FAA Part 65 Standards
 
 UNCOMPROMISING EXCELLENCE
 
-In just four years, we became the leading aviation training company in Europe for Flight Dispatchers. We didn't follow trends—we set new ones through Competency-Based Training (CBTA).
+In just five years, we became the leading aviation training company in Europe for Flight Dispatchers. We didn't follow trends, we set new ones through Competency-Based Training (CBTA).
 
 Flight Dispatch Academy in Europe
 

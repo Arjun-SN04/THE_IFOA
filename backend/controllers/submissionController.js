@@ -65,7 +65,7 @@ const create = asyncHandler(async (req, res) => {
   })
 })
 
-// GET /api/submissions/:id — used by the public success screen to render the PDF.
+// GET /api/submissions/:id - used by the public success screen to render the PDF.
 const getPublicOne = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(404).json({ message: 'Submission not found' })
@@ -117,7 +117,7 @@ const getOne = asyncHandler(async (req, res) => {
   res.json({ submission })
 })
 
-// PUT /api/admin/submissions/:id — edit answers and/or workflow fields.
+// PUT /api/admin/submissions/:id - edit answers and/or workflow fields.
 const update = asyncHandler(async (req, res) => {
   const submission = await Submission.findById(req.params.id)
   if (!submission) return res.status(404).json({ message: 'Submission not found' })
@@ -160,7 +160,7 @@ const remove = asyncHandler(async (req, res) => {
   res.json({ message: 'Submission deleted' })
 })
 
-// GET /api/admin/registrations/legacy — read-only view of the pre-dynamic-form
+// GET /api/admin/registrations/legacy - read-only view of the pre-dynamic-form
 // Registration rows so historical data stays reachable.
 const listLegacyRegistrations = asyncHandler(async (req, res) => {
   let Registration

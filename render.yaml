@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: ifoa-backend
+    runtime: node
+    rootDir: backend
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Comma-separated list of frontend origins allowed to call this API.
+      # Must be the exact scheme+host the site is served from (no trailing
+      # slash) — mismatches here are the #1 cause of "everything works
+      # locally, admin login fails in prod".
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: COOKIE_NAME
+        value: ifoa_admin_token
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
+        value: ifoa-media
+      - key: R2_PUBLIC_BASE_URL
+        sync: false

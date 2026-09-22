@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Loader2, Lock, Mail, Eye, EyeOff, ArrowLeft, ShieldCheck } from 'lucide-react'
 import { useAdminAuth } from '@/context/AdminAuthContext'
-import ifoaLogo from '@/assets/brand/ifoa-logoweb.png'
+import ifoaLogo from '@/assets/shared/brand/ifoa-logoweb.webp'
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 
 export function AdminLoginPage() {

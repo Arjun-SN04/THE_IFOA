@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 // A completed enrollment form for a course. The form definition can change
 // over time, so each submission keeps its own snapshot of the sections it was
-// filled against — that snapshot is what the admin view and the PDF render.
+// filled against - that snapshot is what the admin view and the PDF render.
 const submissionSchema = new mongoose.Schema(
   {
     course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', index: true },

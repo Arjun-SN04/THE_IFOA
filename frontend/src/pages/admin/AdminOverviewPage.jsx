@@ -4,20 +4,16 @@ import {
   BookOpen,
   Users,
   Mail,
-  LayoutTemplate,
   ChevronRight,
   Sparkles,
   Plus,
   ExternalLink,
   FileCode,
   ArrowUpRight,
-  ShieldCheck,
-  CheckCircle2,
-  Clock,
-  Layers,
   HelpCircle
 } from 'lucide-react'
 import { api } from '@/lib/api'
+import { PATH_BY_PAGE } from './pagesMeta'
 
 function StatCard({ label, value, subtext, icon: Icon, tone = 'emerald', to, loading }) {
   const tones = {
@@ -54,7 +50,7 @@ function StatCard({ label, value, subtext, icon: Icon, tone = 'emerald', to, loa
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</span>
           <div className="flex items-baseline gap-2">
             <span className={`text-3xl font-extrabold tracking-tight ${currentTone.num}`}>
-              {loading ? '—' : value}
+              {loading ? ' - ' : value}
             </span>
           </div>
         </div>
@@ -122,8 +118,14 @@ export function AdminOverviewPage() {
     totalMessages: null,
     newMessages: null
   })
+  const [pages, setPages] = useState(null)
 
   useEffect(() => {
+    api
+      .adminListPages()
+      .then((data) => setPages((data.pages || []).filter((p) => PATH_BY_PAGE[p.page] !== null)))
+      .catch(() => setPages([]))
+
     api
       .adminListCourses({})
       .then((data) => setStats((prev) => ({ ...prev, courses: (data.courses || []).length })))
@@ -193,7 +195,77 @@ export function AdminOverviewPage() {
         </div>
       </div>
 
-      {/* 2. REAL-TIME STATS SUMMARY */}
+      {/* 2. YOUR WEBSITE PAGES - every major page, one click to edit, right up front */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-base font-black uppercase tracking-wider text-slate-900">
+            Your Website Pages
+          </h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Click a page below to edit its text and images directly. Changes go live as soon as you save.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {pages === null
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[132px] rounded-2xl border border-slate-200/90 bg-white animate-pulse"
+                />
+              ))
+            : pages.map((p) => {
+                const publicPath = PATH_BY_PAGE[p.page]
+                return (
+                  <div
+                    key={p.page}
+                    className="group flex items-center justify-between gap-4 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-slate-900 truncate">{p.label}</h3>
+                        <span
+                          className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                            p.customized
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                              : 'bg-slate-100 text-slate-500 border-slate-200/60'
+                          }`}
+                        >
+                          {p.customized ? 'Customized' : 'Default'}
+                        </span>
+                      </div>
+                      <span className="font-mono text-[11px] text-slate-400 block mt-0.5 truncate">
+                        {publicPath}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {publicPath && (
+                        <a
+                          href={publicPath}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="View live page"
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                      <Link
+                        to={`/admin/pages/${p.page}`}
+                        className="inline-flex items-center justify-center gap-1.5 bg-[#020617] group-hover:bg-[#34E06E] text-white group-hover:text-black font-extrabold text-xs uppercase tracking-wider px-3.5 py-2 rounded-xl transition-all cursor-pointer shadow-xs"
+                      >
+                        <span>Edit</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+        </div>
+      </section>
+
+      {/* 3. REAL-TIME STATS SUMMARY */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           to="/admin/courses"
@@ -207,7 +279,7 @@ export function AdminOverviewPage() {
         <StatCard
           to="/admin/submissions"
           label="Candidate Registrations"
-          value={stats.newSubmissions != null ? `${stats.newSubmissions} New` : '—'}
+          value={stats.newSubmissions != null ? `${stats.newSubmissions} New` : ' - '}
           subtext={`${stats.totalSubmissions || 0} total applications`}
           icon={Users}
           tone="blue"
@@ -216,7 +288,7 @@ export function AdminOverviewPage() {
         <StatCard
           to="/admin/contact-messages"
           label="Contact Inquiries"
-          value={stats.newMessages != null ? `${stats.newMessages} New` : '—'}
+          value={stats.newMessages != null ? `${stats.newMessages} New` : ' - '}
           subtext={`${stats.totalMessages || 0} total messages`}
           icon={Mail}
           tone="amber"
@@ -224,20 +296,20 @@ export function AdminOverviewPage() {
         />
       </div>
 
-      {/* 3. WEBSITE & CURRICULUM SECTION */}
+      {/* 4. CURRICULUM & FORMS SECTION */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-base font-black uppercase tracking-wider text-slate-900">
-              1. Website &amp; Curriculum Management
+              1. Curriculum &amp; Forms
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Edit what prospective students and airlines see on the public website.
+              Manage training programs and the default application form schema.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <SectionCard
             to="/admin/courses"
             icon={BookOpen}
@@ -245,14 +317,6 @@ export function AdminOverviewPage() {
             description="Manage individual training programs, syllabus modules, tuition pricing, schedules, and custom enrollment questions."
             badge="Curriculum"
             actionLabel="Manage Courses"
-          />
-          <SectionCard
-            to="/admin/pages"
-            icon={LayoutTemplate}
-            title="Site Pages CMS"
-            description="Edit copy, headlines, logos, statistics, and FAQs on Home, Services, Events, Foxtrot Delta, About, and Contact."
-            badge="6 Marketing Pages"
-            actionLabel="Edit Pages"
           />
           <SectionCard
             to="/admin/form-template"
@@ -265,7 +329,7 @@ export function AdminOverviewPage() {
         </div>
       </section>
 
-      {/* 4. ADMISSIONS & INBOUND LEADS SECTION */}
+      {/* 5. ADMISSIONS & INBOUND LEADS SECTION */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>

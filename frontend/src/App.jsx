@@ -1,36 +1,50 @@
-import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import React, { useEffect, lazy, Suspense } from 'react'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
-import { HomePage } from './pages/HomePage'
-import { NotFoundPage } from './pages/NotFoundPage'
-import { AboutPage } from './pages/AboutPage'
-import { ServicesPage } from './pages/ServicesPage'
-import { EventsPage } from './pages/EventsPage'
-import { ContactPage } from './pages/ContactPage'
-import { CourseDetailPage } from './pages/CourseDetailPage'
-import { CourseEnrollmentPage } from './pages/CourseEnrollmentPage'
-import { FoxtrotDeltaPage } from './pages/FoxtrotDeltaPage'
 import { RouteTitle } from './components/common/RouteTitle'
 import { ChatWidget } from './components/common/ChatWidget'
 
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext'
-import { AdminLayout } from './pages/admin/AdminLayout'
-import { AdminLoginPage } from './pages/admin/AdminLoginPage'
-import { AdminOverviewPage } from './pages/admin/AdminOverviewPage'
-import { AdminCoursesPage } from './pages/admin/AdminCoursesPage'
-import { AdminCourseFormPage } from './pages/admin/AdminCourseFormPage'
-import { AdminCoursePreviewPage } from './pages/admin/AdminCoursePreviewPage'
-import { AdminSubmissionsPage } from './pages/admin/AdminSubmissionsPage'
-import { AdminSubmissionDetailPage } from './pages/admin/AdminSubmissionDetailPage'
-import { AdminContactMessagesPage } from './pages/admin/AdminContactMessagesPage'
-import { AdminContactMessageDetailPage } from './pages/admin/AdminContactMessageDetailPage'
-import { AdminFormBuilderPage } from './pages/admin/AdminFormBuilderPage'
-import { AdminPagesPage } from './pages/admin/AdminPagesPage'
-import { AdminPageEditorPage } from './pages/admin/AdminPageEditorPage'
-import { AdminCoursePageContentEditor } from './pages/admin/AdminCoursePageContentEditor'
 import { SmoothScroll } from './components/common/SmoothScroll'
 import { RiLoader4Line } from 'react-icons/ri'
+
+function PublicLoadingFallback() {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center bg-white">
+      <RiLoader4Line className="w-6 h-6 animate-spin text-slate-300" />
+    </div>
+  )
+}
+
+// The admin console is never part of the prerendered SEO snapshot (excluded
+// from scripts/prerender.mjs's route list and disallowed in robots.txt), so
+// lazy-loading it is free: public visitors never download any of this code,
+// and it doesn't touch what crawlers see.
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then((m) => ({ default: m.AdminLayout })))
+const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage').then((m) => ({ default: m.AdminLoginPage })))
+const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage').then((m) => ({ default: m.AdminOverviewPage })))
+const AdminCoursesPage = lazy(() => import('./pages/admin/AdminCoursesPage').then((m) => ({ default: m.AdminCoursesPage })))
+const AdminCourseFormPage = lazy(() => import('./pages/admin/AdminCourseFormPage').then((m) => ({ default: m.AdminCourseFormPage })))
+const AdminCoursePreviewPage = lazy(() => import('./pages/admin/AdminCoursePreviewPage').then((m) => ({ default: m.AdminCoursePreviewPage })))
+const AdminSubmissionsPage = lazy(() => import('./pages/admin/AdminSubmissionsPage').then((m) => ({ default: m.AdminSubmissionsPage })))
+const AdminSubmissionDetailPage = lazy(() => import('./pages/admin/AdminSubmissionDetailPage').then((m) => ({ default: m.AdminSubmissionDetailPage })))
+const AdminContactMessagesPage = lazy(() => import('./pages/admin/AdminContactMessagesPage').then((m) => ({ default: m.AdminContactMessagesPage })))
+const AdminContactMessageDetailPage = lazy(() => import('./pages/admin/AdminContactMessageDetailPage').then((m) => ({ default: m.AdminContactMessageDetailPage })))
+const AdminFormBuilderPage = lazy(() => import('./pages/admin/AdminFormBuilderPage').then((m) => ({ default: m.AdminFormBuilderPage })))
+const AdminPagesPage = lazy(() => import('./pages/admin/AdminPagesPage').then((m) => ({ default: m.AdminPagesPage })))
+const AdminPageEditorPage = lazy(() => import('./pages/admin/AdminPageEditorPage').then((m) => ({ default: m.AdminPageEditorPage })))
+const AdminCoursePageContentEditor = lazy(() =>
+  import('./pages/admin/AdminCoursePageContentEditor').then((m) => ({ default: m.AdminCoursePageContentEditor }))
+)
+
+function AdminLoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-rocket-dark">
+      <RiLoader4Line className="w-8 h-8 animate-spin text-[#34E06E]" />
+    </div>
+  )
+}
 
 // ScrollToTop helper on route change
 function ScrollToTop() {
@@ -67,32 +81,51 @@ function RequireAdmin({ children }) {
   return children
 }
 
-// Public site chrome: navbar + footer around the marketing pages.
-function PublicSite() {
+import { RouteProgressBar } from './components/common/RouteProgressBar'
+
+// Public site chrome: navbar + footer around the marketing pages. `pages`
+// defaults to the eager set (what SSR always gets); the browser entry passes
+// the lazy set explicitly so only the visited page's chunk is fetched.
+function PublicSite({ pages }) {
+  const {
+    HomePage: Home,
+    ServicesPage: Services,
+    EventsPage: Events,
+    FoxtrotDeltaPage: FoxtrotDelta,
+    AboutPage: About,
+    ContactPage: Contact,
+    CourseDetailPage: CourseDetail,
+    CourseEnrollmentPage: CourseEnrollment,
+    NotFoundPage: NotFound
+  } = pages
+
   return (
     <div className="min-h-screen flex flex-col bg-white text-rocket-dark selection:bg-rocket-lime selection:text-black">
+      <RouteProgressBar />
       <Navbar />
 
       <main className="grow">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/events-courses" element={<Navigate to="/events" replace />} />
-          <Route path="/foxtrot-delta" element={<FoxtrotDeltaPage />} />
-          <Route path="/magazine" element={<Navigate to="/foxtrot-delta" replace />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/courses/:slug" element={<CourseDetailPage />} />
-          <Route path="/courses/:slug/enroll" element={<CourseEnrollmentPage />} />
-          <Route path="/enroll/:slug" element={<CourseEnrollmentPage />} />
-          <Route path="/enroll" element={<Navigate to="/events" replace />} />
-          <Route path="/courses" element={<Navigate to="/events" replace />} />
-          <Route path="/training" element={<Navigate to="/services" replace />} />
-          <Route path="/compliance" element={<ExternalRedirect to="https://agent.theifoa.com/" />} />
-          <Route path="/agent-for-service" element={<ExternalRedirect to="https://agent.theifoa.com/" />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <Suspense fallback={<PublicLoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events-courses" element={<Navigate to="/events" replace />} />
+            <Route path="/foxtrot-delta" element={<FoxtrotDelta />} />
+            <Route path="/magazine" element={<Navigate to="/foxtrot-delta" replace />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/courses/:slug" element={<CourseDetail />} />
+            <Route path="/courses/:slug/enroll" element={<CourseEnrollment />} />
+            <Route path="/enroll/:slug" element={<CourseEnrollment />} />
+            <Route path="/enroll" element={<Navigate to="/events" replace />} />
+            <Route path="/courses" element={<Navigate to="/events" replace />} />
+            <Route path="/training" element={<Navigate to="/services" replace />} />
+            <Route path="/compliance" element={<ExternalRedirect to="https://agent.theifoa.com/" />} />
+            <Route path="/agent-for-service" element={<ExternalRedirect to="https://agent.theifoa.com/" />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </main>
 
       <Footer />
@@ -104,14 +137,17 @@ function PublicSite() {
 
 // Router-agnostic app tree. The browser entry wraps this in BrowserRouter via
 // <App>; scripts/prerender.mjs wraps the same tree in StaticRouter so every
-// route can be rendered to static HTML at build time.
-export function AppRoutes() {
+// route can be rendered to static HTML at build time. `publicPages` defaults
+// to the eager set - entry-server.jsx calls this with no props, so
+// prerendering is unaffected either way.
+export function AppRoutes({ publicPages }) {
   return (
     <>
       <SmoothScroll>
         <ScrollToTop />
         <RouteTitle />
         <AdminAuthProvider>
+          <Suspense fallback={<AdminLoadingFallback />}>
           <Routes>
             {/* Admin console */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -149,20 +185,16 @@ export function AppRoutes() {
             </Route>
 
             {/* Public site */}
-            <Route path="/*" element={<PublicSite />} />
+            <Route path="/*" element={<PublicSite pages={publicPages} />} />
           </Routes>
+          </Suspense>
         </AdminAuthProvider>
       </SmoothScroll>
     </>
   )
 }
 
-function App() {
-  return (
-    <Router>
-      <AppRoutes />
-    </Router>
-  )
-}
-
-export default App
+// Browser-only composition (wrapping AppRoutes in BrowserRouter and passing
+// lazyPublicPages) lives in main.jsx, not here - this file must never import
+// either page-map itself, or the client build's code-splitting breaks. See
+// pages/eagerPublicPages.js for why.

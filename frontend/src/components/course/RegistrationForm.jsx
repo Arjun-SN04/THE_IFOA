@@ -45,7 +45,10 @@ export function RegistrationForm({ slug, courseTitle }) {
         setCourse(data.course)
         setAnswers(buildEmptyAnswers(sorted))
       })
-      .catch((err) => !cancelled && setLoadError(err.message))
+      .catch((err) => {
+        if (cancelled) return
+        setLoadError(err.message)
+      })
       .finally(() => !cancelled && setLoading(false))
     return () => {
       cancelled = true
@@ -63,27 +66,6 @@ export function RegistrationForm({ slug, courseTitle }) {
       }
       return next
     })
-  }
-
-  async function handleDownloadPdf() {
-    if (!done || !sections || !answers) return
-    setPdfBusy(true)
-    try {
-      await downloadEnrollmentPdf({
-        courseTitle: courseTitle || course?.title || 'IFOA Course',
-        submissionId: done.submissionId || done._id || '',
-        referenceCode: done.referenceCode || '',
-        submittedAt: done.createdAt || new Date().toISOString(),
-        sections,
-        answers,
-        intakes
-      })
-    } catch (err) {
-      console.error('PDF export failed:', err)
-      alert('Could not generate PDF: ' + (err.message || 'unknown error'))
-    } finally {
-      setPdfBusy(false)
-    }
   }
 
   async function handleSubmit(e) {
@@ -169,7 +151,7 @@ export function RegistrationForm({ slug, courseTitle }) {
   if (loadError) {
     return (
       <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center space-y-2">
-        <AlertTriangle className="w-8 h-8 mx-auto text-red-500" />
+        <RiAlertFill className="w-8 h-8 mx-auto text-red-500" />
         <p className="text-sm font-semibold text-red-700">Could not load the enrollment form</p>
         <p className="text-xs text-red-600">{loadError}</p>
       </div>
@@ -179,7 +161,7 @@ export function RegistrationForm({ slug, courseTitle }) {
   if (!formAvailable || (course && course.registrationOpen === false)) {
     return (
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-8 text-center space-y-2">
-        <AlertTriangle className="w-8 h-8 mx-auto text-amber-500" />
+        <RiAlertFill className="w-8 h-8 mx-auto text-amber-500" />
         <p className="text-base font-bold text-amber-900">Registration is not open yet</p>
         <p className="text-sm text-amber-700">
           The application form for this program has not been published. Contact{' '}
@@ -193,7 +175,7 @@ export function RegistrationForm({ slug, courseTitle }) {
   if (done) {
     return (
       <div className="rounded-2xl border border-rocket-lime bg-rocket-lime/10 p-8 text-center space-y-4">
-        <CheckCircle2 className="w-12 h-12 mx-auto text-rocket-dark" />
+        <RiCheckboxCircleFill className="w-12 h-12 mx-auto text-rocket-dark" />
         <h2 className="text-2xl font-bold text-rocket-dark">Enrollment submitted</h2>
         <p className="text-gray-700 max-w-lg mx-auto text-sm">
           Download your completed enrollment form, sign it, and email the signed copy plus two ID copies to{' '}
@@ -206,7 +188,7 @@ export function RegistrationForm({ slug, courseTitle }) {
           disabled={pdfBusy}
           className="inline-flex items-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-sm px-6 py-3 rounded-xl shadow-md disabled:opacity-60 transition"
         >
-          {pdfBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          {pdfBusy ? <RiLoader4Line className="w-4 h-4 animate-spin" /> : <RiDownload2Line className="w-4 h-4" />}
           {pdfBusy ? 'Preparing PDF…' : 'Download Official PDF'}
         </button>
         <p className="text-[11px] text-gray-500">Reference: {done}</p>

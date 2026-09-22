@@ -56,11 +56,37 @@ async function buildKnowledge() {
     .map((o) => `  ${o.country}: ${o.address} · ${o.phone} · ${o.email}`)
     .join('\n')
 
+  // Services page disciplines - the site's top-level framing of what IFOA
+  // offers, plus which real course each one currently links to, so the bot
+  // can answer "do you do X" with the actual course/enrol link instead of
+  // just the raw course catalog.
+  const services = mergeContent(DEFAULTS.services, byPage.services || {})
+  const disciplineLines = (services.specialist?.disciplines || []).map((d) => {
+    const links = d.courseChoices?.length
+      ? d.courseChoices.map((ch) => `${ch.label}: /courses/${ch.courseSlug}`).join(', ')
+      : d.courseSlug
+        ? `/courses/${d.courseSlug}`
+        : 'no dedicated course page yet - direct to Contact'
+    return [
+      `- ${d.title}: ${d.desc || d.subtitle || ''}`.trim(),
+      d.audience ? `  audience: ${d.audience}` : null,
+      `  page: ${links}`
+    ].filter(Boolean).join('\n')
+  })
+
+  // Events page - the open-enrollment / fixed-date cohort framing.
+  const events = mergeContent(DEFAULTS.events, byPage.events || {})
+
   kbCache = {
     at: Date.now(),
     text: [
       'PUBLISHED COURSES:',
       courseLines.join('\n') || '  (none published yet)',
+      '',
+      'SERVICES OFFERED (from the Services page - use these when a user asks what IFOA does or offers, and link to the specific course page listed):',
+      disciplineLines.join('\n') || '  (see published courses above)',
+      '',
+      'EVENTS PAGE (/events): ' + (events.hero?.subtitle || 'Fixed-date, open-enrollment cohorts you can register for directly.'),
       '',
       'OFFICES:',
       offices || '  Switzerland (HQ), USA, India',
@@ -81,7 +107,7 @@ function systemPrompt(kb) {
     '- Answer only from the information below and general aviation-training knowledge. If you do not know, say so and point the user to the Contact page.',
     '- Be concise and professional. 1-3 short sentences for most answers.',
     '- Plain text only. No markdown, no asterisks, no bold, no headings.',
-    '- If you must list courses, put each on its own line as: "Course name — /courses/<slug>/enroll". Keep it to the 3 most relevant.',
+    '- If you must list courses, put each on its own line as: "Course name - /courses/<slug>/enroll". Keep it to the 3 most relevant.',
     '- When one course clearly fits, recommend just that one with its enrol path.',
     '- Never invent prices, dates, or accreditations. Do not promise admission or discounts.',
     '- You cannot take payments, book seats, or change records. For those, direct users to the Contact page or WhatsApp.',
@@ -94,7 +120,7 @@ function systemPrompt(kb) {
     '',
     'ENROLLMENT PROCESS:',
     '1. Pick a programme. Browse them on the Events page (/events) or a course page (/courses/<slug>).',
-    '2. Open that course\'s application page (/courses/<slug>/enroll) and click "Enroll Now — Apply Online".',
+    '2. Open that course\'s application page (/courses/<slug>/enroll) and click "Enroll Now - Apply Online".',
     '3. Complete the online application form: personal and contact details, background, and select an intake if the course lists dates.',
     '4. Submit the form. You get a reference number and can download your completed application as a PDF.',
     '5. Sign the PDF and email the signed copy plus two photo-ID copies to info@theifoa.com.',

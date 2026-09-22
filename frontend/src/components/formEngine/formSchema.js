@@ -1,5 +1,5 @@
 // Client-side helpers for the dynamic enrollment form. Mirrors the server
-// rules in backend/utils/validateAnswers.js — keep the two in sync.
+// rules in backend/utils/validateAnswers.js - keep the two in sync.
 
 export function emptyValueForField(field) {
   if (field.type === 'checkbox') return false

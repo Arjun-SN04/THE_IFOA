@@ -70,7 +70,7 @@ const updateCourseSchema = asyncHandler(async (req, res) => {
   res.json({ schema, usingTemplate: false })
 })
 
-// DELETE /api/admin/courses/:id/form-schema — revert to the template.
+// DELETE /api/admin/courses/:id/form-schema - revert to the template.
 const resetCourseSchema = asyncHandler(async (req, res) => {
   await FormSchema.deleteOne({ course: req.params.id })
   const template = await getOrCreateTemplate()
@@ -82,7 +82,7 @@ const resetCourseSchema = asyncHandler(async (req, res) => {
 
 // ---------- Public ----------
 
-// GET /api/courses/:slug/form — the live form a student fills.
+// GET /api/courses/:slug/form - the live form a student fills.
 const getPublicCourseForm = asyncHandler(async (req, res) => {
   const course = await Course.findOne({ slug: req.params.slug, status: 'published' })
     .select('_id title slug registrationOpen intakes')

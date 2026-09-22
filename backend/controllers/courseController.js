@@ -48,7 +48,7 @@ const getBySlug = asyncHandler(async (req, res) => {
 
 // ---------- Admin ----------
 
-// GET /api/admin/courses — includes drafts
+// GET /api/admin/courses - includes drafts
 const listAdmin = asyncHandler(async (req, res) => {
   const { status, q } = req.query
   const filter = {}

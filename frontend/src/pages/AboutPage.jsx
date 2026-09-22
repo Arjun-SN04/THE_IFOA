@@ -12,23 +12,25 @@ import { PiAirplaneTiltFill } from 'react-icons/pi'
 import { HiArrowUpRight } from 'react-icons/hi2'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
+import { Reveal } from '@/components/common/Reveal'
+import { CmsText, CmsRemoveItem, CmsAddItem } from '@/components/admin/CmsEditable'
 import { usePageContent } from '@/hooks/usePageContent'
 import { Seo } from '@/components/common/Seo'
 import { graph, organizationSchema, breadcrumbSchema } from '@/lib/seo'
 
 // Standards Logos
-import logoFaa from '@/assets/course/standards-logos/logo-faa.png'
-import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
-import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
-import logoDgca from '@/assets/course/standards-logos/logo-dgca.png'
+import logoFaa from '@/assets/shared/standards-logos/logo-faa.webp'
+import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
+import logoIcao from '@/assets/shared/standards-logos/logo-icao.webp'
+import logoDgca from '@/assets/shared/standards-logos/logo-dgca.webp'
 
 // Country Flags
-import flagSwitzerland from '@/assets/contact/flag-switzerland.png'
-import flagUsa from '@/assets/contact/flag-usa.png'
-import flagIndia from '@/assets/contact/flag-india.jpg'
+import flagSwitzerland from '@/assets/shared/flags/flag-switzerland.webp'
+import flagUsa from '@/assets/shared/flags/flag-usa.webp'
+import flagIndia from '@/assets/shared/flags/flag-india.jpg'
 
 // Official Background
-import imgAircraftClouds from '@/assets/profile_media/aviation-aircraft-clouds.jpg'
+import imgAircraftClouds from '@/assets/shared/photos/aviation-aircraft-clouds.jpg'
 
 // Content the page ships with; editable at /admin/pages/about.
 const FALLBACK = {
@@ -42,7 +44,7 @@ const FALLBACK = {
   },
   executive: {
     heading:
-      'In just four years, we became the leading aviation training company in Europe for the education and development of flight dispatchers.',
+      'In just five years, we became the leading aviation training company in Europe for the education and development of flight dispatchers.',
     sub: 'A position earned through relentless commitment to quality, industry relevance, and real-world results.'
   },
   mission: {
@@ -106,8 +108,8 @@ export function AboutPage() {
   const navigate = useNavigate()
   const { c } = usePageContent('about', FALLBACK)
 
-  const coreValues = c.mission.values
-  const regions = c.footprint.regions
+  const coreValues = c.mission.values.map((v, i) => ({ ...v, _path: `mission.values.${i}`, _index: i }))
+  const regions = c.footprint.regions.map((r, i) => ({ ...r, _path: `footprint.regions.${i}`, _index: i }))
 
   return (
     <div className="bg-white text-rocket-dark selection:bg-[#34E06E] selection:text-slate-950" data-purpose="about-page">
@@ -137,11 +139,11 @@ export function AboutPage() {
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-            {c.hero.title}
+            <CmsText path="hero.title" value={c.hero.title} />
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
-            {c.hero.subtitle}
+            <CmsText path="hero.subtitle" value={c.hero.subtitle} />
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -149,13 +151,15 @@ export function AboutPage() {
               onClick={() => navigate('/contact')}
               className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:scale-105 cursor-pointer"
             >
-              {c.hero.primaryLabel}
+              <CmsText path="hero.primaryLabel" value={c.hero.primaryLabel} />
             </button>
             <Link
               to="/services"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 group"
             >
-              <span>{c.hero.secondaryLabel}</span>
+              <span>
+                <CmsText path="hero.secondaryLabel" value={c.hero.secondaryLabel} />
+              </span>
               <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
@@ -163,7 +167,7 @@ export function AboutPage() {
       </section>
 
       {/* 2. EXECUTIVE CLAIM / LEADERSHIP CALLOUT */}
-      <section className="py-12 sm:py-16 bg-slate-50/70 border-b border-slate-200/80" data-purpose="executive-claim">
+      <Reveal as="section" className="py-12 sm:py-16 bg-slate-50/70 border-b border-slate-200/80" data-purpose="executive-claim">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="relative rounded-3xl bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.06)] transition-all duration-300 p-8 sm:p-12 md:p-14 space-y-5 overflow-hidden text-left">
             {/* Sleek Top Indicator Line */}
@@ -174,31 +178,31 @@ export function AboutPage() {
                 Industry Track Record
               </span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug">
-                {c.executive.heading}
+                <CmsText path="executive.heading" value={c.executive.heading} />
               </h2>
             </div>
 
             <div className="pt-3 border-t border-slate-100">
               <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium leading-relaxed">
-                {c.executive.sub}
+                <CmsText path="executive.sub" value={c.executive.sub} />
               </p>
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 3. OUR MISSION & CORE VALUES */}
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="mission-values">
+      <Reveal as="section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="mission-values">
         <div className="max-w-[1280px] mx-auto px-6 space-y-12">
           <div className="max-w-2xl space-y-2.5">
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.mission.eyebrow}
+              <CmsText path="mission.eyebrow" value={c.mission.eyebrow} />
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-              {c.mission.title}
+              <CmsText path="mission.title" value={c.mission.title} />
             </h2>
             <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
-              {c.mission.intro}
+              <CmsText path="mission.intro" value={c.mission.intro} />
             </p>
           </div>
 
@@ -206,27 +210,33 @@ export function AboutPage() {
             {coreValues.map((val) => (
               <div
                 key={val.idx}
-                className="group rounded-3xl bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:border-[#34E06E]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col justify-between space-y-6"
+                className="group relative rounded-3xl bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:border-[#34E06E]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col justify-between space-y-6"
               >
+                <CmsRemoveItem listPath="mission.values" index={val._index} label="Remove value" />
                 <div className="space-y-4">
                   <span className="text-xs font-mono font-black text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
                     {val.idx}
                   </span>
                   <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors min-h-[3.25rem] flex items-start">
-                    {val.title}
+                    <CmsText path={`${val._path}.title`} value={val.title} />
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed min-h-[4.5rem]">
-                    {val.desc}
+                    <CmsText path={`${val._path}.desc`} value={val.desc} />
                   </p>
                 </div>
               </div>
             ))}
+            <CmsAddItem
+              listPath="mission.values"
+              label="Add value"
+              blank={{ idx: String(coreValues.length + 1).padStart(2, '0'), title: 'New Value', desc: '' }}
+            />
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 4. GLOBAL REGULATORY STANDARDS & AUTHORITIES */}
-      <section className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200/80" data-purpose="standards-authorities">
+      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200/80" data-purpose="standards-authorities">
         <div className="max-w-[1280px] mx-auto px-6 space-y-10">
           <div className="max-w-2xl space-y-2.5">
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
@@ -302,20 +312,20 @@ export function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 5. GLOBAL FOOTPRINT */}
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="global-footprint">
+      <Reveal as="section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="global-footprint">
         <div className="max-w-[1280px] mx-auto px-6 space-y-12">
           <div className="max-w-2xl space-y-2.5">
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              {c.footprint.eyebrow}
+              <CmsText path="footprint.eyebrow" value={c.footprint.eyebrow} />
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-              {c.footprint.title}
+              <CmsText path="footprint.title" value={c.footprint.title} />
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-              {c.footprint.intro}
+              <CmsText path="footprint.intro" value={c.footprint.intro} />
             </p>
           </div>
 
@@ -335,6 +345,7 @@ export function AboutPage() {
                   key={idx}
                   className="group rounded-3xl bg-[#020617] border border-white/10 hover:border-white/25 shadow-xl hover:shadow-2xl transition-all duration-300 p-8 flex flex-col justify-between space-y-6 relative overflow-hidden text-white hover:-translate-y-1 min-h-[260px]"
                 >
+                  <CmsRemoveItem listPath="footprint.regions" index={reg._index} label="Remove region" />
                   {/* Ambient Flag Background Art */}
                   <div className="absolute right-0 top-0 bottom-0 w-3/5 sm:w-1/2 overflow-hidden pointer-events-none z-0">
                     <img
@@ -347,34 +358,39 @@ export function AboutPage() {
 
                   <div className="relative z-10 space-y-2 max-w-sm min-h-[5.5rem] flex flex-col justify-start">
                     <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b border-[#34E06E]/40 pb-0.5 inline-block w-fit">
-                      {reg.name}
+                      <CmsText path={`${reg._path}.name`} value={reg.name} />
                     </span>
                     <h3 className="text-2xl font-bold text-white tracking-tight pt-1">
-                      {reg.location}
+                      <CmsText path={`${reg._path}.location`} value={reg.location} />
                     </h3>
                     <p className="text-xs text-slate-400 font-mono font-medium">
-                      {reg.facility}
+                      <CmsText path={`${reg._path}.facility`} value={reg.facility} />
                     </p>
                   </div>
 
                   <p className="relative z-10 text-xs sm:text-sm text-slate-300 font-normal leading-relaxed pt-3 border-t border-white/10 min-h-[4.5rem]">
-                    {reg.desc}
+                    <CmsText path={`${reg._path}.desc`} value={reg.desc} />
                   </p>
                 </div>
               )
             })}
+            <CmsAddItem
+              listPath="footprint.regions"
+              label="Add region"
+              blank={{ name: 'New Region', location: '', facility: '', desc: '' }}
+            />
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* 6. FINAL CONSULTATION CTA */}
-      <section className="py-16 sm:py-24 bg-slate-50/60 text-center" data-purpose="about-final-cta">
+      <Reveal as="section" className="py-16 sm:py-24 bg-slate-50/60 text-center" data-purpose="about-final-cta">
         <div className="max-w-[800px] mx-auto px-6 space-y-6">
           <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-            {c.finalCta.title}
+            <CmsText path="finalCta.title" value={c.finalCta.title} />
           </h2>
           <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-xl mx-auto">
-            {c.finalCta.desc}
+            <CmsText path="finalCta.desc" value={c.finalCta.desc} />
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -382,18 +398,20 @@ export function AboutPage() {
               onClick={() => navigate('/contact')}
               className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:scale-105 cursor-pointer"
             >
-              {c.finalCta.primaryLabel}
+              <CmsText path="finalCta.primaryLabel" value={c.finalCta.primaryLabel} />
             </button>
             <Link
               to="/services"
               className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-sm group"
             >
-              <span>{c.finalCta.secondaryLabel}</span>
+              <span>
+                <CmsText path="finalCta.secondaryLabel" value={c.finalCta.secondaryLabel} />
+              </span>
               <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </Link>
           </div>
         </div>
-      </section>
+      </Reveal>
     </div>
   )
 }

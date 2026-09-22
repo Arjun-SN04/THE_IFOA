@@ -5,8 +5,8 @@ import ImageUploader from '@/components/admin/ImageUploader'
 // Shared schema-driven form building blocks used by both the global
 // page-content editor (AdminPageEditorPage) and the per-course chrome-text
 // editor (AdminCoursePageContentEditor). Both drive off the same
-// SCHEMAS[page] shape from backend/utils/pageContent.js — groups of
-// fields/lists — so the rendering internals live here once.
+// SCHEMAS[page] shape from backend/utils/pageContent.js - groups of
+// fields/lists - so the rendering internals live here once.
 
 export const clone = (v) => JSON.parse(JSON.stringify(v ?? null))
 

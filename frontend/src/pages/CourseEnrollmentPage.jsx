@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, Navigate, useParams, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import {
   RiArrowLeftLine,
   RiCalendarEventLine,
@@ -16,9 +16,11 @@ import { Seo } from '@/components/common/Seo'
 import { mergeContent } from '@/hooks/usePageContent'
 
 // Standards Logos
-import logoEasa from '@/assets/course/standards-logos/logo-easa.png'
-import logoIcao from '@/assets/course/standards-logos/logo-icao.png'
-import bannerCourseHero from '@/assets/courses/easa-hero.png'
+import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
+import logoIcao from '@/assets/shared/standards-logos/logo-icao.webp'
+import logoDgca from '@/assets/shared/standards-logos/logo-dgca.webp'
+import logoFaa from '@/assets/shared/standards-logos/logo-faa.webp'
+import bannerCourseHero from '@/assets/shared/course-media/easa-hero.webp'
 
 // Static chrome the enrollment flow ships with, same for every course;
 // editable at /admin/pages/courseEnrollment. Course-specific fields (title,
@@ -58,7 +60,6 @@ const FALLBACK = {
 
 export function CourseEnrollmentPage() {
   const { slug: paramSlug } = useParams()
-  const navigate = useNavigate()
 
   const activeSlug = paramSlug || ''
 
@@ -113,7 +114,7 @@ export function CourseEnrollmentPage() {
     }
   }
 
-  // No course in the URL — send visitors to the programs list to pick one.
+  // No course in the URL - send visitors to the programs list to pick one.
   if (!activeSlug) {
     return <Navigate to="/events" replace />
   }
@@ -143,14 +144,25 @@ export function CourseEnrollmentPage() {
   }
 
   const schedule = course.schedule || {}
+  // Same slug/refCode-only detection as CourseDetailView - course.authority
+  // often *mentions* FAA on non-FAA courses too, which causes false positives.
+  const isIndiaProgram =
+    course.slug?.includes('india') ||
+    course.refCode?.includes('IPIN') ||
+    course.title?.toLowerCase().includes('india')
+  const isFaaProgram =
+    !isIndiaProgram &&
+    (course.slug?.includes('faa') ||
+      course.slug?.includes('part-65') ||
+      course.refCode?.toLowerCase().includes('faa'))
 
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Enrollment forms carry no search value and would compete with the
-          course page for the same query — kept out of the index deliberately. */}
+          course page for the same query - kept out of the index deliberately. */}
       <Seo
         path={`/courses/${course.slug}/enroll`}
-        title={`Enroll — ${course.title} | IFOA`}
+        title={`Enroll: ${course.title} | IFOA`}
         description="Complete your IFOA candidate application form."
         noindex
       />
@@ -247,7 +259,7 @@ export function CourseEnrollmentPage() {
                     <span>{c.sidebar.intakeLabel}</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold">
-                    {schedule.startDate ? formatDate(schedule.startDate) : '31/03/2026'}
+                    {schedule.startDate ? formatDate(schedule.startDate) : course.intakeLabel || 'To be announced'}
                   </strong>
                 </div>
 
@@ -278,8 +290,14 @@ export function CourseEnrollmentPage() {
                   {c.sidebar.accreditationLabel}
                 </span>
                 <div className="flex items-center justify-center gap-4 p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-                  <img src={logoEasa} alt="EASA" className="h-6 w-auto object-contain" />
-                  <img src={logoIcao} alt="ICAO" className="h-6 w-auto object-contain" />
+                  {isFaaProgram ? (
+                    <img src={logoFaa} alt="FAA" className="h-6 w-auto object-contain" />
+                  ) : isIndiaProgram ? (
+                    <img src={logoDgca} alt="DGCA" className="h-6 w-auto object-contain" />
+                  ) : (
+                    <img src={logoEasa} alt="EASA" className="h-6 w-auto object-contain" />
+                  )}
+                  {!isFaaProgram && <img src={logoIcao} alt="ICAO" className="h-6 w-auto object-contain" />}
                 </div>
               </div>
 

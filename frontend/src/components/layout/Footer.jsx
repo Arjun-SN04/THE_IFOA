@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { RiLinkedinFill, RiFacebookFill, RiInstagramLine, RiYoutubeFill, RiArrowUpLine } from 'react-icons/ri'
-import ifoaLogo from '@/assets/brand/ifoa-logoweb.png'
+import ifoaLogo from '@/assets/shared/brand/ifoa-logoweb.webp'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -123,6 +123,16 @@ export function Footer() {
                 <Link to="/foxtrot-delta" className="hover:text-[#34E06E] transition-colors font-medium">
                   Foxtrot Delta Magazine
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="https://agent.theifoa.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
+                  Agent for Service
+                </a>
               </li>
               <li>
                 <Link to="/services" className="hover:text-white transition-colors">

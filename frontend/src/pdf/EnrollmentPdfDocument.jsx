@@ -1,7 +1,7 @@
 import { Document, Page, View, Text, Image, StyleSheet, Svg, Polyline } from '@react-pdf/renderer';
-import logoSrc from '../assets/ifoa-logo.png';
-import watermarkSrc from '../assets/ifoa-watermark.png';
-import signatureSrc from '../assets/ifoa-signature.png';
+import logoSrc from '../assets/shared/brand/ifoa-logo.webp';
+import watermarkSrc from '../assets/shared/brand/ifoa-watermark.webp';
+import signatureSrc from '../assets/shared/brand/ifoa-signature.webp';
 import { isFieldVisible } from '../components/formEngine/formSchema.js';
 
 const NAVY = '#000021';
@@ -176,7 +176,7 @@ const formatValue = (field, value) => {
 
 function Checkbox({ checked }) {
   // react-pdf's built-in Helvetica font has no glyph for a Unicode checkmark
-  // (U+2713) — it silently renders blank. Draw the tick as a vector path
+  // (U+2713) - it silently renders blank. Draw the tick as a vector path
   // instead, so it doesn't depend on font glyph coverage at all.
   return (
     <View style={[styles.box, checked ? styles.boxChecked : null]}>
@@ -199,7 +199,7 @@ function FieldCell({ label, value, wide }) {
 }
 
 // Sections whose street/zipCode/stateProvince/country cluster gets the
-// original paper form's "Physical Address" spanning label — matches the
+// original paper form's "Physical Address" spanning label - matches the
 // source PDF exactly for Student/Company Information, which is the only
 // place that label appears (Billing Address has no separate label since the
 // whole section already is the address).
@@ -231,8 +231,7 @@ function AddressGroupRow({ fields, sectionAnswers }) {
 // have real typographic structure in the original paper form (bold labels,
 // centered price, two-column bank layout, indented sub-list). These parse
 // the schema's plain-text content rather than needing a separate hardcoded
-// copy, so admin edits to the wording (via Form Builder) still show up —
-// only the original's layout/emphasis is reproduced structurally.
+// copy, so admin edits to the wording (via Form Builder) still show up - // only the original's layout/emphasis is reproduced structurally.
 
 function ProgramInfoBlock({ content }) {
   const match = content.match(/^(.*?),\s*([\d.,]+\s*[A-Z]{2,4})\s*$/);
@@ -457,7 +456,7 @@ function renderSectionBody(section, sectionAnswers) {
       return;
     }
 
-    // plain value field — pair two per row
+    // plain value field - pair two per row
     const formatted = formatValue(field, value);
     if (pending) {
       rows.push(

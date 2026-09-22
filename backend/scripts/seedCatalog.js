@@ -1,5 +1,5 @@
 // Migrates the hard-coded ServicesPage catalog into the database so every
-// course card on the site has a real detail page. Upserts by slug — safe to
+// course card on the site has a real detail page. Upserts by slug - safe to
 // re-run, and it will not clobber edits made in the admin to other fields.
 //
 // Hero images point at files in frontend/public/course-images so the pages
@@ -23,22 +23,25 @@ const courses = [
     format: "Hybrid: 2 Weeks Online + 3 Weeks Onsite Sønderborg (Denmark)",
     careerPath: "Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist",
     intakeLabel: "Next Intake: 4th Jan 2027",
-    title: 'Flight Dispatcher Initial Certification',
+    title: 'Flight Dispatcher Initial Training',
     refCode: 'FD-INITIAL',
     category: 'dispatch',
     featured: true,
     order: 10,
-    summary: 'Complete licensing curriculum for aspiring airline flight dispatchers.',
-    heroImage: { url: '/course-images/Flight-Dispatch-Webpage-Small.jpg', key: '', alt: 'Flight dispatch training' },
+    summary:
+      'A comprehensive 5-week programme developing the technical knowledge, operational skills and decision-making competencies required for professional Flight Dispatch.',
+    // No heroImage: falls back to the same photo as the "Flight Dispatch"
+    // Services card (frontend/src/components/course/CourseCard.jsx CATEGORY_IMG).
+    heroImage: null,
     schedule: {
       mode: 'Hybrid',
       startDate: new Date('2027-01-04T09:00:00Z'),
       endDate: new Date('2027-02-05T17:00:00Z'),
-      timeText: '2 Weeks Online + 3 Weeks Onsite Sønderborg (Denmark)'
+      timeText: '2 Weeks Online + 3 Weeks On-site Sønderborg (Denmark)'
     },
     duration: '5 Weeks',
-    location: 'Online 2 Weeks + 3 Weeks Onsite Sønderborg (Denmark)',
-    price: { amount: 3500, currency: 'EUR', note: 'Inclusive of official materials and exam certification' },
+    location: '2 Weeks Online + 3 Weeks On-site Sønderborg (Denmark)',
+    price: { amount: 3500, currency: 'EUR', note: 'Includes training materials, examinations & certification' },
     whatYouWillLearn: {
       intro:
         'Built for Operational Control: Develop core competency across flight planning, dispatch, operational risk assessment, and collaborative decision-making.',
@@ -47,7 +50,7 @@ const courses = [
         'Assess operational risks and constraints',
         'Apply weather, fuel, routing and alternate requirements',
         'Monitor flights and anticipate disruptions',
-        'Support safe operational decision-making',
+        'Make operational decisions under changing conditions',
         'Apply EASA, ICAO and operator procedures'
       ]
     },
@@ -60,14 +63,25 @@ const courses = [
     },
     trainingStandards: {
       intro:
-        'A 5-week Flight Dispatcher programme aligned with EASA Air Operations requirements and ICAO Flight Operations Officer / Flight Dispatcher competency standards.',
+        'Programme structured around applicable EASA Air Operations requirements and ICAO Flight Operations Officer / Flight Dispatcher training principles, delivered under the IFOA Competency-Based Training and Assessment (CBTA) framework.',
       logos: []
     },
     whoShouldAttend: {
-      intro: 'This programme is designed for individuals beginning a career in airline operational control. Ideal for:',
-      points: ['Ab initio', 'Aspiring flight dispatchers', 'Air Traffic Controllers', 'Airline operations personnel', 'Aviation enthusiasts'],
+      intro: 'No previous Flight Dispatch experience required.',
+      points: [
+        'Aspiring Flight Dispatchers: for candidates seeking to enter professional Flight Dispatch.',
+        'OCC & Operations Personnel: for personnel working in airline operations and operational control environments.',
+        'Aviation Professionals: for aviation professionals seeking structured Flight Dispatch training.'
+      ],
       outro:
         'Target roles on completion: Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist.'
+    },
+    entryRequirements: {
+      intro: 'Confirmed admission prerequisites for this programme:',
+      points: [
+        'English language proficiency for professional aviation training',
+        'No previous Flight Dispatch experience required'
+      ]
     },
     courseContent: {
       intro: 'The curriculum covers the full prerequisite learning objectives for international flight dispatch:',
@@ -79,12 +93,228 @@ const courses = [
         'Mass & Balance Calculation, Fuel Policies & ETOPS / EDTO Requirements',
         'Real-Time OCC Simulator Practicum: High-Stress In-Flight Emergency Scenarios'
       ],
-      note: 'IFOA is the only training company offering a DOUBLE CERTIFICATION - FAA / EASA.'
+      note: 'Curriculum draws on both FAA Part 65 and EASA-aligned flight dispatch training content.'
     },
     certification: {
       text:
         'Upon successfully completing the exam you will be awarded an IFOA Flight Dispatch Completion Certificate, valid for an unlimited period.',
-      points: ['Practical and multiple-choice questions', '80% required to pass.']
+      points: ['Practical and multiple-choice examination', '80% required to pass']
+    }
+  },
+  {
+    // US pathway counterpart to flight-dispatcher-initial-certification (EASA).
+    // Content matches the FAA 14 CFR Part 65 Appendix A knowledge-area
+    // structure (8 areas, not the EASA course's 5-phase framing) - see
+    // pageContent.courseDetail.curriculum.phases below.
+    slug: 'aircraft-dispatcher-training-faa-part-65',
+    authority: 'FAA Part 65 Standards',
+    format: 'Classroom + Online ADX Support (Daytona Beach, FL)',
+    careerPath: 'Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist',
+    intakeLabel: 'Rolling Admissions',
+    title: 'Aircraft Dispatcher Initial Certification',
+    refCode: 'AD-FAA65',
+    category: 'dispatch',
+    featured: true,
+    order: 15,
+    summary:
+      'A 200-hour FAA-approved programme built to develop the technical knowledge, operational judgment, and decision-making competencies required to work as a professional Aircraft Dispatcher.',
+    trustStat: '500+ dispatchers trained across 70+ operators',
+    // No heroImage: falls back to the same "Flight Dispatch" Services image
+    // as the EASA course (frontend/src/components/course/CourseCard.jsx).
+    heroImage: null,
+    schedule: {
+      mode: 'Hybrid',
+      timeText: 'Classroom + Online ADX Support, Daytona Beach (FL)'
+    },
+    duration: '200 Hours',
+    location: 'Daytona Beach, FL',
+    price: {
+      amount: 4500,
+      currency: 'USD',
+      note: 'Includes 200-hour training, course materials, LMS access and weekly ADX masterclasses.'
+    },
+    whatYouWillLearn: {
+      intro: 'Built for Operational Control:',
+      points: [
+        'Plan and prepare operational flights',
+        'Evaluate weather, NOTAMs and operational constraints',
+        'Apply fuel, performance and alternate requirements',
+        'Prepare and amend dispatch releases',
+        'Monitor flights and changing operational conditions',
+        'Exercise operational control with the PIC'
+      ]
+    },
+    delivery: {
+      intro: 'Classroom instruction combined with online ADX preparation support at IFOA USA, Daytona Beach (FL).',
+      items: [
+        { label: 'School', title: 'IFOA USA', description: 'Delivered by the International Flight Operations Academy' },
+        { label: 'Format', title: 'Classroom + Online ADX Support', description: 'Daytona Beach (FL)' }
+      ]
+    },
+    trainingStandards: {
+      intro:
+        'A 200-hour FAA-approved Aircraft Dispatcher certification course covering every knowledge area and topic required by Appendix A to 14 CFR Part 65.',
+      logos: []
+    },
+    whoShouldAttend: {
+      // Plain pills (no " - " description), matching the eligibility list
+      // shown for this course rather than the 3-card profile layout.
+      points: [
+        'No previous dispatch experience required',
+        'Aspiring Aircraft Dispatchers',
+        'Airline & OCC Personnel',
+        'Aviation Professionals'
+      ],
+      outro:
+        'Target roles on completion: Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist.'
+    },
+    entryRequirements: {
+      intro: 'Confirmed admission prerequisites for this programme:',
+      points: [
+        'English language proficiency for professional aviation training',
+        'No previous dispatch experience required'
+      ]
+    },
+    // Per-course reference list only - the actual curriculum shown on the page
+    // comes from pageContent.courseDetail.curriculum.phases below (8 FAA
+    // Appendix A knowledge areas), not this generic module list.
+    courseContent: {
+      intro: 'All eight FAA-required knowledge areas, presented in the same order as Appendix A to 14 CFR Part 65:',
+      modules: [
+        'I. Regulations: Part 65 Subpart C, Parts 1, 25, 61, 71, 91, 121, 139 & 175, 49 CFR Part 830, General Operating Manual',
+        'II. Meteorology: Weather theory, hazardous weather phenomena, NOTAMs, weather charts',
+        'III. Navigation: Enroute and terminal navigation, charts and publications, alternate airport planning',
+        'IV. Aircraft: Aircraft systems, performance, weight and balance, airworthiness requirements',
+        'V. Communications: Dispatch communications procedures, radio phraseology, ATC coordination',
+        'VI. ATC: Air traffic control procedures, airspace classifications, operational coordination',
+        'VII. Emergency: Emergency and abnormal procedures, in-flight contingencies, irregular operations',
+        'VIII. Practical Dispatch: Applied flight planning, dispatch release preparation, scenario-based decision-making'
+      ],
+      note: 'We train Aircraft Dispatchers, not test takers: the ADX knowledge test is one step in the certification process.'
+    },
+    certification: {
+      text:
+        'Upon successfully completing the exam you will be awarded an IFOA Aircraft Dispatcher Training Completion Certificate, preparing you to sit the FAA ADX knowledge test and practical test with an FAA examiner.',
+      points: ['ADX Knowledge Test', 'Practical Test with FAA Examiner']
+    },
+    additionalCosts: {
+      intro: 'Additional certification costs',
+      items: [
+        { label: 'ADX Knowledge Test', amount: '$175' },
+        { label: 'Practical Test / Examiner', amount: '$600' }
+      ],
+      note: 'Third-party fees, paid directly to the examiner. Not included in tuition.'
+    },
+    trainingPhilosophy: {
+      eyebrow: 'Our Training Philosophy',
+      title: 'We train Aircraft Dispatchers, not test takers',
+      intro:
+        'The ADX knowledge test is one step in the certification process. The programme focuses on applying knowledge in realistic operational situations and developing the judgment and competencies required of a professional dispatcher.',
+      cards: [
+        {
+          title: 'ADX LMS Portal',
+          desc: 'Structured online preparation and practice resources for the ADX knowledge test.'
+        },
+        {
+          title: 'Weekly ADX Masterclass',
+          desc: 'Live online sessions with an instructor covering ADX subjects, questions and difficult concepts.'
+        },
+        {
+          title: 'Instructor Support',
+          desc: 'ADX preparation runs alongside professional dispatcher training rather than replacing it.'
+        }
+      ]
+    },
+    // Curriculum shown on the page: the 8 FAA Appendix A knowledge areas, in
+    // the exact order 14 CFR Part 65 Appendix A lists them. Arrays merge
+    // wholesale (see mergeContent in utils/pageContent.js) so all 8 items must
+    // be listed here even though this replaces the shared 5-phase default.
+    pageContent: {
+      courseDetail: {
+        // Objects merge key-by-key onto the shared labels (unlike arrays,
+        // which replace wholesale) - only these keys actually differ for FAA.
+        labels: {
+          eyebrowSecondary: 'Aircraft Dispatcher Training',
+          applyOnlineLabel: 'Apply Online',
+          admissionsTitle: 'Ready to start your dispatcher certification?',
+          admissionsDesc: '200 hours · FAA Part 65 approved · $4,500',
+          admissionsApplyLabel: 'Apply Online'
+        },
+        curriculum: {
+          eyebrow: '14 CFR Part 65 · Appendix A',
+          title: 'What the programme covers',
+          subtitle: 'All eight FAA-required knowledge areas, presented in the same order as Appendix A.',
+          phases: [
+            {
+              num: 'I',
+              label: 'AREA I',
+              title: 'Regulations',
+              topics: [
+                'Part 65 Subpart C',
+                'Applicable Parts 1, 25, 61, 71, 91, 121, 139 & 175',
+                '49 CFR Part 830',
+                'General Operating Manual'
+              ]
+            },
+            {
+              num: 'II',
+              label: 'AREA II',
+              title: 'Meteorology',
+              topics: [
+                'Weather theory, hazardous weather phenomena, NOTAMs, weather charts, and the meteorological judgment required for flight planning and dispatch release decisions.'
+              ]
+            },
+            {
+              num: 'III',
+              label: 'AREA III',
+              title: 'Navigation',
+              topics: [
+                'Enroute and terminal navigation, charts and publications, area navigation concepts, and alternate airport planning.'
+              ]
+            },
+            {
+              num: 'IV',
+              label: 'AREA IV',
+              title: 'Aircraft',
+              topics: [
+                'Aircraft systems, performance, weight and balance, and airworthiness requirements relevant to dispatch.'
+              ]
+            },
+            {
+              num: 'V',
+              label: 'AREA V',
+              title: 'Communications',
+              topics: [
+                'Dispatch communications procedures, radio phraseology, and coordination with flight crews and air traffic control.'
+              ]
+            },
+            {
+              num: 'VI',
+              label: 'AREA VI',
+              title: 'ATC',
+              topics: [
+                'Air traffic control procedures, airspace classifications, and operational coordination.'
+              ]
+            },
+            {
+              num: 'VII',
+              label: 'AREA VII',
+              title: 'Emergency',
+              topics: [
+                'Emergency and abnormal procedures, in-flight contingencies, and operational control during irregular operations.'
+              ]
+            },
+            {
+              num: 'VIII',
+              label: 'AREA VIII',
+              title: 'Practical Dispatch',
+              topics: [
+                'Applied flight planning, dispatch release preparation, and scenario-based decision-making exercises.'
+              ]
+            }
+          ]
+        }
+      }
     }
   },
   {
@@ -98,7 +328,7 @@ const courses = [
     category: 'dispatch',
     order: 20,
     summary: 'Mandatory annual competency maintenance for active airline dispatchers.',
-    heroImage: { url: '/course-images/occ-control-center-dispatcher.jpg', key: '', alt: 'OCC control centre' },
+    heroImage: null, // falls back to the "Flight Dispatch" Services image (same category)
     schedule: { mode: 'Online', timeText: 'Rolling monthly admissions' },
     duration: '3 Weeks',
     location: 'Interactive Digital Workshops + Scenario Simulations',
@@ -139,6 +369,210 @@ const courses = [
     certification: {
       text: 'A dated IFOA Recurrent Training Certificate is issued on completion, satisfying annual operator records.',
       points: ['Scenario-based assessment', '80% required to pass.']
+    }
+  },
+  {
+    slug: 'dangerous-goods-regulations-cbta-initial',
+    authority: "IATA CBTA / ICAO Annex 18 Standards",
+    format: "Interactive Digital Modules + Practical Acceptance Exercises",
+    careerPath: "DGR Acceptance Specialist, Cargo Operations Officer, Airside Logistics Coordinator",
+    intakeLabel: "Rolling Monthly Admissions",
+    title: 'Dangerous Goods Regulations (IATA CBTA Initial & Recurrent)',
+    refCode: 'DGR-CBTA',
+    category: 'dangerous-goods',
+    order: 25,
+    summary:
+      'Role-specific, competency-based training for the safe classification, acceptance, loading and transport of dangerous goods by air - built around what pilots, dispatchers and cabin crew each actually encounter, and adapted for no-carry, carry, airline and cargo operations.',
+    heroImage: { url: '/course-images/02_dangerous_goods.webp', key: '', alt: 'Dangerous Goods Regulations Training' },
+    heroNote:
+      "No-carry isn't a shorter version of carry. Every module adapts to your role and your operation, not a generic DG deck read aloud.",
+    badges: ['Role-Specific Training', 'Carry & No-Carry', 'IATA DGR Aligned'],
+    schedule: { mode: 'Hybrid', timeText: 'Modular CBTA Certification' },
+    duration: '2 Weeks',
+    location: 'Interactive Digital Modules + Practical Acceptance Exercises',
+    price: { amount: 1450, currency: 'EUR', note: 'Includes official IATA DGR study material and CBTA certification' },
+    whatYouWillLearn: {
+      intro:
+        'Develop practical expertise to identify, classify, pack, mark, label, document, and accept dangerous goods in strict compliance with IATA and ICAO standards - scaled to your role and your operation.',
+      points: [
+        'Apply the 9 Hazard Classes and proper shipping names accurately',
+        'Verify packaging specifications, UN markings, and quantity limitations',
+        'Review and validate Shipper\'s Declarations and dangerous goods transport documents',
+        'Implement NOTOC (Notification to Captain) and emergency response procedures',
+        'Prevent undeclared dangerous goods from entering air cargo, baggage and the cabin',
+        'Apply the correct acceptance, loading and segregation procedures for a carry or no-carry operation'
+      ]
+    },
+    delivery: {
+      intro: 'Delivered in a flexible modular format with live interactive acceptance workshops.',
+      items: [
+        { label: 'School', title: 'IFOA', description: 'Delivered by the International Flight Operations Academy' },
+        { label: 'Format', title: 'Virtual / Modular', description: '2 weeks interactive CBTA workshops and case scenarios' }
+      ]
+    },
+    trainingStandards: { intro: `${ICAO_INTRO} Aligned with IATA Dangerous Goods Regulations (DGR) and ICAO Annex 18 (Safe Transport of Dangerous Goods by Air).`, logos: [] },
+    curriculum: {
+      eyebrow: 'Curriculum Framework',
+      title: '7 modules, adapted to your role and your operation',
+      subtitle:
+        'Same core competencies, different scenarios. Acceptance and loading modules shift with your operation, not padded with procedures you will never use.',
+      layout: 'accordion',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'DG Philosophy - Why It Matters',
+          focus: 'The real cost of getting it wrong',
+          description:
+            'The consequences of getting dangerous goods wrong, beyond the regulation itself. Builds the judgment that carries a decision when the checklist runs out, whether you are flying the aircraft, dispatching it, or working the cabin.'
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Classification & Identification',
+          focus: 'The 9 hazard classes, in practice',
+          description:
+            "Recognizing dangerous goods in real cargo, baggage and carry-on, including the items people miss because they don't look dangerous. Covers proper shipping names, UN numbers and the classification logic behind them."
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Marking, Labelling & Documentation',
+          focus: "Spotting what's wrong before it flies",
+          description:
+            "Practical inspection drills for incorrect, missing or damaged marks, labels, packaging and shipping documents, including the Shipper's Declaration, before a bad load reaches the aircraft."
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Acceptance & Handling Procedures',
+          focus: 'Adapted to your operation',
+          adaptive: 'acceptance',
+          description:
+            "How to recognize dangerous goods that reach you anyway, and the refusal and reporting steps that replace acceptance procedures you'll never use."
+        },
+        {
+          num: '05',
+          label: '05',
+          title: 'Loading, Storage & Segregation',
+          focus: "Where it applies, and where it doesn't",
+          adaptive: 'loading',
+          description:
+            "Why segregation and loading procedures don't apply to a no-carry operation, and exactly what to do if dangerous goods turn up regardless."
+        },
+        {
+          num: '06',
+          label: '06',
+          title: 'Incident & Emergency Response',
+          focus: 'Decision drills under time pressure',
+          description:
+            'How to respond to a spill, leak or fire involving dangerous goods, including NOTOC procedures and communication to cabin crew, ATC and ground support, built around your specific role in the response.'
+        },
+        {
+          num: '07',
+          label: '07',
+          title: 'Practical Assessment',
+          focus: 'Scenario-based, not multiple-choice',
+          description:
+            'A scenario-based CBTA assessment built around real decisions for your role and your operation, not a generic checkbox quiz. 80% required to pass.'
+        }
+      ]
+    },
+    dgrExplorer: {
+      roles: [
+        {
+          code: '7.7',
+          title: 'Pilots',
+          scenarios: [
+            'Assessing DG risk before accepting cargo aboard your aircraft',
+            'Reading a NOTOC and knowing what it actually means for your flight',
+            'Deciding when to refuse a load, and backing that call',
+            'Communicating DG status to cabin crew and ATC in an emergency'
+          ]
+        },
+        {
+          code: '7.8',
+          title: 'Flight Dispatchers',
+          scenarios: [
+            'Reviewing DG documentation and NOTOC before release',
+            'Cross-checking DG loads against aircraft and route limitations',
+            "Coordinating with ground handling when DG paperwork doesn't match the load",
+            'Briefing the crew on DG status as part of the dispatch release'
+          ]
+        },
+        {
+          code: '7.9',
+          title: 'Cabin Crew',
+          scenarios: [
+            'Spotting undeclared or concealed dangerous goods in the cabin',
+            'Responding to a DG-related spill, fire or leak in flight',
+            'Briefing passengers on carry-on DG restrictions without a fight',
+            'Knowing exactly when to involve the flight deck'
+          ]
+        }
+      ],
+      segments: [
+        {
+          id: 'nocarry-ba',
+          title: 'No-Carry Business Aviation',
+          descriptor:
+            "Built for operators who don't carry DG at all - recognition, refusal and reporting, not acceptance procedures you'll never use.",
+          acceptance:
+            "How to recognize dangerous goods that reach you anyway, and the refusal and reporting steps that replace acceptance procedures you'll never use.",
+          loading:
+            "Why segregation and loading procedures don't apply to a no-carry operation, and exactly what to do if dangerous goods turn up regardless."
+        },
+        {
+          id: 'carry-ba',
+          title: 'Carry Business Aviation',
+          descriptor: 'Full acceptance-to-loading competency, scaled for smaller operations and irregular DG volumes.',
+          acceptance:
+            'Acceptance scenarios scaled to smaller, less frequent DG shipments - what to check, what to question, and when to refuse.',
+          loading: 'Loading and segregation scenarios sized for smaller aircraft and lower DG volumes.'
+        },
+        {
+          id: 'airlines',
+          title: 'Airlines',
+          descriptor: 'High-volume acceptance and load-planning scenarios drawn from scheduled passenger operations.',
+          acceptance:
+            'High-volume acceptance scenarios drawn from scheduled passenger operations, including irregular and last-minute shipments.',
+          loading: 'Load-planning and segregation scenarios built around scheduled passenger operations.'
+        },
+        {
+          id: 'cargo',
+          title: 'Cargo',
+          descriptor: 'Freighter-specific scenarios - bulk DG acceptance, ULD build-up, and segregation at scale.',
+          acceptance: 'Freighter-specific acceptance scenarios, including bulk shipments and ULD build-up documentation checks.',
+          loading: 'Bulk loading, ULD build-up and segregation scenarios at freighter scale.'
+        }
+      ]
+    },
+    whoShouldAttend: {
+      intro: 'Built by role and by operation, not one generic dangerous goods deck for everyone. Ideal for:',
+      points: [
+        'Pilots (Category 7.7) - dangerous goods risk assessment and NOTOC awareness',
+        'Flight dispatchers and load planning officers (Category 7.8) - documentation and acceptance review',
+        'Cabin crew (Category 7.9) - recognition, in-flight response and passenger briefing',
+        'Cargo acceptance, ramp and freight forwarding personnel across carry and no-carry operations'
+      ],
+      outro:
+        'Covers Business Aviation (Carry & No-Carry), Airlines and Cargo operations. Target roles: DGR Acceptance Specialist, Cargo Operations Officer, Airside Logistics Coordinator.'
+    },
+    courseContent: {
+      intro: 'The programme covers the full spectrum of the IATA Dangerous Goods Regulations:',
+      modules: [
+        'General Philosophy, Legal Responsibilities & Regulatory Hierarchy (ICAO/IATA)',
+        'Classification & Identification of the 9 Classes of Dangerous Goods',
+        'Packaging Requirements, UN Specification Markings & Overpacks',
+        'Labeling, Documentation & Shipper\'s Declaration for Dangerous Goods (DGD)',
+        'Storage, Loading, Segregation & NOTOC Notification to Captain Procedures',
+        'Emergency Response & Handling Undeclared or Damaged Dangerous Goods'
+      ],
+      note: 'Aligned with current 66th Edition IATA DGR and ICAO CBTA guidelines.'
+    },
+    certification: {
+      text: 'An official IFOA / IATA-aligned CBTA Dangerous Goods Certificate is issued upon successful exam completion.',
+      points: ['Practical acceptance checklist assessment', '80% required to pass.']
     }
   },
   {
@@ -196,59 +630,532 @@ const courses = [
     }
   },
   {
+    slug: 'airline-crew-control-flight-rostering',
+    authority: "EASA FTL & Fatigue Risk Management",
+    format: "Online or On-site",
+    careerPath: "Crew Controller, Crew Planner, Crew Control Supervisor, OCC Operations Specialist",
+    intakeLabel: "Corporate Group Intakes",
+    title: 'Crew Control Training',
+    refCode: 'CC-FTL',
+    category: 'crew',
+    isCorporate: true,
+    eyebrow: 'IFOA CORPORATE TRAINING',
+    order: 45,
+    summary:
+      'A focused 2-day programme for Crew Control personnel covering EASA Flight Time Limitations, Air Taxi FTL and Fatigue Risk Management.',
+    heroImage: { url: '/course-images/05_crew_control.webp', key: '', alt: 'Crew Control Training' },
+    badges: ['EASA FTL', 'AIR TAXI FTL', 'FATIGUE RISK MANAGEMENT', '2 DAYS', 'ONLINE OR ON-SITE'],
+    schedule: { mode: 'Hybrid', timeText: '2 Days · Online or On-site' },
+    duration: '2 Days',
+    location: 'Operator Premises or Online Virtual Classroom',
+    price: {
+      amount: null,
+      currency: 'EUR',
+      label: 'Training Fee',
+      note: "Custom quote, based on group size and delivery format, tailored to the operator's operational environment."
+    },
+    rateCard: {
+      eyebrow: 'Training Fee',
+      value: 'Training Fee',
+      note: "Custom quote, based on group size and delivery format, tailored to the operator's operational environment.",
+      secondaryCtaLabel: 'Contact Training Team',
+      trustBadge: 'Delivered by IFOA: trusted by 70+ operators worldwide'
+    },
+    sidebarSpecs: [
+      { label: 'Duration', value: '2 Days' },
+      { label: 'Delivery', value: 'Online or On-site' },
+      { label: 'On-site Location', value: 'Operator Premises' },
+      { label: 'Focus', value: 'CAT + Air Taxi FTL + FRM' },
+      { label: 'Format', value: 'Instructor-led' },
+      { label: 'Certificate', value: 'IFOA Certificate' }
+    ],
+    curriculum: {
+      eyebrow: 'COURSE CURRICULUM',
+      title: 'What the Crew Control programme covers',
+      subtitle: 'A focused regulatory and fatigue-management programme for personnel working with crew legality and rostering.',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'EASA FTL',
+          description: 'Flight Time Limitation regulations under EASA: duty and rest requirements, flight duty periods, and the legal framework governing crew scheduling.',
+          topics: []
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Crew Legality',
+          description: 'Assessing crew legality in day-to-day rostering: qualifications, currency and duty history checks before a flight is confirmed.',
+          topics: []
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Air Taxi FTL',
+          description: 'FTL provisions specific to air taxi and non-complex commercial air transport operations, and where they diverge from mainstream CAT rules.',
+          topics: []
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Fatigue Risk',
+          description: 'Fatigue hazard identification, reporting and risk assessment: the operational side of Fatigue Risk Management.',
+          topics: []
+        },
+        {
+          num: '05',
+          label: '05',
+          title: 'FTL Application',
+          description: '',
+          topics: [
+            'Standby & Reserve',
+            'Positioning',
+            'Cumulative Limits',
+            'FTL & Fatigue Case Studies'
+          ]
+        }
+      ]
+    },
+    whatYouWillLearn: {
+      eyebrow: 'OPERATIONAL COMPETENCIES',
+      title: 'Built around FTL & fatigue',
+      intro: 'Built around FTL & fatigue',
+      points: [
+        'Interpret EASA FTL requirements',
+        'Calculate FDP, duty and rest limitations',
+        'Recognise fatigue hazards beyond legal compliance',
+        'Understand Air Taxi FTL differences',
+        'Assess crew legality against duty and rest history',
+        'Apply FRM principles to crew planning decisions'
+      ]
+    },
+    processSteps: [
+      'Identify the operation',
+      'Apply the correct FTL rule',
+      'Check limits',
+      'Consider fatigue risk'
+    ],
+    trainingStandards: {
+      eyebrow: 'REGULATORY FRAMEWORK',
+      title: 'EASA FTL & Fatigue Risk Management',
+      intro: 'From compliance to operational application. The programme distinguishes between the FTL framework used for mainstream CAT operations and the current rules applicable to air taxi operations, with fatigue risk management integrated throughout.',
+      cards: [
+        { code: 'ORO.FTL', title: 'Flight and duty time limitations and rest requirements' },
+        { code: 'CS FTL.1', title: 'Commercial air transport by aeroplane' },
+        { code: 'Air Taxi', title: 'EU-OPS Subpart Q / applicable national provisions' },
+        { code: 'FRM Principles', title: 'Fatigue hazards, reporting, assessment and mitigation' }
+      ],
+      logos: []
+    },
+    whoShouldAttend: {
+      eyebrow: 'AUDIENCE',
+      title: 'Who should attend?',
+      intro: 'Built for airline and business aviation operations personnel:',
+      points: [
+        'Crew Controllers',
+        'Crew Planners & Rostering Personnel',
+        'Crew Control Supervisors',
+        'OCC & Operations Personnel'
+      ],
+      outro: ''
+    },
+    bottomBanner: {
+      eyebrow: 'IFOA CORPORATE TRAINING',
+      title: 'Bring Crew Control Training to your operation',
+      desc: '2 days · Online or on-site · Custom corporate rate',
+      ctaLabel: 'Request a Corporate Quote'
+    },
+    // Explicitly cleared: this course previously had entryRequirements and
+    // certification set, and the seed script's upsert only overwrites fields
+    // it mentions (see `existing.set(data)` below) - leaving them out here
+    // would NOT have cleared the stale DB values. Neither section is part of
+    // this corporate course's page.
+    entryRequirements: { intro: '', points: [] },
+    certification: { text: '', points: [] }
+  },
+  {
     slug: 'train-the-trainer-icao-cbta-instructor',
-    authority: "ICAO Training Instructor Certified",
-    format: "Interactive Masterclasses + Video Micro-Teaching",
-    careerPath: "Aviation Instructor, OCC Training Captain, Airline CBTA Assessor",
-    intakeLabel: "",
-    title: 'Train the Trainer (ICAO CBTA Instructor TIC 1 & 2)',
+    authority: 'Instructor Development Programme',
+    format: 'Instructor-led',
+    careerPath: 'Aviation Instructor, OCC Training Captain, Airline CBTA Assessor',
+    intakeLabel: '',
+    title: 'Train the Trainer',
     refCode: 'TTT-CBTA',
     category: 'train-the-trainer',
+    isCorporate: true,
+    eyebrow: 'IFOA Professional Development',
+    ctaLabel: 'Request Pricing & Dates',
     featured: true,
     order: 40,
-    summary: 'Pedagogical mastery and assessment rubrics for senior aviation trainers.',
-    heroImage: { url: '/course-images/Train-the-trainer.jpg', key: '', alt: 'Train the trainer session' },
-    schedule: { mode: 'Hybrid', startDate: new Date('2026-05-18T09:00:00Z'), timeText: 'Pedagogy & Assessment' },
-    duration: '5 Weeks',
-    location: 'Interactive Masterclasses + Video Micro-Teaching',
-    price: { amount: null, currency: 'EUR', note: '' },
+    summary:
+      'An instructor-development programme covering adult learning theory, cross-cultural awareness, presentation skills and effective feedback, built for anyone who delivers training to aviation professionals.',
+    // No heroImage: falls back to the "Train the Trainer" Services image
+    // (same category - frontend/src/components/course/CourseCard.jsx).
+    heroImage: null,
+    badges: ['Adult Learning', 'Presentation Skills', 'Feedback Techniques', '4 Days', 'Instructor-Led'],
+    schedule: { mode: 'Hybrid', timeText: 'Instructor-led' },
+    duration: '4 Days',
+    location: '4 Days',
+    price: { amount: null, currency: 'EUR', note: 'Contact us for current pricing and available dates.' },
+    rateCard: {
+      eyebrow: 'Training Fee',
+      value: 'On Request',
+      note: 'Contact us for current pricing and available dates.',
+      secondaryCtaLabel: 'Contact Training Team',
+      trustBadge: 'Delivered by IFOA: trusted by 70+ operators worldwide'
+    },
+    sidebarSpecs: [
+      { label: 'Duration', value: '4 Days' },
+      { label: 'Delivery', value: '4 Days' },
+      { label: 'Format', value: 'Instructor-led' },
+      { label: 'Certificate', value: 'IFOA Certificate of Completion' }
+    ],
+    curriculum: {
+      eyebrow: 'Course Curriculum',
+      title: 'What the programme covers',
+      subtitle: 'Eight modules, from adult-learning theory through to a practical delivery assessment.',
+      layout: 'accordion',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'Introduction',
+          focus: 'Adult Teaching & Learning',
+          topics: [
+            'Articulate the importance of adult teaching & learning strategies',
+            'Explain the key differences between adult and child learning',
+            "Use Knowles' Six Principles for adult learning to devise an effective learner-centric strategy",
+            'Articulate the main dimensions of individual learning styles',
+            'Develop a teaching strategy using Perceptual Preference, Information Processing, and Learning Styles'
+          ]
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'Cross-Cultural Awareness',
+          topics: [
+            'Discuss the definitions of cultural diversity and cultural sensitivity',
+            "Identify the benefits of understanding Hofstede's cultural dimensions within the business environment"
+          ]
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Learning Styles & Strategies',
+          topics: [
+            'Recognize different personality types',
+            'Discover how to adapt to learning style differences',
+            'Identify how to deal with difficult situations using personality types'
+          ]
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Designing a Course',
+          topics: [
+            'Describe and explain all the necessary steps in the designing and evaluation process of effective training'
+          ]
+        },
+        {
+          num: '05',
+          label: '05',
+          title: 'Planning & Presentation',
+          topics: ['Effectively prepare for a training event']
+        },
+        {
+          num: '06',
+          label: '06',
+          title: 'Advanced Presentation Skills',
+          topics: [
+            'Develop advanced presentation skills',
+            'Handle objections and difficult situations',
+            'Discover how to use listening skills to set the stage for an atmosphere conducive to learning'
+          ]
+        },
+        {
+          num: '07',
+          label: '07',
+          title: 'Feedback',
+          topics: [
+            'Assess the confidence in delivering feedback',
+            'Apply the techniques of effective feedback'
+          ]
+        },
+        {
+          num: '08',
+          label: '08',
+          title: 'Participant Presentations',
+          focus: 'Practical Assessment',
+          topics: [
+            'Plan and deliver a short training session applying the course techniques',
+            'Receive structured instructor and peer feedback on delivery'
+          ]
+        }
+      ]
+    },
     whatYouWillLearn: {
-      intro:
-        'Engineered for senior dispatchers and airline managers preparing to deliver high-impact adult learning, design CBTA assessments, and mentor operational cadets.',
+      eyebrow: 'Learning Outcomes',
+      title: 'Built for confident, effective delivery',
+      intro: '',
       points: [
-        'To convey subject expertise convincingly to adult learners',
-        'To design competency units and evidence-based scoring rubrics',
-        'To brief and debrief simulator sessions without punitive feedback',
-        'To apply human factors principles inside instruction'
+        'Devise a learner-centric strategy using adult learning principles',
+        'Adapt delivery to individual learning styles and preferences',
+        'Apply cross-cultural awareness to training delivery',
+        'Recognize personality types and adjust accordingly',
+        'Design and evaluate an effective training course',
+        'Prepare thoroughly for a training event',
+        'Handle objections and difficult classroom situations',
+        'Deliver effective, well-structured feedback'
       ]
     },
     delivery: {
-      intro: 'This is the IFOA signature training solution — being a subject-matter expert is not enough.',
+      intro: 'Instructor-led, applying the course techniques through practical delivery and structured feedback.',
       items: [
         { label: 'School', title: 'IFOA', description: 'Delivered by the International Flight Operations Academy' },
-        { label: 'Format', title: 'Masterclass + Micro-Teaching', description: '5 weeks of interactive masterclasses with recorded practice' }
+        { label: 'Format', title: 'Instructor-led', description: '8 modules, from adult-learning theory through to a practical delivery assessment' }
       ]
     },
-    trainingStandards: { intro: `${ICAO_INTRO} Instructors are certified against ICAO TIC 1 & 2 requirements.`, logos: [] },
-    whoShouldAttend: {
-      intro: 'For experienced professionals moving into a training role. Ideal for:',
-      points: ['Senior flight dispatchers', 'Airline training managers', 'OCC supervisors and mentors', 'Prospective CBTA assessors'],
-      outro: 'Target roles: Aviation Instructor, OCC Training Captain, Airline CBTA Assessor.'
-    },
-    courseContent: {
-      intro: 'Training adults requires specific competencies and theoretical preparation:',
-      modules: [
-        'Principles of Adult Education & Cognitive Learning Frameworks',
-        'CBTA Competency Unit Design & Evidence-Based Rubric Scoring',
-        'Simulator Briefing & Debriefing Techniques (Non-Punitive Feedback)',
-        'Aviation Human Factors & Crew Resource Management in Instruction'
+    trainingStandards: {
+      eyebrow: 'Programme Frameworks',
+      title: 'Built on established instructional models',
+      intro:
+        'Course design draws on recognised frameworks for adult learning, cross-cultural communication and learning-style differentiation, applied throughout the eight modules.',
+      cards: [
+        { code: "Knowles' Six Principles", title: 'Core adult-learning principles applied to course design' },
+        { code: "Hofstede's Dimensions", title: 'Cross-cultural awareness in training delivery' },
+        { code: 'Learning Styles', title: 'Perceptual preference & information processing' },
+        { code: 'Structured Feedback', title: 'Techniques for effective, confident feedback' }
       ],
-      note: ''
+      logos: []
     },
-    certification: {
-      text: 'Successful candidates are awarded the IFOA Train the Trainer (TIC 1 & 2) Certificate.',
-      points: ['Assessed micro-teaching delivery', 'Written rubric design exercise', '80% required to pass.']
-    }
+    whoShouldAttend: {
+      eyebrow: 'Audience',
+      title: 'Who should attend?',
+      intro: '',
+      points: [
+        'Aspiring & Current Instructors',
+        'Subject Matter Experts',
+        'Training & OCC Personnel',
+        'Aviation Professionals moving into a training role'
+      ],
+      outro: ''
+    },
+    bottomBanner: {
+      eyebrow: 'IFOA Professional Development',
+      title: 'Develop your next generation of instructors',
+      desc: '8 modules · Instructor-led · Certificate of completion',
+      ctaLabel: 'Request Pricing & Dates'
+    },
+    // Explicitly cleared - see the crew-control course above for why this
+    // matters: the seed upsert only overwrites fields it mentions, so any
+    // stale value from an earlier version of this course would otherwise
+    // persist. Neither section is part of this course's page.
+    courseContent: { intro: '', modules: [], note: '' },
+    entryRequirements: { intro: '', points: [] },
+    certification: { text: '', points: [] }
+  },
+  {
+    slug: 'human-factors-in-the-occ',
+    authority: 'TEM-Based Human Factors Programme',
+    format: 'Classroom / Blended',
+    careerPath: 'Flight Dispatcher, Operations Controller, Crew Control / Scheduling, MCC',
+    intakeLabel: '[Next cohort start date]',
+    title: 'Human Factors, built for the OCC',
+    refCode: 'HF-OCC',
+    category: 'human-factors',
+    isCorporate: true,
+    eyebrow: 'IFOA OCC Training',
+    ctaLabel: 'Request Pricing & Dates',
+    featured: true,
+    order: 55,
+    summary:
+      "Generic Human Factors training was written for the ramp and the cabin. We took the same discipline and rebuilt it around what actually happens on an operations control floor - shift fatigue, disruption-day stress, multi-stakeholder coordination, and decisions now shared with AI-CDM tools.",
+    heroNote:
+      "This is not CRM built for flying crew. It's Human Factors purpose-built for the people who run the operation from the ground.",
+    // No heroImage: falls back to the "Human Factors" Services image (same
+    // category - frontend/src/components/course/CourseCard.jsx).
+    heroImage: null,
+    badges: ['OCC-Specific', '11 Modules', 'TEM-Based', 'AI-CDM Ready'],
+    schedule: { mode: 'Hybrid', timeText: 'Instructor-led' },
+    duration: '2 Days',
+    location: '[Classroom / Blended]',
+    price: { amount: null, currency: 'EUR', note: 'Contact us for current pricing and available dates.' },
+    rateCard: {
+      eyebrow: 'Training Fee',
+      value: 'On Request',
+      note: 'Contact us for current pricing and available dates.',
+      secondaryCtaLabel: 'Contact Training Team',
+      trustBadge: 'Delivered by IFOA: trusted by 70+ operators worldwide'
+    },
+    sidebarSpecs: [
+      { label: 'Modules', value: '11' },
+      { label: 'Duration', value: '2 Days' },
+      { label: 'Format', value: '[Classroom / Blended]' },
+      { label: 'Certificate', value: 'IFOA Certificate' },
+      { label: 'Delivery', value: 'On-site or IFOA facility' },
+      { label: 'Next Cohort', value: '[Next cohort start date]' }
+    ],
+    curriculum: {
+      eyebrow: 'Course Curriculum',
+      title: '11 modules, every one of them OCC-specific',
+      subtitle:
+        'Every classic Human Factors topic, rebuilt around what it actually looks like on your floor - not a generic aviation module with "OCC" pasted on the title slide.',
+      layout: 'accordion',
+      phases: [
+        {
+          num: '01',
+          label: '01',
+          title: 'Hard Skills vs. Soft Skills',
+          focus: 'Human Factors?',
+          description:
+            "Why technical competency alone doesn't make a strong OCC operator. This module draws the line between hard skills (procedures, systems, regulation) and soft skills (judgement, communication, self-management), and makes the case for why the second set is usually what separates a good shift from a bad one."
+        },
+        {
+          num: '02',
+          label: '02',
+          title: 'OCC Environment',
+          focus: 'Where HF is vital',
+          description:
+            'A 24/7, multi-stakeholder, time-critical environment where one decision affects dozens of flights at once. This module maps what makes the OCC floor different from other aviation workplaces, and why Human Factors risk shows up faster and spreads further here than almost anywhere else in the operation.'
+        },
+        {
+          num: '03',
+          label: '03',
+          title: 'Stress & Performance',
+          focus: 'Identify the relationship',
+          description:
+            'The stress-performance curve as it actually plays out during an irregular-operations day: the point where pressure sharpens decision-making, and the point past it where performance starts to break down. Includes recognizing your own position on that curve in real time.'
+        },
+        {
+          num: '04',
+          label: '04',
+          title: 'Fatigue',
+          focus: 'Fatigue or being tired... this is the question',
+          description:
+            'Fatigue in a shift-working, desk-based role is not the same as simply being tired. This module separates acute tiredness from cumulative fatigue, covers the roster patterns that create the most risk, and gives practical self- and team-recognition techniques for an OCC shift.'
+        },
+        {
+          num: '05',
+          label: '05',
+          title: 'Resilience',
+          focus: 'The ability to cope with and recover from setbacks',
+          description:
+            'The OCC runs on a cycle of disruption and recovery - weather days, system outages, network meltdowns. This module builds individual and team resilience for that cycle specifically, and distinguishes real resilience from simply absorbing pressure without recovering from it.'
+        },
+        {
+          num: '06',
+          label: '06',
+          title: 'Decision Making',
+          focus: "Let's deal with uncertainty",
+          description:
+            "Structured decision-making for the incomplete-information, conflicting-priority situations that define OCC work. This module includes where an AI-CDM tool should inform a decision and where it shouldn't make it for you - a direct link into Module 11."
+        },
+        {
+          num: '07',
+          label: '07',
+          title: 'Communication',
+          focus: "Closing the 'Gap'",
+          description:
+            'The gap between what is said and what is understood - across dispatch, crew control, ground handling, maintenance and management. This module covers structured communication techniques built to close that gap under time pressure, not in a calm meeting room.'
+        },
+        {
+          num: '08',
+          label: '08',
+          title: 'Error Management Techniques',
+          focus: 'Mitigating safety risk',
+          description:
+            "Errors made in the OCC don't stay contained to one desk - they ripple through every flight the operation touches. This module covers practical techniques for catching, containing and recovering from error before it cascades."
+        },
+        {
+          num: '09',
+          label: '09',
+          title: 'Situational Awareness',
+          focus: 'Identify threats before they occur and have time to react',
+          description:
+            'Maintaining the big picture across a multi-screen, multi-system OCC desk, including the specific risk of tunnel vision - heads-down in one system while the wider operational picture shifts around you.'
+        },
+        {
+          num: '10',
+          label: '10',
+          title: 'Emotional Intelligence',
+          focus: 'The cornerstone of soft skills',
+          description:
+            'The foundation every other soft skill in this course is built on: managing your own state under pressure, reading colleagues and crew accurately over a phone line or radio, and de-escalating a tense coordination call before it becomes a bigger problem.'
+        },
+        {
+          num: '11',
+          label: '11',
+          title: 'AI-CDM in the OCC',
+          focus: 'Working with the machine, without switching off',
+          description:
+            "How AI-assisted collaborative decision-making tools are changing the OCC role in real time. This module covers the specific risk of Automation Over-Reliance - the anchoring factor in our Sinful Sixteen framework - and how to stay the decision-maker in the loop rather than a rubber stamp on the tool's output."
+        }
+      ]
+    },
+    whatYouWillLearn: {
+      eyebrow: 'Learning Outcomes',
+      title: 'Built for the realities of the OCC floor',
+      intro: '',
+      points: [
+        'Recognize why soft skills, not just technical competency, define a strong OCC operator',
+        'Read your own position on the stress-performance curve during a high-pressure irregular-operations day',
+        'Distinguish acute tiredness from cumulative fatigue and recognize high-risk roster patterns',
+        "Build individual and team resilience for the OCC's disruption-and-recovery cycle",
+        "Apply structured decision-making under uncertainty, including where an AI-CDM tool should and shouldn't decide",
+        'Close the communication gap across dispatch, crew control, ground handling and management',
+        'Catch, contain and recover from error before it cascades across the operation',
+        'Stay the decision-maker in the loop when working with AI-CDM tools, rather than a rubber stamp on their output'
+      ]
+    },
+    delivery: {
+      intro: 'Instructor-led, delivered on-site or at an IFOA facility.',
+      items: [
+        { label: 'School', title: 'IFOA', description: 'Delivered by the International Flight Operations Academy' },
+        { label: 'Format', title: 'Classroom / Blended', description: '11 modules across 2 days, framed around Threat and Error Management' }
+      ]
+    },
+    trainingPhilosophy: {
+      eyebrow: 'Our Approach',
+      title: 'Threat and Error Management, plus the Sinful Sixteen',
+      intro:
+        "Every module ties back to one working model of risk - Threat and Error Management. Alongside it, we use the Sinful Sixteen: the classic aviation \"Dirty Dozen\" human-factors traps, extended with four factors specific to a 24/7 operations control environment, anchored by Automation Over-Reliance - the risk of letting an AI-CDM tool decide instead of advise.",
+      cards: [
+        {
+          title: 'TEM-Based Delivery',
+          desc: 'Every module is framed around threats, errors and undesired states as they occur on the OCC floor - not in the abstract.'
+        },
+        {
+          title: 'The Sinful Sixteen',
+          desc: 'Twelve classic factors plus four built for the OCC, anchored by Automation Over-Reliance.'
+        }
+      ]
+    },
+    whoShouldAttend: {
+      eyebrow: 'Who Should Attend',
+      title: 'Built for the OCC - not the flight deck',
+      intro: 'This is Human Factors for the people who run the operation from the ground, not CRM for flying crew.',
+      points: [
+        'Flight Dispatcher',
+        'Operations Controllers',
+        'Crew Control / Scheduling',
+        'MCC',
+        'Any other OCC personnel'
+      ],
+      outro: ''
+    },
+    bottomBanner: {
+      eyebrow: 'IFOA OCC Training',
+      title: 'Give your whole OCC the Human Factors edge',
+      desc: '11 Modules · TEM-Based · Built for every OCC role',
+      ctaLabel: 'Request Pricing & Dates'
+    },
+    // Explicitly cleared - see the crew-control course above for why this
+    // matters: the seed upsert only overwrites fields it mentions, so any
+    // stale value from an earlier version of this course would otherwise
+    // persist. Neither section is part of this course's page.
+    courseContent: { intro: '', modules: [], note: '' },
+    entryRequirements: { intro: '', points: [] },
+    certification: { text: '', points: [] }
   },
   {
     slug: 'aviation-sms-operational-risk-engineering',
@@ -316,11 +1223,11 @@ const courses = [
     featured: true,
     order: 60,
     summary: 'Turnkey advisory, software integration and Flight Ops Manual drafting.',
-    heroImage: { url: '/course-images/aviation-consulting-support.jpg', key: '', alt: 'Aviation consulting' },
+    heroImage: null, // falls back to the "Consulting Services" Services image (same category)
     schedule: { mode: 'Onsite', timeText: 'Immediate consultation available' },
     duration: 'Project-Based / Turnkey Integration',
     location: 'On-site Assessment + Workflow Redesign',
-    price: { amount: null, currency: 'EUR', note: 'Scoped per engagement — request a proposal.' },
+    price: { amount: null, currency: 'EUR', note: 'Scoped per engagement: request a proposal.' },
     whatYouWillLearn: {
       intro:
         'We assist startup airlines, expanding charter operators, and cargo carriers in architecting or modernizing their OCC software workflows, ergonomics, and Operations Manuals.',

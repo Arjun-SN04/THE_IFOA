@@ -50,13 +50,13 @@ const send = asyncHandler(async (req, res) => {
     <p>${escapeHtml(message).replace(/\n/g, '<br/>')}</p>
   `
 
-  // Best-effort notification — the message is already saved, so a mail
+  // Best-effort notification - the message is already saved, so a mail
   // failure (e.g. SMTP not configured) must not turn into a 500 for the visitor.
   try {
     await sendMail({
       to,
       replyTo: email,
-      subject: `New website enquiry: ${topic || 'General'} — ${firstName} ${lastName}`,
+      subject: `New website enquiry: ${topic || 'General'} - ${firstName} ${lastName}`,
       text,
       html
     })
@@ -97,7 +97,7 @@ const getOne = asyncHandler(async (req, res) => {
   res.json({ contactMessage })
 })
 
-// PUT /api/admin/contact-messages/:id — set status and/or admin notes.
+// PUT /api/admin/contact-messages/:id - set status and/or admin notes.
 const update = asyncHandler(async (req, res) => {
   const contactMessage = await ContactMessage.findById(req.params.id)
   if (!contactMessage) return res.status(404).json({ message: 'Contact message not found' })

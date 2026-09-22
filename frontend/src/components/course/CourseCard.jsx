@@ -4,9 +4,29 @@ import { RiStarFill } from 'react-icons/ri'
 import { TbClockHour4 } from 'react-icons/tb'
 import { HiArrowUpRight } from 'react-icons/hi2'
 
-import bannerDispatcher from '@/assets/courses/easa-hero.png'
-import bannerPart65 from '@/assets/courses/part65-hero.png'
-import bannerGroundOps from '@/assets/courses/course_banner_ground_ops_3d.jpg'
+import bannerDispatcher from '@/assets/shared/course-media/easa-hero.webp'
+import bannerPart65 from '@/assets/shared/course-media/part65-hero.webp'
+import bannerGroundOps from '@/assets/shared/course-media/course_banner_ground_ops_3d.jpg'
+// Same photography as the Services page cards, so a course and its matching
+// service present the same image instead of a generic unrelated stock photo.
+import imgFlightDispatch from '@/assets/services/01_flight_dispatch.webp'
+import imgDgr from '@/assets/services/02_dangerous_goods.webp'
+import imgTrainTrainer from '@/assets/services/03_train_trainer.webp'
+import imgHumanFactors from '@/assets/services/04_human_factors.webp'
+import imgCrewControl from '@/assets/services/05_crew_control.webp'
+import imgConsulting from '@/assets/services/06_consulting.webp'
+
+// Keyed by Course.category (backend/models/Course.js). Categories with no
+// matching Services card (ground, security, other) keep their own image.
+const CATEGORY_IMG = {
+  dispatch: imgFlightDispatch,
+  'dangerous-goods': imgDgr,
+  'train-the-trainer': imgTrainTrainer,
+  'human-factors': imgHumanFactors,
+  crew: imgCrewControl,
+  consulting: imgConsulting,
+  ground: bannerGroundOps
+}
 
 // Single source of truth for the Events & Courses catalog card. Used by the
 // public catalog and by the admin editor's live preview. Every `card.*`
@@ -17,20 +37,40 @@ const first = (...vals) => vals.find((v) => v !== '' && v !== null && v !== unde
 export function resolveCard(course = {}) {
   const c = course.card || {}
   const isGround = course.category === 'ground' || course.category === 'ramp'
+  const isDgr =
+    course.category === 'dangerous-goods' ||
+    course.category === 'dgr' ||
+    course.slug?.includes('dangerous-goods') ||
+    course.slug?.includes('dgr') ||
+    course.title?.toLowerCase().includes('dangerous goods')
   const isFaa = course.slug?.includes('part-65') || course.slug?.includes('faa')
-  const defaultBanner = isGround ? bannerGroundOps : (isFaa ? bannerPart65 : bannerDispatcher)
+  const defaultBanner = isDgr
+    ? imgDgr
+    : CATEGORY_IMG[course.category] || (isFaa ? bannerPart65 : bannerDispatcher)
   const rating = first(c.rating, course.rating, 5)
 
+  const resolvedImage = isDgr
+    ? (c.image?.url && !c.image?.url?.includes('ground') && !c.image?.url?.includes('dispatcher')
+        ? c.image.url
+        : course.heroImage?.url && !course.heroImage?.url?.includes('ground') && !course.heroImage?.url?.includes('dispatcher')
+        ? course.heroImage.url
+        : imgDgr)
+    : first(c.image?.url, course.heroImage?.url, defaultBanner)
+
   return {
-    image: first(c.image?.url, defaultBanner),
-    badge: first(c.badge, course.authority, isGround ? 'IATA ISAGO / EASA' : (isFaa ? 'FAA Part 65' : 'EASA Compliant')),
-    badgeTone: isGround ? 'ground' : 'default',
+    image: resolvedImage,
+    badge: first(
+      c.badge,
+      course.authority,
+      isDgr ? 'IATA CBTA / ICAO' : (isGround ? 'IATA ISAGO / EASA' : (isFaa ? 'FAA Part 65' : 'EASA Compliant'))
+    ),
+    badgeTone: isGround ? 'ground' : (isDgr ? 'dgr' : 'default'),
     rating: Number(rating).toFixed(1),
     reviews: first(c.reviewsLabel, '480+ Reviews'),
     duration: first(
       c.durationLabel,
       course.duration,
-      isGround ? '4 Weeks Station Track' : '5 Weeks Hybrid'
+      isDgr ? '2 Weeks CBTA Track' : (isGround ? '4 Weeks Station Track' : '5 Weeks Hybrid')
     ),
     blurb: first(
       c.blurb,
@@ -46,11 +86,11 @@ export function CourseCard({ course, preview = false }) {
   const title = course.title || 'Untitled course'
 
   const Banner = (
-    <div className="relative h-[220px] sm:h-[240px] overflow-hidden bg-white select-none border-b border-slate-100 flex items-center justify-center">
+    <div className="relative h-[220px] sm:h-[240px] overflow-hidden bg-slate-950 select-none border-b border-slate-100 flex items-center justify-center">
       <img
         src={v.image}
         alt={title}
-        className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-700 select-none p-2"
+        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
       />
     </div>
   )

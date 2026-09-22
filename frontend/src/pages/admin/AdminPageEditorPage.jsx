@@ -10,30 +10,45 @@ import {
   FileText,
   FileEdit,
   Eye,
+  Users,
   RefreshCw,
-  MonitorSmartphone
+  MousePointerClick
 } from 'lucide-react'
 import { api } from '@/lib/api'
-import { clone, ScalarField, StringListField, ListEditor } from '@/components/admin/SchemaFieldEditors'
+import { clone } from '@/components/admin/SchemaFieldEditors'
+import { PATH_BY_PAGE } from './pagesMeta'
 
-const PATH_BY_PAGE = {
-  services: '/services',
-  about: '/about',
-  contact: '/contact',
-  events: '/events',
-  foxtrotDelta: '/foxtrot-delta',
-  courseEnrollment: null,
-  courseDetail: null
+// Pages whose editor also shows the cross-link panel to individual course
+// pages (and their submissions) that live "behind" this page's cards - the
+// two shared course-layout templates, plus Services and Events, whose cards
+// each point at a real course page.
+const SHOWS_COURSE_PICKER = new Set(['courseDetail', 'courseEnrollment', 'services', 'events'])
+
+function getAtPath(obj, path) {
+  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj)
 }
 
-// These two pages hold the DEFAULT/SEED chrome template new courses start
-// from — each course can now override its own copy independently — so
-// alongside the template fields, show a picker of the actual courses so the
-// admin can jump straight into editing one course's own content/form from
-// here.
-const SHOWS_COURSE_PICKER = new Set(['courseDetail', 'courseEnrollment'])
+// Mutates `obj` in place, creating intermediate objects as needed. Array
+// segments are plain numeric-string keys (e.g. "disciplines.2.title"), which
+// work the same way on arrays as on objects.
+function setAtPath(obj, path, value) {
+  const keys = path.split('.')
+  let cur = obj
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k = keys[i]
+    if (cur[k] == null || typeof cur[k] !== 'object') cur[k] = /^\d+$/.test(keys[i + 1]) ? [] : {}
+    cur = cur[k]
+  }
+  cur[keys[keys.length - 1]] = value
+}
 
-function LivePreview({ page, data }) {
+// The iframe renders the real public page (?__preview=1) with its text
+// wrapped in <CmsText> (see components/admin/CmsEditable.jsx), which becomes
+// directly contentEditable there. Edits post up here as ifoa-edit-* messages;
+// this component is the only place that owns `data`, and it echoes the
+// updated state back down through the same channel the old split-preview
+// used - so what's on screen in the iframe IS the save target, not a copy.
+function EditablePreview({ page, data, onEditChange, onEditAdd, onEditRemove }) {
   const iframeRef = useRef(null)
   const debounceRef = useRef(null)
   const [iframeKey, setIframeKey] = useState(0)
@@ -46,8 +61,6 @@ function LivePreview({ page, data }) {
     )
   }
 
-  // Push the latest in-progress edits whenever they change, debounced so we
-  // don't flood the iframe on every keystroke.
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(sendContent, 200)
@@ -55,13 +68,15 @@ function LivePreview({ page, data }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, iframeKey])
 
-  // The iframe tells us when it's mounted and listening, so we can send it
-  // the current state immediately (avoids a race on first load / refresh).
   useEffect(() => {
     const onMessage = (event) => {
       if (event.origin !== window.location.origin) return
       const msg = event.data
-      if (msg && msg.type === 'ifoa-preview-ready' && msg.page === page) sendContent()
+      if (!msg) return
+      if (msg.type === 'ifoa-preview-ready' && msg.page === page) sendContent()
+      else if (msg.type === 'ifoa-edit-change') onEditChange(msg.path, msg.value)
+      else if (msg.type === 'ifoa-edit-add') onEditAdd(msg.path, msg.blank)
+      else if (msg.type === 'ifoa-edit-remove') onEditRemove(msg.path, msg.index)
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
@@ -71,42 +86,36 @@ function LivePreview({ page, data }) {
   if (!previewPath) {
     return (
       <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center text-xs font-semibold text-gray-500">
-        No live preview for shared template pages. Use the per-course "Preview" link below instead.
+        No live editor for shared template pages. Use the per-course "Edit Page Text" link below instead.
       </div>
     )
   }
 
   return (
-    <div className="lg:sticky lg:top-6">
-      <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-[#020617] shadow-xs">
-        <div className="flex items-center justify-between gap-2 px-4 py-2.5">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#34E06E]">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34E06E] opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#34E06E]" />
-            </span>
-            <MonitorSmartphone className="h-3.5 w-3.5" /> Live Preview
-          </span>
-          <button
-            type="button"
-            onClick={() => setIframeKey((k) => k + 1)}
-            title="Refresh preview"
-            className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-slate-300 hover:bg-white/10 transition-colors"
-          >
-            <RefreshCw className="h-3 w-3" /> Refresh
-          </button>
-        </div>
-        <div className="border-t border-white/5 bg-slate-900 p-3">
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-white">
-            <iframe
-              key={iframeKey}
-              ref={iframeRef}
-              src={`${previewPath}?__preview=1`}
-              title="Live page preview"
-              className="h-[70vh] w-full"
-              onLoad={sendContent}
-            />
-          </div>
+    <div className="overflow-hidden rounded-2xl border border-gray-200/90 bg-[#020617] shadow-xs">
+      <div className="flex items-center justify-between gap-2 px-4 py-2.5">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#34E06E]">
+          <MousePointerClick className="h-3.5 w-3.5" /> Click any text below to edit it directly
+        </span>
+        <button
+          type="button"
+          onClick={() => setIframeKey((k) => k + 1)}
+          title="Refresh preview"
+          className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-slate-300 hover:bg-white/10 transition-colors"
+        >
+          <RefreshCw className="h-3 w-3" /> Refresh
+        </button>
+      </div>
+      <div className="border-t border-white/5 bg-slate-900 p-3">
+        <div className="overflow-hidden rounded-xl border border-white/10 bg-white">
+          <iframe
+            key={iframeKey}
+            ref={iframeRef}
+            src={`${previewPath}?__preview=1`}
+            title="Editable page preview"
+            className="h-[85vh] w-full"
+            onLoad={sendContent}
+          />
         </div>
       </div>
     </div>
@@ -116,7 +125,6 @@ function LivePreview({ page, data }) {
 export function AdminPageEditorPage() {
   const { page } = useParams()
 
-  const [schema, setSchema] = useState(null)
   const [data, setData] = useState(null)
   const [customized, setCustomized] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -131,7 +139,6 @@ export function AdminPageEditorPage() {
     setError('')
     try {
       const res = await api.adminGetPage(page)
-      setSchema(res.schema)
       setData(res.data)
       setCustomized(res.customized)
     } catch (err) {
@@ -156,11 +163,26 @@ export function AdminPageEditorPage() {
       .catch((err) => setCoursesError(err.message))
   }, [page])
 
-  // recipe mutates a deep clone of `data`
-  const mutate = (recipe) =>
+  const handleEditChange = (path, value) =>
     setData((prev) => {
       const next = clone(prev)
-      recipe(next)
+      setAtPath(next, path, value)
+      return next
+    })
+
+  const handleEditAdd = (path, blank) =>
+    setData((prev) => {
+      const next = clone(prev)
+      const arr = getAtPath(next, path)
+      if (Array.isArray(arr)) arr.push(clone(blank))
+      return next
+    })
+
+  const handleEditRemove = (path, index) =>
+    setData((prev) => {
+      const next = clone(prev)
+      const arr = getAtPath(next, path)
+      if (Array.isArray(arr)) arr.splice(index, 1)
       return next
     })
 
@@ -197,7 +219,7 @@ export function AdminPageEditorPage() {
     }
   }
 
-  if (loading || !schema || !data) {
+  if (loading || !data) {
     if (error) {
       return (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-700 max-w-3xl mx-auto">
@@ -284,65 +306,24 @@ export function AdminPageEditorPage() {
         </div>
       )}
 
-      <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
-      <div className="space-y-5">
-        {schema.groups.map((group) => {
-          const gv = data[group.k] || {}
-          return (
-            <div
-              key={group.k}
-              className="overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-xs"
-            >
-              <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-5 py-3.5">
-                <h2 className="text-base font-extrabold text-rocket-dark">{group.label}</h2>
-              </div>
-
-              <div className="p-5 space-y-4">
-                {(group.fields || []).map((f) =>
-                  f.type === 'stringList' ? (
-                    <StringListField
-                      key={f.k}
-                      label={f.label}
-                      value={gv[f.k]}
-                      onChange={(v) => mutate((d) => { (d[group.k] ||= {})[f.k] = v })}
-                    />
-                  ) : (
-                    <ScalarField
-                      key={f.k}
-                      field={f}
-                      value={gv[f.k]}
-                      onChange={(v) => mutate((d) => { (d[group.k] ||= {})[f.k] = v })}
-                    />
-                  )
-                )}
-
-                {(group.lists || []).map((list) => (
-                  <div key={list.k} className="pt-2 border-t border-gray-100">
-                    <ListEditor
-                      list={list}
-                      value={gv[list.k]}
-                      onChange={(v) => mutate((d) => { (d[group.k] ||= {})[list.k] = v })}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="mt-5 lg:mt-0">
-        <LivePreview page={page} data={data} />
-      </div>
-      </div>
+      <EditablePreview
+        page={page}
+        data={data}
+        onEditChange={handleEditChange}
+        onEditAdd={handleEditAdd}
+        onEditRemove={handleEditRemove}
+      />
 
       {SHOWS_COURSE_PICKER.has(page) && (
         <div className="space-y-3 pt-2">
           <div className="px-1">
-            <h2 className="text-base font-extrabold text-rocket-dark">Courses using this template</h2>
+            <h2 className="text-base font-extrabold text-rocket-dark">Connected course pages</h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              The fields above are the default template new courses start from. Each course can now
-              customize its own copy below.
+              {page === 'events'
+                ? 'Events links visitors into these individual course pages. Jump straight to any one’s content, form, or submissions.'
+                : page === 'services'
+                  ? 'Each discipline card on this page points at one of these course pages. Jump straight to any one’s content, form, or submissions.'
+                  : 'The fields above are the default template new courses start from. Each course can customize its own copy below.'}
             </p>
           </div>
 
@@ -383,7 +364,7 @@ export function AdminPageEditorPage() {
                       <Pencil className="h-3 w-3" /> Edit Course Info
                     </Link>
                     <Link
-                      to={`/admin/courses/${course._id}/content/${page}`}
+                      to={`/admin/courses/${course._id}/content/courseDetail`}
                       className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       <FileEdit className="h-3 w-3" /> Edit Page Text
@@ -401,6 +382,12 @@ export function AdminPageEditorPage() {
                       className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       <Eye className="h-3 w-3" /> Preview
+                    </Link>
+                    <Link
+                      to={`/admin/submissions?course=${course._id}`}
+                      className="inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 hover:bg-emerald-100 transition-colors"
+                    >
+                      <Users className="h-3 w-3" /> Submissions
                     </Link>
                   </div>
                 </div>

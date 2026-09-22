@@ -21,7 +21,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const OUT_DIR = path.join(ROOT, 'public_html')
 const SERVER_ENTRY = path.join(ROOT, '.prerender/server/entry-server.js')
 
-const SITE_URL = 'https://theifoa.com'
+// Matches src/lib/seo.js — defaults to production, override with SITE_URL for
+// a staging build so the generated sitemap doesn't advertise production URLs.
+const SITE_URL = process.env.SITE_URL || 'https://theifoa.com'
 const API_BASE = process.env.PRERENDER_API_BASE || 'http://localhost:5001/api'
 
 // Routes that exist regardless of database contents.
@@ -30,6 +32,7 @@ const STATIC_ROUTES = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
   { path: '/services', priority: '0.9', changefreq: 'monthly' },
   { path: '/events', priority: '0.9', changefreq: 'weekly' },
+  { path: '/events-courses', priority: '0.5', changefreq: 'weekly' },
   { path: '/about', priority: '0.7', changefreq: 'monthly' },
   { path: '/contact', priority: '0.7', changefreq: 'yearly' },
   { path: '/foxtrot-delta', priority: '0.6', changefreq: 'monthly' }
@@ -134,7 +137,8 @@ async function main() {
   }
 
   for (const route of STATIC_ROUTES) {
-    const preload = route.path === '/events' && courses ? { courses } : {}
+    const isEventsRoute = route.path === '/events' || route.path === '/events-courses'
+    const preload = isEventsRoute && courses ? { courses } : {}
     await renderRoute(route.path, preload)
     console.log(`[prerender] ${route.path}`)
   }
@@ -156,6 +160,18 @@ async function main() {
 
   await writeFile(path.join(OUT_DIR, 'sitemap.xml'), buildSitemap(sitemap), 'utf8')
   console.log(`[prerender] sitemap.xml — ${sitemap.length} URLs`)
+
+  // NOINDEX=true (set this for any pre-launch environment, e.g. staging) blocks
+  // crawling entirely instead of shipping the production robots.txt as-is —
+  // matches src/components/common/Seo.jsx's SITE_NOINDEX meta-robots override.
+  if (process.env.NOINDEX === 'true') {
+    await writeFile(
+      path.join(OUT_DIR, 'robots.txt'),
+      'User-agent: *\nDisallow: /\n',
+      'utf8'
+    )
+    console.log('[prerender] robots.txt — NOINDEX=true, blocked all crawling')
+  }
 }
 
 main().catch((err) => {

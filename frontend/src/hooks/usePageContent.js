@@ -20,7 +20,7 @@ export function mergeContent(base, override) {
 
 /**
  * Fetches editable content for a marketing page.
- * `fallback` is the content the page ships with — rendered immediately and
+ * `fallback` is the content the page ships with - rendered immediately and
  * kept if the request fails, so the page is never blank.
  *
  * Returns { c, loaded } where `c` is the merged content object.

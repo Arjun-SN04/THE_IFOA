@@ -1,5 +1,5 @@
 // Boilerplate text reused by the default form template. Admins can edit any of
-// this per-course afterwards via the Form Builder — this only seeds the default.
+// this per-course afterwards via the Form Builder - this only seeds the default.
 
 const BANK_DETAILS = {
   beneficiary: {

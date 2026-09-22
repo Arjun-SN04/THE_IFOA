@@ -9,10 +9,10 @@ const PAGE_LABELS = {
   courseEnrollment: 'Course Enrollment'
 }
 
-// Per-course version of AdminPageEditorPage's schema-driven form — edits this
+// Per-course version of AdminPageEditorPage's schema-driven form - edits this
 // one course's override of the courseDetail/courseEnrollment chrome template
 // instead of the shared default. No course-picker (that's specific to the
-// global template editor) and no live-preview iframe here — just the form.
+// global template editor) and no live-preview iframe here - just the form.
 export function AdminCoursePageContentEditor() {
   const { id, page } = useParams()
 
@@ -120,7 +120,7 @@ export function AdminCoursePageContentEditor() {
             <ArrowLeft className="w-3.5 h-3.5" /> Back to course
           </Link>
           <h1 className="text-xl sm:text-2xl font-black text-rocket-dark mt-1">
-            {label} content — {course?.title || 'Course'}
+            {label} content - {course?.title || 'Course'}
           </h1>
           <p className="text-xs text-gray-500 mt-0.5">
             {customized ? (

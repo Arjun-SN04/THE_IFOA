@@ -41,6 +41,37 @@ const courseSchema = new mongoose.Schema(
 
     summary: { type: String, default: '' },
     heroImage: { type: imageSchema, default: null },
+    // Optional trust line under the hero (e.g. "500+ dispatchers trained
+    // across 70+ operators"). Blank hides the row entirely.
+    trustStat: { type: String, default: '' },
+    // Optional highlighted callout box under the hero summary, for a single
+    // sharp clarifying point (e.g. "This is not CRM for flying crew - it's
+    // Human Factors built for the people who run the operation from the
+    // ground"). Blank hides the box entirely.
+    heroNote: { type: String, default: '' },
+    // B2B/corporate courses (e.g. Crew Control) swap the sidebar and hero CTA
+    // from "Enroll Now" / price to "Request a Corporate Quote" / rate card.
+    isCorporate: { type: Boolean, default: false },
+    // Small caps label shown above the H1 (e.g. "IFOA Corporate Training").
+    eyebrow: { type: String, default: '' },
+    // Flexible hero badge pills - replaces the fixed EASA/ICAO/CBTA badges
+    // entirely when set, for courses whose regulatory framing doesn't fit
+    // that fixed set (e.g. a corporate FTL course).
+    badges: { type: [String], default: [] },
+    // Overrides the isCorporate primary CTA label everywhere it appears
+    // (hero + sidebar), e.g. "Request Pricing & Dates" instead of the
+    // default "Request a Corporate Quote".
+    ctaLabel: { type: String, default: '' },
+    // Overrides the isCorporate sidebar rate-card text (eyebrow/value/note/
+    // secondary button/trust line) for courses whose "no fixed price" story
+    // differs from the default corporate-quote framing.
+    rateCard: {
+      eyebrow: { type: String, default: '' },
+      value: { type: String, default: '' },
+      note: { type: String, default: '' },
+      secondaryCtaLabel: { type: String, default: '' },
+      trustBadge: { type: String, default: '' }
+    },
 
     // ---- Catalog card display ----
     authority: { type: String, default: '' }, // "EASA / FAA Part 65 Standards"
@@ -77,21 +108,112 @@ const courseSchema = new mongoose.Schema(
 
     // ---- Body sections ----
     whatYouWillLearn: {
+      eyebrow: { type: String, default: '' },
+      title: { type: String, default: '' },
       intro: { type: String, default: '' },
       points: { type: [String], default: [] }
     },
+    // Optional 4-step flow shown under the outcomes grid (e.g. "Identify the
+    // operation → Apply the correct rule → Check limits → Consider risk").
+    processSteps: { type: [String], default: [] },
     delivery: {
       intro: { type: String, default: '' },
       items: { type: [deliveryItemSchema], default: [] }
     },
     trainingStandards: {
+      eyebrow: { type: String, default: '' },
+      title: { type: String, default: '' },
       intro: { type: String, default: '' },
-      logos: { type: [imageSchema], default: [] }
+      logos: { type: [imageSchema], default: [] },
+      // Flexible regulatory-reference grid (e.g. "ORO.FTL" / "CS FTL.1").
+      // Falls back to the fixed EASA/DGCA/FAA + ICAO tiles when empty.
+      cards: {
+        type: [
+          new mongoose.Schema({ code: { type: String, required: true }, title: { type: String, default: '' } }, { _id: false })
+        ],
+        default: []
+      }
+    },
+    // Curriculum shown on the page. Falls back to the shared 5-phase default
+    // (backend/utils/pageContent.js DEFAULTS.courseDetail.curriculum) when
+    // not set - only courses needing a genuinely different structure (e.g.
+    // FAA's 8 Appendix A areas) need to set this.
+    curriculum: {
+      eyebrow: { type: String, default: '' },
+      title: { type: String, default: '' },
+      subtitle: { type: String, default: '' },
+      layout: { type: String, enum: ['carousel', 'accordion'], default: 'carousel' },
+      phases: {
+        type: [
+          new mongoose.Schema(
+            {
+              num: { type: String, default: '' },
+              label: { type: String, default: '' },
+              title: { type: String, required: true },
+              // Small caption under the title in accordion layout, e.g.
+              // "Practical Assessment" - distinct from `description`, which
+              // is a full paragraph shown when the accordion item is open.
+              focus: { type: String, default: '' },
+              description: { type: String, default: '' },
+              topics: { type: [String], default: [] },
+              // When set and dgrExplorer is present, this phase's description
+              // is swapped for dgrExplorer.segments[active].acceptance/loading
+              // as the visitor changes the operation segment below the hero.
+              adaptive: { type: String, enum: ['', 'acceptance', 'loading'], default: '' }
+            },
+            { _id: false }
+          )
+        ],
+        default: []
+      }
+    },
+    // Role + operation segment explorer, shown above the curriculum on courses
+    // where the same material genuinely differs by who you are and what you
+    // fly (currently: Dangerous Goods - carry vs no-carry changes which
+    // procedures apply at all, not just the depth of coverage). Empty on
+    // every other course, which skips the section entirely.
+    dgrExplorer: {
+      roles: {
+        type: [
+          new mongoose.Schema(
+            {
+              code: { type: String, default: '' },
+              title: { type: String, required: true },
+              scenarios: { type: [String], default: [] }
+            },
+            { _id: false }
+          )
+        ],
+        default: []
+      },
+      segments: {
+        type: [
+          new mongoose.Schema(
+            {
+              id: { type: String, required: true },
+              title: { type: String, required: true },
+              descriptor: { type: String, default: '' },
+              acceptance: { type: String, default: '' },
+              loading: { type: String, default: '' }
+            },
+            { _id: false }
+          )
+        ],
+        default: []
+      }
     },
     whoShouldAttend: {
+      eyebrow: { type: String, default: '' },
+      title: { type: String, default: '' },
       intro: { type: String, default: '' },
       points: { type: [String], default: [] },
       outro: { type: String, default: '' }
+    },
+    // Distinct from whoShouldAttend: audience profile vs. actual admission
+    // prerequisites (language, age, equipment, prior experience, etc).
+    entryRequirements: {
+      intro: { type: String, default: '' },
+      points: { type: [String], default: [] }
     },
     courseContent: {
       intro: { type: String, default: '' },
@@ -101,6 +223,47 @@ const courseSchema = new mongoose.Schema(
     certification: {
       text: { type: String, default: '' },
       points: { type: [String], default: [] }
+    },
+    // Third-party exam/examiner fees not included in tuition (e.g. FAA ADX
+    // knowledge test, practical test) - shown separately from price.amount.
+    additionalCosts: {
+      intro: { type: String, default: '' },
+      items: {
+        type: [
+          new mongoose.Schema({ label: { type: String, required: true }, amount: { type: String, required: true } }, { _id: false })
+        ],
+        default: []
+      },
+      note: { type: String, default: '' }
+    },
+    trainingPhilosophy: {
+      eyebrow: { type: String, default: '' },
+      title: { type: String, default: '' },
+      intro: { type: String, default: '' },
+      cards: {
+        type: [
+          new mongoose.Schema({ title: { type: String, required: true }, desc: { type: String, default: '' } }, { _id: false })
+        ],
+        default: []
+      }
+    },
+
+    // Replaces the fixed Duration/Intake/Location/Delivery/Standard/Certificate
+    // sidebar rows entirely when set - for courses whose facts don't fit that
+    // shape (e.g. corporate courses needing "Group Size", "On-site Location").
+    sidebarSpecs: {
+      type: [
+        new mongoose.Schema({ label: { type: String, required: true }, value: { type: String, required: true } }, { _id: false })
+      ],
+      default: []
+    },
+    // Overrides the shared "Ready to Start Your Dispatch Career?" bottom CTA
+    // banner text/label for this course specifically.
+    bottomBanner: {
+      eyebrow: { type: String, default: '' },
+      title: { type: String, default: '' },
+      desc: { type: String, default: '' },
+      ctaLabel: { type: String, default: '' }
     },
 
     registrationOpen: { type: Boolean, default: true },
@@ -142,9 +305,13 @@ const courseSchema = new mongoose.Schema(
 courseSchema.index({ title: 'text', summary: 'text' })
 
 // Slug from title, kept unique by appending a counter.
-// Mongoose 9 does not pass `next` to async hooks — resolve/throw instead.
+// Mongoose 9 does not pass `next` to async hooks - resolve/throw instead.
 courseSchema.pre('validate', async function generateSlug() {
-  if (this.slug && !this.isModified('title')) return
+  // Existing course, slug already set, and this save didn't touch the slug
+  // field itself - keep it as-is even if the title changed. Auto-regenerating
+  // a live course's slug on every title edit would silently break bookmarks,
+  // inbound links, and search rankings.
+  if (!this.isNew && this.slug && !this.isModified('slug')) return
   if (this.slug && this.isModified('slug')) {
     this.slug = slugify(this.slug, { lower: true, strict: true })
     return
