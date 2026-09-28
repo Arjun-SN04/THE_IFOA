@@ -7,6 +7,8 @@ const contactMessageSchema = new mongoose.Schema(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true },
+    // Who is writing, from the form's "I am" choice.
+    audience: { type: String, enum: ['individual', 'operator', ''], default: '' },
     organization: { type: String, default: '' },
     topic: { type: String, default: '' },
     message: { type: String, required: true },

@@ -22,6 +22,21 @@ function debouncedPostEdit(path, value) {
   debounceTimers[path] = setTimeout(() => postEdit(path, value), 150)
 }
 
+// Plural "OCCs" must keep its lowercase "s" even inside uppercase-styled
+// labels (eyebrows, badges), where CSS would otherwise render "OCCS".
+function keepOccsCase(value) {
+  if (typeof value !== 'string' || !value.includes('OCCs')) return value
+  return value.split(/(OCCs)/).map((part, i) =>
+    part === 'OCCs' ? (
+      <span key={i} className="normal-case">
+        OCCs
+      </span>
+    ) : (
+      part
+    )
+  )
+}
+
 // Renders `value` as plain text on the real public site. Inside the admin
 // preview iframe, renders the same text as an editable region in place - // no separate form field anywhere.
 export function CmsText({ path, value, as: Tag = 'span', className = '' }) {
@@ -40,7 +55,7 @@ export function CmsText({ path, value, as: Tag = 'span', className = '' }) {
   }, [value, editing])
 
   if (!editing) {
-    return <Tag className={className}>{value}</Tag>
+    return <Tag className={className}>{keepOccsCase(value)}</Tag>
   }
 
   return (

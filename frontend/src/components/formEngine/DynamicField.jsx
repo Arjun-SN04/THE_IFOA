@@ -1,20 +1,54 @@
 import { FormField, SelectField, RadioGroup, CheckboxField, CountrySelectField, PhoneInputField } from './FormField.jsx';
 
+// First line is "Programme name, <price>"; any further lines are details
+// ("- " lines render as bullets, blank lines separate paragraphs).
 function ProgramInfoBlock({ content }) {
-  const match = content.match(/^(.*?),\s*([\d.,]+\s*[A-Z]{2,4})\s*$/);
-  const name = match ? match[1].trim() : content;
+  const [firstLine, ...rest] = content.split('\n')
+  const match = firstLine.match(/^(.*?),\s*([\d.,]+\s*[A-Z]{2,4})\s*$/);
+  const name = match ? match[1].trim() : firstLine.trim();
   const price = match ? match[2].trim() : null;
+
+  const blocks = [];
+  rest.map((l) => l.trim()).forEach((line) => {
+    if (!line) return;
+    const bullet = line.match(/^[-•]\s+(.*)$/);
+    const last = blocks[blocks.length - 1];
+    if (bullet) {
+      if (last?.type === 'list') last.items.push(bullet[1]);
+      else blocks.push({ type: 'list', items: [bullet[1]] });
+    } else {
+      blocks.push({ type: 'p', text: line });
+    }
+  });
+
   return (
-    <div className="flex flex-col items-center gap-1.5 py-1 text-center">
-      <div className="flex items-center gap-2">
-        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-emerald-600 bg-emerald-50 text-emerald-600">
-          <svg viewBox="0 0 10 10" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <polyline points="1.5,4.8 3.5,7 7.5,2" />
-          </svg>
-        </span>
-        <span className="text-sm font-bold text-slate-800">{name}</span>
+    <div className="space-y-4">
+      <div className="flex flex-col items-center gap-1.5 py-1 text-center">
+        <div className="flex items-center gap-2">
+          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-emerald-600 bg-emerald-50 text-emerald-600">
+            <svg viewBox="0 0 10 10" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <polyline points="1.5,4.8 3.5,7 7.5,2" />
+            </svg>
+          </span>
+          <span className="text-sm font-bold text-slate-800">{name}</span>
+        </div>
+        {price && <span className="text-base font-extrabold text-ifoa-navy">{price}</span>}
       </div>
-      {price && <span className="text-base font-extrabold text-ifoa-navy">{price}</span>}
+      {blocks.length > 0 && (
+        <div className="space-y-2.5 border-t border-slate-200/80 pt-4 text-left text-xs sm:text-sm leading-relaxed text-slate-600">
+          {blocks.map((block, i) =>
+            block.type === 'list' ? (
+              <ul key={i} className="space-y-1 pl-4 list-disc marker:text-slate-400">
+                {block.items.map((item, j) => (
+                  <li key={j}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p key={i}>{block.text}</p>
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -18,6 +18,7 @@ import {
   RiFullscreenLine,
   RiFullscreenExitLine,
   RiLoader4Line,
+  RiCheckLine
 } from 'react-icons/ri'
 import { MdOutlineMail } from 'react-icons/md'
 import { api } from '@/lib/api'
@@ -353,6 +354,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
       }
       if (b.type === 'course') {
         const external = b.href.startsWith('http')
+        const isEnroll = /\/enroll$/i.test(b.href)
         return (
           <a
             key={`c${bi}`}
@@ -363,7 +365,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
           >
             <span className="text-[13px] font-semibold text-slate-900 leading-snug">{b.label}</span>
             <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-[#34E06E] group-hover:text-[#28c85e]">
-              Enroll
+              {isEnroll ? 'Enroll' : 'View'}
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -390,7 +392,7 @@ function ChatView({ messages, setMessages, loading, setLoading, initialQuestion,
           <ul key={`ul${bi}`} className="space-y-1">
             {b.items.map((it, k) => (
               <li key={k} className="flex gap-2">
-                <span className="shrink-0 mt-2 h-1.5 w-1.5 rounded-full bg-[#34E06E]" />
+                <RiCheckLine className="w-3.5 h-3.5 text-[#16a952] shrink-0 mt-[3px]" />
                 <span className="flex-1 leading-relaxed">{renderRich(it, `ul${bi}-${k}-`)}</span>
               </li>
             ))}

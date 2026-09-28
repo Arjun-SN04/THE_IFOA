@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   RiWhatsappFill,
   RiSearchLine,
@@ -21,9 +21,6 @@ import {
   HiArrowRight,
   HiSparkles
 } from 'react-icons/hi2'
-import {
-  MdOutlineMail
-} from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import { Reveal } from '@/components/common/Reveal'
@@ -51,11 +48,12 @@ import imgOccLarge from '@/assets/services/occ-flight-dispatch-large.jpg'
 // Discipline card images stay bundled; matched to a discipline by its number.
 const DISCIPLINE_IMG_BY_ID = {
   '01': imgFlightDispatch,
-  '02': imgDgr,
-  '03': imgTrainTrainer,
-  '04': imgHumanFactors,
-  '05': imgCrewControl,
-  '06': imgConsulting
+  '02': '/course-images/Flight-Dispatch-Webpage-Small.jpg',
+  '03': imgDgr,
+  '04': imgTrainTrainer,
+  '05': imgHumanFactors,
+  '06': imgCrewControl,
+  '07': imgConsulting
 }
 
 // Content the page ships with; editable at /admin/pages/services.
@@ -63,100 +61,98 @@ const FALLBACK = {
   hero: {
     title: 'Built on competency, not just compliance.',
     subtitle:
-      'Six disciplines, one standard: training that prepares people to make the right call under pressure.',
-    primaryLabel: 'Book a Consultation',
+      "Every IFOA course and service in one place. Filter by who it's for, compare length, delivery and price, then open the one you need.",
+    primaryLabel: 'Contact Us',
     whatsappLabel: 'WhatsApp Us',
     image: null
   },
   pathways: {
     eyebrow: 'START HERE',
-    title: 'Choose your certification path',
+    title: 'Choose your course',
     intro:
-      "The first decision for any individual dispatcher candidate: which regulatory certification matches where you'll work.",
+      'Dispatcher courses for individuals, and tailored flight dispatch training for operators. Compare length, delivery and price.',
     cards: [
       {
-        region: 'Europe / Worldwide',
-        title: 'EASA Standards Initial',
-        desc: 'Comprehensive initial flight dispatcher certification aligned with ICAO Doc 10106 and EASA ORO.GEN.110.',
-        badge1: '200 HOURS',
-        badge2: 'HYBRID',
-        action: 'Explore EASA'
+        region: 'Europe · India',
+        title: 'Flight Dispatcher Initial',
+        desc: 'ICAO and EASA dispatcher training built on ICAO Doc 10106.',
+        badge1: '200 HRS · 5 WKS',
+        badge2: '€3,500',
+        action: 'Enquire'
       },
       {
-        region: 'United States & Worldwide',
-        title: 'FAA Part 65 Certification',
-        desc: 'Direct pathway to the FAA Aircraft Dispatcher license through IFOA USA with dedicated examiners.',
-        badge1: '200 HOURS',
-        badge2: 'USA ONSITE',
-        action: 'Explore FAA'
+        region: 'USA',
+        title: 'FAA Aircraft Dispatcher',
+        desc: 'FAA Part 65 approved. Prepares you for the FAA certificate.',
+        badge1: '200 HRS · 6 WKS',
+        badge2: '$4,500',
+        action: 'Enquire'
       },
       {
-        region: 'Worldwide Dual License',
-        title: 'EASA + FAA Combined',
-        desc: 'The only worldwide double-certification model: EASA-based knowledge plus a full FAA Part 65 license.',
-        badge1: 'HYBRID',
-        badge2: 'GLOBAL',
-        action: 'Explore Combined'
+        region: 'Europe',
+        title: 'Double Programme: FAA & EASA',
+        desc: 'FAA Part 65 plus ICAO and EASA operations in one programme.',
+        badge1: '280 HRS · 7 WKS',
+        badge2: '€5,500',
+        action: 'Enquire'
       },
       {
-        region: 'Working Dispatchers',
-        title: 'Recurrent & Advanced',
-        desc: 'Customized recurrent and advanced programs for dispatchers and OCC professionals already certified.',
-        badge1: 'CUSTOM',
-        badge2: 'ONGOING',
-        action: 'Explore Recurrent'
+        region: 'Operators',
+        title: 'Tailored Dispatch Training',
+        desc: 'Initial, recurrent and advanced training built around your operation.',
+        badge1: 'ON REQUEST',
+        badge2: 'TAILORED',
+        action: 'Get a proposal'
       }
     ]
   },
   cbta: {
     eyebrow: 'Competency-Based Training & Assessment (CBTA)',
-    title: 'The CBTA Operational Approach',
+    title: 'How we train',
     intro:
       "Competency-Based Training and Assessment isn't just a regulatory buzzword, it is the engineering foundation of every curriculum we design, ensuring flight dispatchers are prepared for 3am critical decisions.",
-    complianceTitle: 'Global Regulatory Standard Compliance',
-    complianceDesc: 'Every program adheres directly to worldwide civil aviation authority frameworks.',
     pillars: [
       {
         idx: '01',
-        title: 'Training That Reflects the Operation',
+        title: 'Real OCC situations',
         subtitle: 'REAL-WORLD OCC CONTEXT',
-        desc: 'Every program is built around realistic operational scenarios, helping learners apply knowledge, make decisions, and respond to the challenges of a modern OCC.',
+        desc: 'Every course is built on scenarios from the operation, not textbook examples.',
         iconName: 'flight-route'
       },
       {
         idx: '02',
-        title: 'Learn From Those Who Operate',
+        title: 'Taught by practitioners',
         subtitle: 'ACTIVE INDUSTRY PRACTITIONERS',
-        desc: 'Train with experienced aviation professionals who bring current operational knowledge and real-world experience into every session.',
+        desc: 'Instructors who work, or have worked, in operations control.',
         iconName: 'instructor-board'
       },
       {
         idx: '03',
-        title: 'Training That Fits Your Operation',
+        title: 'Your format',
         subtitle: 'ONSITE, VIRTUAL & HYBRID',
-        desc: 'Choose the delivery format that works for you (onsite, virtual, or hybrid) without compromising the quality or practical focus of the training.',
+        desc: 'On-site, online or hybrid, depending on the course and your team.',
         iconName: 'occ-console'
       },
       {
         idx: '04',
-        title: 'Demonstrate What You Can Do',
+        title: 'Assessed on performance',
         subtitle: 'COMPETENCY-FOCUSED ASSESSMENT',
-        desc: 'Go beyond completing a course. Build and demonstrate the knowledge, skills, and behaviours required to perform effectively in real operational environments.',
+        desc: 'You show what you can do, not only what you remember.',
         iconName: 'official-certificate'
       }
     ]
   },
   specialist: {
-    eyebrow: 'Aviation Expertise, Your Way',
-    title: 'From Career Growth to Operational Excellence',
+    eyebrow: 'All Courses and Services',
+    title: 'Every IFOA course and service in one place',
     intro:
-      "Build your career with specialized aviation services or strengthen your organization's capabilities with tailored operational solutions. Training, consulting, and expertise designed around what you need.",
+      "Filter by who it's for, compare length, delivery and price, then open the one you need.",
     note: '',
-    searchPlaceholder: 'Search disciplines...',
+    searchPlaceholder: 'Search courses and services...',
     disciplineCtaLabel: 'Inquire',
-    moreTitle: 'More Information?',
+    moreTitle: 'Not sure which course fits?',
     moreDesc:
-      'Contact our operational training advisors to receive full syllabus brochures and corporate schedules.',
+      "Tell us your role or your team, and we'll point you to the right one.",
     categories: [
       { id: 'all', label: 'All Services (6)' },
       { id: 'flight-ops', label: 'Flight Operations & OCC' },
@@ -168,8 +164,9 @@ const FALLBACK = {
         id: '01',
         title: 'Flight Dispatch',
         subtitle: 'Own the operation from the ground.',
-        desc: 'Build the skills to plan, monitor, and coordinate flights while making informed operational decisions in a modern airline OCC.',
-        audience: 'Individuals & Airline OCC Teams',
+        desc: 'FAA Part 65 approved and ICAO and EASA-based dispatcher courses for individuals, plus tailored initial, recurrent and advanced training for operators.',
+        audience: 'Individuals & Operators',
+        forAudience: 'individuals operators',
         category: 'flight-ops',
         tag: 'Flight Operations',
         iconName: 'dispatcher-headset',
@@ -183,10 +180,24 @@ const FALLBACK = {
       },
       {
         id: '02',
+        title: 'Double Programme: FAA & EASA',
+        subtitle: 'Two qualifications, one programme.',
+        desc: 'The FAA Part 65 approved course plus ICAO and EASA operations. 280 hours, 7 weeks, plus ADX self-study. Hybrid, Europe. €5,500.',
+        audience: 'Individuals',
+        forAudience: 'individuals',
+        category: 'flight-ops',
+        tag: 'FAA & EASA',
+        iconName: 'dispatcher-headset',
+        image: null,
+        courseSlug: 'flight-dispatcher-double-programme'
+      },
+      {
+        id: '02',
         title: 'Dangerous Goods',
         subtitle: 'Know the risks. Move with confidence.',
-        desc: 'Develop the practical expertise to identify, handle, document, and manage dangerous goods throughout the air transport process.',
-        audience: 'Airlines, Cargo & Ground Handlers',
+        desc: 'For pilots, dispatchers and cabin crew, adapted to carry or no-carry operations. Initial and recurrent, 4 hours, self-paced online, virtual or in-house.',
+        audience: 'Pilots, Dispatchers & Cabin Crew',
+        forAudience: 'operators',
         category: 'flight-ops',
         tag: 'DGR Compliance',
         iconName: 'dgr-flame',
@@ -197,8 +208,9 @@ const FALLBACK = {
         id: '03',
         title: 'Train the Trainer',
         subtitle: 'Turn expertise into exceptional training.',
-        desc: 'Develop the skills to engage aviation professionals, build competency, and deliver training that translates into real operational performance.',
-        audience: 'Nominated Trainers & Instructors',
+        desc: 'For aviation professionals who teach. Ten modules and two assessed teaching practices over 4 days, as an open course or in-house.',
+        audience: 'Aviation Professionals Who Teach',
+        forAudience: 'operators',
         category: 'train-trainer',
         tag: 'Instructional Pedagogy',
         iconName: 'instructor-board',
@@ -207,10 +219,11 @@ const FALLBACK = {
       },
       {
         id: '04',
-        title: 'Human Factors for OCC',
+        title: 'Human Factors for the OCC',
         subtitle: 'Performance under pressure starts with people.',
-        desc: 'Strengthen decision-making, communication, teamwork, and resilience for demanding aviation environments.',
+        desc: 'Not CRM for flight crew. Fatigue, stress, decisions and working alongside AI tools. 2 days at your OCC or an IFOA facility.',
         audience: 'OCC & Flight Operations Personnel',
+        forAudience: 'operators',
         category: 'flight-ops',
         tag: 'Human Factors for OCC',
         iconName: 'human-brain-crm',
@@ -221,8 +234,9 @@ const FALLBACK = {
         id: '05',
         title: 'Crew Control',
         subtitle: 'Keep the operation moving.',
-        desc: 'Build the skills to manage crew planning, disruptions, pairings, rostering, and operational changes in a fast-paced airline environment.',
+        desc: 'EASA Part FTL or your OM-A Chapter 7, fatigue risk and crew control operations, with long-haul exercises. 2 days, online or at your base.',
         audience: 'Crew Schedulers & Controllers',
+        forAudience: 'operators',
         category: 'flight-ops',
         tag: 'Crew Scheduling',
         iconName: 'crew-roster',
@@ -231,10 +245,11 @@ const FALLBACK = {
       },
       {
         id: '06',
-        title: 'Consulting Services',
+        title: 'OCC Consulting',
         subtitle: 'Turn operational challenges into better performance.',
-        desc: 'Get tailored aviation expertise across OCC processes, operational systems, regulatory requirements, and organizational capability.',
-        audience: 'Airlines & Aviation Organizations',
+        desc: 'Assessments, operational control setup, manuals, CBTA programmes, audit support and AI readiness. Fixed scope or retainer, on-site or remote.',
+        audience: 'Airlines & Aviation Organisations',
+        forAudience: 'operators',
         category: 'consulting',
         tag: 'Aviation Advisory',
         iconName: 'airline-audit',
@@ -248,7 +263,13 @@ const FALLBACK = {
 export function ServicesPage() {
   const navigate = useNavigate()
   const { c } = usePageContent('services', FALLBACK)
-  const [selectedDiscipline, setSelectedDiscipline] = useState('all')
+  // ?for=individuals / ?for=operators (linked from the home page) preselects
+  // the matching audience filter.
+  const [searchParams] = useSearchParams()
+  const [selectedDiscipline, setSelectedDiscipline] = useState(() => {
+    const forParam = searchParams.get('for')
+    return forParam === 'individuals' || forParam === 'operators' ? forParam : 'all'
+  })
   const [searchQuery, setSearchQuery] = useState('')
 
   const REG_LOGOS = [
@@ -298,14 +319,19 @@ export function ServicesPage() {
     })
 
   const categories = [
-    { id: 'all', label: 'All Services (6)' },
+    { id: 'all', label: `All Services (${disciplines.length})` },
+    { id: 'individuals', label: 'For individuals' },
+    { id: 'operators', label: 'For operators' },
     { id: 'flight-ops', label: 'Flight Operations & OCC' },
     { id: 'train-trainer', label: 'Train the Trainer' },
     { id: 'consulting', label: 'Consulting' }
   ]
 
   const filteredDisciplines = disciplines.filter((d) => {
-    if (selectedDiscipline !== 'all' && d.category !== selectedDiscipline) return false
+    if (selectedDiscipline === 'individuals' || selectedDiscipline === 'operators') {
+      const who = (d.forAudience || 'operators').toLowerCase()
+      if (!who.includes('both') && !who.includes(selectedDiscipline)) return false
+    } else if (selectedDiscipline !== 'all' && d.category !== selectedDiscipline) return false
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       return (
@@ -453,7 +479,7 @@ export function ServicesPage() {
                         {item.id}
                       </span>
                       {item.tag && (
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-800 border-b-2 border-[#34E06E] pb-0.5">
                           {item.tag}
                         </span>
                       )}
@@ -475,16 +501,16 @@ export function ServicesPage() {
                   </div>
 
                   {/* Audience & Inquire Action Footer */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 whitespace-nowrap shrink-0">
                       <RiGroupLine className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="leading-tight">
+                      <span className="whitespace-nowrap">
                         <CmsText path={`${item._path}.audience`} value={item.audience} />
                       </span>
                     </div>
 
                     {item.courseChoices?.length ? (
-                      <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+                      <div className="flex items-center gap-3 shrink-0 ml-auto">
                         {item.courseChoices.map((choice) => (
                           <Link
                             key={choice.courseSlug}
@@ -499,7 +525,7 @@ export function ServicesPage() {
                     ) : (
                       <Link
                         to={item.courseSlug ? `/courses/${item.courseSlug}` : '/events'}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn self-start sm:self-auto"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn ml-auto"
                       >
                         <span>{item.linkText || (item.courseSlug ? 'View Course' : c.specialist.disciplineCtaLabel)}</span>
                         <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
@@ -674,77 +700,6 @@ export function ServicesPage() {
               label="Add pillar"
               blank={{ idx: '05', title: 'New Pillar', subtitle: '', desc: '', iconName: 'flight-route' }}
             />
-          </div>
-
-          {/* Integrated Standards & Compliance Bar */}
-          <div className="rounded-[2rem] bg-slate-50/80 border border-slate-200/90 p-8 sm:p-10 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
-              <div>
-                <h4 className="text-base font-bold text-slate-950">
-                  <CmsText path="cbta.complianceTitle" value={c.cbta.complianceTitle} />
-                </h4>
-                <p className="text-xs text-slate-500">
-                  <CmsText path="cbta.complianceDesc" value={c.cbta.complianceDesc} />
-                </p>
-              </div>
-              <span className="text-xs font-mono font-bold text-slate-950 bg-white border border-slate-200 px-3.5 py-1.5 rounded-full w-fit">
-                Verified Global Curricula
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <img src={logoFaa} alt="FAA" className="h-8 w-auto object-contain shrink-0" />
-                <div className="min-w-0">
-                  <strong className="text-xs sm:text-sm font-bold text-slate-950 block truncate">FAA Part 65</strong>
-                  <span className="text-[11px] text-slate-500 font-mono">Approved School #IPIN</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <img src={logoEasa} alt="EASA" className="h-8 w-auto object-contain shrink-0" />
-                <div className="min-w-0">
-                  <strong className="text-xs sm:text-sm font-bold text-slate-950 block truncate">EASA Standards</strong>
-                  <span className="text-[11px] text-slate-500 font-mono">ORO.GEN 110 Aligned</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <img src={logoIcao} alt="ICAO" className="h-8 w-auto object-contain shrink-0" />
-                <div className="min-w-0">
-                  <strong className="text-xs sm:text-sm font-bold text-slate-950 block truncate">ICAO Standards</strong>
-                  <span className="text-[11px] text-slate-500 font-mono">Doc 10106 Framework</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Integrated Contact & Advisory CTA Row */}
-            <div className="pt-4 border-t border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="space-y-1 text-center md:text-left">
-                <h5 className="text-sm sm:text-base font-bold text-slate-950">
-                  <CmsText path="specialist.moreTitle" value={c.specialist.moreTitle} />
-                </h5>
-                <p className="text-xs text-slate-600">
-                  <CmsText path="specialist.moreDesc" value={c.specialist.moreDesc} />
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 shrink-0">
-                <button
-                  onClick={() => navigate('/contact')}
-                  className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-6 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-[0_0_15px_rgba(52,224,110,0.4)] hover:scale-105 cursor-pointer"
-                >
-                  Contact Us Now
-                </button>
-                <a
-                  href="mailto:info@theifoa.com"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-900 font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all duration-200 shadow-2xs"
-                >
-                  <MdOutlineMail className="w-4 h-4 text-slate-600" />
-                  <span>info@theifoa.com</span>
-                </a>
-              </div>
-            </div>
           </div>
         </div>
       </Reveal>

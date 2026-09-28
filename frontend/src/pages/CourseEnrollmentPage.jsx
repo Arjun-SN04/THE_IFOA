@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import {
   RiArrowLeftLine,
@@ -10,10 +10,10 @@ import {
 import { TbClockHour4, TbCertificate } from 'react-icons/tb'
 
 import { api } from '@/lib/api'
-import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import RegistrationForm from '@/components/course/RegistrationForm'
 import { Seo } from '@/components/common/Seo'
 import { mergeContent } from '@/hooks/usePageContent'
+import { useGoBack } from '@/hooks/useGoBack'
 import { programmeBanner } from '@/components/course/CourseCard'
 
 // Standards Logos
@@ -32,10 +32,10 @@ const FALLBACK = {
     enrollLabel: 'Online Enrollment'
   },
   header: {
-    eyebrow: 'Official Candidate Intake Portal',
+    eyebrow: 'Application form',
     intro:
-      'Complete your official admission form below. Once received, our admissions panel reviews prerequisites and issues your official placement offer.',
-    backLabel: 'Back to Course Overview'
+      'Complete the form below. We check your application against the entry requirements, then send you a place offer with payment and joining details.',
+    backLabel: 'Back'
   },
   sidebar: {
     badgeLabel: 'Official Intake',
@@ -61,6 +61,8 @@ const FALLBACK = {
 
 export function CourseEnrollmentPage() {
   const { slug: paramSlug } = useParams()
+  // Back returns to the previous page; opened directly, it goes to the course.
+  const goBack = useGoBack(`/courses/${paramSlug}`)
 
   const activeSlug = paramSlug || ''
 
@@ -96,6 +98,27 @@ export function CourseEnrollmentPage() {
       cancelled = true
     }
   }, [activeSlug])
+
+  // Tuition follows the training location chosen in the form, when the course
+  // has a price for that location (e.g. India in INR).
+  const [trainingLocation, setTrainingLocation] = useState('')
+  const handleAnswersChange = useCallback((answers) => {
+    setTrainingLocation(answers?.intake?.trainingCountry || '')
+  }, [])
+  const locationPrice = (course?.locationPrices || []).find((p) => p.location === trainingLocation)
+  const activePrice = locationPrice ? { amount: locationPrice.amount, currency: locationPrice.currency } : course?.price
+
+  // "India (New Delhi)" -> "New Delhi, India"; "United States (Daytona Beach,
+  // Florida)" -> "Daytona Beach, Florida"; "Europe (city to be confirmed)" -> "Europe".
+  const locationLabel = (option) => {
+    const m = /^(.*?)\s*\((.*)\)$/.exec(option || '')
+    if (!m) return option
+    const [country, inner] = [m[1].trim(), m[2]]
+    const [city, region] = inner.split(',').map((s) => s.trim())
+    if (/to be confirmed/i.test(inner)) return country
+    return region && region !== 'Europe' ? `${city}, ${region}` : `${city}, ${country}`
+  }
+  const activeLocation = trainingLocation ? locationLabel(trainingLocation) : course?.location
 
   const formatPrice = (price) => {
     if (!price || price.amount == null) return 'Contact Admissions'
@@ -167,46 +190,26 @@ export function CourseEnrollmentPage() {
         description="Complete your IFOA candidate application form."
         noindex
       />
-      {/* 1. Header Banner with Dark Frosted Space Theme */}
-      <section className="relative bg-[#020617] text-white pt-28 pb-14 border-b border-white/10 overflow-hidden">
-        <CosmicParallaxBg className="absolute inset-0 opacity-40 pointer-events-none" />
+      {/* 1. Header */}
+      <section className="relative bg-gradient-to-br from-slate-950 via-[#0a1120] to-[#040814] text-white pt-28 pb-12 sm:pb-14 border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+          >
+            <RiArrowLeftLine className="w-4 h-4" />
+            <span>{c.header.backLabel}</span>
+          </button>
 
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-4">
-          {/* Breadcrumbs */}
-          <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400">
-            <Link to="/" className="hover:text-white transition">Home</Link>
-            <span>/</span>
-            <Link to="/events" className="hover:text-white transition">{c.breadcrumb.eventsLabel}</Link>
-            <span>/</span>
-            <Link to={`/courses/${course.slug}`} className="hover:text-white transition line-clamp-1 max-w-[200px] sm:max-w-xs">
+          <div className="space-y-3 max-w-3xl">
+            <span className="inline-block text-xs font-mono font-bold uppercase tracking-widest text-white border-b-2 border-[#34E06E] pb-1">
+              {c.header.eyebrow}
+            </span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight leading-tight [text-wrap:balance]">
               {course.title?.replace(/[\u2013\u2014]/g, '-')}
-            </Link>
-            <span>/</span>
-            <span className="text-white font-semibold">{c.breadcrumb.enrollLabel}</span>
-          </div>
-
-          {/* Heading */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-2.5 flex-1 max-w-4xl">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-[#34E06E] font-mono text-xs font-bold uppercase tracking-wider">
-                {c.header.eyebrow}
-              </span>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight [text-wrap:balance]">
-                {course.title?.replace(/[\u2013\u2014]/g, '-')}
-              </h1>
-              <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-3xl">
-                {c.header.intro}
-              </p>
-            </div>
-
-            {/* Link Back to Course Details */}
-            <Link
-              to={`/courses/${course.slug}`}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-200 hover:text-white bg-white/10 hover:bg-white/15 border border-white/15 px-5 py-2.5 rounded-full transition shadow-xs shrink-0"
-            >
-              <RiArrowLeftLine className="w-4 h-4" />
-              <span>{c.header.backLabel}</span>
-            </Link>
+            </h1>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">{c.header.intro}</p>
           </div>
         </div>
       </section>
@@ -240,7 +243,7 @@ export function CourseEnrollmentPage() {
                   {c.sidebar.tuitionLabel}
                 </span>
                 <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                  {formatPrice(course.price)}
+                  {formatPrice(activePrice)}
                 </div>
               </div>
 
@@ -270,7 +273,7 @@ export function CourseEnrollmentPage() {
                     <span>{c.sidebar.locationLabel}</span>
                   </span>
                   <strong className="text-slate-900 text-right font-bold leading-snug">
-                    {course.location || 'New Delhi (IAA)'}
+                    {activeLocation || 'New Delhi (IAA)'}
                   </strong>
                 </div>
 
@@ -323,7 +326,12 @@ export function CourseEnrollmentPage() {
 
           {/* Right Main Column: Full Registration Form */}
           <main className="lg:col-span-8">
-            <RegistrationForm slug={course.slug} courseTitle={course.title?.replace(/[\u2013\u2014]/g, '-')} />
+            <RegistrationForm
+              slug={course.slug}
+              courseTitle={course.title?.replace(/[\u2013\u2014]/g, '-')}
+              onAnswersChange={handleAnswersChange}
+              locationPrices={course.locationPrices || []}
+            />
           </main>
 
         </div>

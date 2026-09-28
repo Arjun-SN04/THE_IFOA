@@ -335,7 +335,7 @@ export function AdminCourseFormPage() {
           <Field label="Authority badge" hint="e.g. EASA / FAA Part 65 Standards">
             <input className={input} value={form.authority} onChange={set('authority')} />
           </Field>
-          <Field label="Format" hint="e.g. Hybrid Online + In-Person Simulator Sessions">
+          <Field label="Format" hint="e.g. Hybrid Online & In-Person Simulator Sessions">
             <input className={input} value={form.format} onChange={set('format')} />
           </Field>
           <Field label="Target roles" hint="Shown as 'Target Roles' on the card">

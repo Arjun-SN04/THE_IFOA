@@ -11,7 +11,8 @@ import {
   RiMapPin2Line,
   RiBuildingLine,
   RiStackLine,
-  RiComputerLine
+  RiComputerLine,
+  RiArrowRightSLine
 } from 'react-icons/ri'
 import { TbClockHour4 } from 'react-icons/tb'
 import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
@@ -28,6 +29,13 @@ import { readPreload } from '@/lib/preload'
 import { graph, organizationSchema, breadcrumbSchema, absoluteUrl } from '@/lib/seo'
 import bannerEventsHero from '@/assets/events/course_banner_dispatcher_3d.jpg'
 import multipleAirImg from '@/assets/events/multiple-air.webp'
+import logoFaa from '@/assets/shared/standards-logos/logo-faa.webp'
+import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
+
+// Tarmac Photography Banners
+const easaTarmacHero = '/course-images/EASA.jpeg'
+const faaTarmacHero = '/course-images/Part-65.jpeg'
+const doubleProgrammeHero = '/course-images/Flight-Dispatch-Webpage-Small.jpg'
 
 // Content the page ships with; editable at /admin/pages/events.
 const FALLBACK = {
@@ -109,7 +117,7 @@ const FALLBACK = {
         title: '4-Week Flight Operations & Flight Dispatch Program',
         dates: '31 Mar - 25 Apr 2025',
         location: 'New Delhi (Onsite)',
-        pricing: '₹99,000 + 18% GST',
+        pricing: '₹99,000 plus 18% GST',
         description:
           'Delivered onsite at Indian Aviation Academy. Comprehensive syllabus aligned with ICAO Doc 10106, EASA ORO.GEN 110, and DGCA standards.'
       },
@@ -172,7 +180,7 @@ function getModeIcon(mode = '') {
 // (Crew Control, Dangerous Goods, Train the Trainer, etc.) is discovered from
 // the Services page instead, so only the flagship Flight Dispatch programmes
 // (EASA and FAA) show here.
-const EVENTS_SLUGS = ['flight-dispatcher-initial-certification', 'aircraft-dispatcher-training-faa-part-65']
+const EVENTS_SLUGS = ['flight-dispatcher-double-programme', 'flight-dispatcher-initial-certification', 'aircraft-dispatcher-training-faa-part-65']
 
 export function EventsPage() {
   const navigate = useNavigate()
@@ -270,87 +278,271 @@ export function EventsPage() {
               </p>
             </div>
 
-            <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-500 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-2xs">
-              <span>
-                <CmsText path="programs.badge" value={c.programs.badge} />
-              </span>
-            </div>
           </div>
 
-          {/* Intakes Cards List - driven by published courses from the admin console */}
-          <div className="space-y-4">
-            {liveCourses.length === 0 && (
-              <div className="rounded-[2rem] bg-white border border-dashed border-slate-300 p-10 text-center space-y-2">
-                <p className="text-base font-bold text-slate-900">
-                  <CmsText path="programs.emptyTitle" value={c.programs.emptyTitle} />
-                </p>
-                <p className="text-sm text-slate-600">
-                  <CmsText path="programs.emptyDesc" value={c.programs.emptyDesc} />
-                </p>
+          {/* Cards Grid: 3 Clean & Compact High-Impact Cards matching Image 2 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-7 max-w-[1280px] mx-auto">
+            {/* CARD 0: Double Programme FAA + EASA */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group text-left">
+              {/* Image Banner */}
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950 select-none">
+                <img
+                  src={doubleProgrammeHero}
+                  alt="Double Programme: FAA & EASA"
+                  className="w-full h-full object-cover object-[center_60%] group-hover:scale-105 transition-transform duration-700"
+                />
               </div>
-            )}
 
-            {liveCourses.map((course, idx) => {
-              const nextDate =
-                formatIntakeDate(course.schedule?.startDate) ||
-                course.intakeLabel ||
-                'To be announced'
-              const durationLabel = course.duration || course.card?.durationLabel
-              return (
-                <div
-                  key={course._id || course.slug || idx}
-                  className="group rounded-[1.75rem] bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1 transition-all duration-300 p-6 sm:px-8 sm:py-6 flex flex-col md:flex-row md:items-center justify-between gap-5"
-                >
-                  {/* Left Info Column */}
-                  <div className="space-y-2.5 min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs">
-                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 bg-slate-100 border border-slate-200/80 px-3 py-1 rounded-full shrink-0 inline-flex items-center justify-center text-center">
-                        {course.refCode || `INTAKE 0${idx + 1}`}
-                      </span>
-
-                      <span className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200/70 px-3 py-1 rounded-full shrink-0">
-                        {getModeIcon(course.schedule?.mode)}
-                        <span>{course.schedule?.mode || 'Virtual'}</span>
-                      </span>
-
-                      {durationLabel && (
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-50/80 border border-slate-200/60 px-3 py-1 rounded-full shrink-0">
-                          <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span>{durationLabel}</span>
-                        </span>
-                      )}
+              {/* Card Body */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  {/* Programme badges */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-950 text-white font-mono text-[10px] font-bold tracking-wider uppercase">
+                      FAA & EASA
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-200">
+                      <img src={logoFaa} alt="FAA" className="h-4 w-auto object-contain" />
+                      <img src={logoEasa} alt="EASA" className="h-4 w-auto object-contain" />
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-800">Double</span>
                     </div>
-
-                    <Link
-                      to={`/courses/${course.slug}`}
-                      className="block text-base sm:text-lg font-bold text-slate-950 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors"
-                    >
-                      {course.title}
-                    </Link>
+                  </div>
+                  {/* Title & Desc */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug line-clamp-2 min-h-[48px] flex items-center">
+                      Double Programme: FAA & EASA
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-2 min-h-[34px]">
+                      The FAA Part 65 approved course plus ICAO and EASA operations in one programme. The FAA certificate is issued by the FAA.
+                    </p>
                   </div>
 
-                  {/* Right Status & Action Column (Responsive Stack on Mobile) */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between md:justify-end gap-3 sm:gap-6 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 w-full md:w-auto">
-                    <div className="flex items-center justify-between sm:flex-col sm:items-start md:items-end text-left md:text-right">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                        Next Intake
-                      </span>
-                      <span className="text-xs sm:text-sm font-bold text-slate-800 whitespace-nowrap">
-                        {nextDate}
-                      </span>
+                  {/* Compact Specs Grid */}
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50/90 border border-slate-100 text-left">
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Hybrid</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">280 Hrs · 7 Weeks</p>
                     </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Europe</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">FAA, EASA & ICAO</p>
+                    </div>
+                  </div>
+                </div>
 
+                {/* Footer: Fee & Action Buttons */}
+                <div className="space-y-3 pt-3 border-t border-slate-100">
+                  {/* Training Fee */}
+                  <div className="flex items-baseline justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
+                      <span className="text-xl font-extrabold text-slate-950 tracking-tight block mt-0.5">€5,500</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 text-right leading-tight max-w-[130px]">
+                      Excl. travel & lodging
+                    </span>
+                  </div>
+
+                  {/* Action Buttons Row */}
+                  <div className="grid grid-cols-2 gap-2.5">
                     <Link
-                      to={`/courses/${course.slug}`}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-950 hover:bg-[#34E06E] hover:text-slate-950 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.35)] cursor-pointer shrink-0 sm:min-w-[160px]"
+                      to="/courses/flight-dispatcher-double-programme"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
                     >
-                      <span>Register Interest</span>
-                      <HiArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      <span>VIEW DETAILS</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-400 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                    <Link
+                      to="/courses/flight-dispatcher-double-programme/enroll"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
+                    >
+                      <span>REGISTER INTEREST</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>
-              )
-            })}
+              </div>
+            </div>
+
+            {/* CARD 1: Flight Dispatcher Initial Training */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group text-left">
+              {/* Image Banner */}
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950 select-none">
+                <img
+                  src={easaTarmacHero}
+                  alt="Flight Dispatcher Initial Training"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Card Body */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  {/* Programme badges */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-950 text-white font-mono text-[10px] font-bold tracking-wider uppercase">
+                      FD - INITIAL
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-200">
+                      <img src={logoEasa} alt="EASA" className="h-4 w-auto object-contain" />
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-800">EASA-Aligned</span>
+                    </div>
+                  </div>
+                  {/* Title & Desc */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug line-clamp-2 min-h-[48px] flex items-center">
+                      Flight Dispatcher Initial Training
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-2 min-h-[34px]">
+                      EASA-aligned professional training for aspiring Flight Dispatchers. Build the knowledge and operational skills required for an OCC career.
+                    </p>
+                  </div>
+
+                  {/* Compact Specs Grid */}
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50/90 border border-slate-100 text-left">
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Hybrid</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">200 Hrs · 5 Weeks</p>
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Denmark</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">Air Alsie Facilities</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer: Fee & Action Buttons */}
+                <div className="space-y-3 pt-3 border-t border-slate-100">
+                  {/* Training Fee */}
+                  <div className="flex items-baseline justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
+                      <span className="text-xl font-extrabold text-slate-950 tracking-tight block mt-0.5">€3,500</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 text-right leading-tight max-w-[130px]">
+                      Excl. travel & lodging
+                    </span>
+                  </div>
+
+                  {/* Action Buttons Row */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <Link
+                      to="/courses/flight-dispatcher-initial-certification"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
+                    >
+                      <span>VIEW DETAILS</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-400 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                    <Link
+                      to="/courses/flight-dispatcher-initial-certification/enroll"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
+                    >
+                      <span>REGISTER INTEREST</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CARD 2: Aircraft Dispatcher Certification Course */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group text-left">
+              {/* Image Banner */}
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950 select-none">
+                <img
+                  src={faaTarmacHero}
+                  alt="Aircraft Dispatcher Certification Course"
+                  className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Card Body */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  {/* Programme badges */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-950 text-white font-mono text-[10px] font-bold tracking-wider uppercase">
+                      FAA PART 65
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-200">
+                      <img src={logoFaa} alt="FAA" className="h-4 w-auto object-contain" />
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-800">FAA Approved</span>
+                    </div>
+                  </div>
+                  {/* Title & Desc */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug line-clamp-2 min-h-[48px] flex items-center">
+                      Aircraft Dispatcher Certification Course
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-2 min-h-[34px]">
+                      FAA-approved training leading toward Aircraft Dispatcher certification. Develop the technical knowledge and decision-making skills for a professional career in aviation.
+                    </p>
+                  </div>
+
+                  {/* Compact Specs Grid */}
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50/90 border border-slate-100 text-left">
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Hybrid</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">200 Hrs · 6 Weeks</p>
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Florida, USA</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">Near Space Center</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer: Fee & Action Buttons */}
+                <div className="space-y-3 pt-3 border-t border-slate-100">
+                  {/* Training Fee */}
+                  <div className="flex items-baseline justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
+                      <span className="text-xl font-extrabold text-slate-950 tracking-tight block mt-0.5">$4,500</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 text-right leading-tight max-w-[130px]">
+                      Excl. ADX exam fee & travel
+                    </span>
+                  </div>
+
+                  {/* Action Buttons Row */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <Link
+                      to="/courses/aircraft-dispatcher-training-faa-part-65"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
+                    >
+                      <span>VIEW DETAILS</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-400 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                    <Link
+                      to="/courses/aircraft-dispatcher-training-faa-part-65/enroll"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
+                    >
+                      <span>REGISTER INTEREST</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Reveal>
@@ -421,51 +613,54 @@ export function EventsPage() {
       </Reveal>
 
       {/* 4. FROM THEORY TO THE AIRCRAFT (B737-NG OPERATIONAL TRAINING) */}
-      <Reveal as="section" className="py-20 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
+      <Reveal as="section" className="py-16 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
         <div className="max-w-[1280px] mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="space-y-3">
-                <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#34E06E] inline-block">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-stretch">
+            {/* Left: message + topic grid */}
+            <div className="flex flex-col justify-center space-y-6">
+              <div className="space-y-4">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-white border-b-2 border-[#34E06E] pb-1 inline-block">
                   <CmsText path="theoryToAircraft.eyebrow" value={c.theoryToAircraft.eyebrow} />
                 </span>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.15] [text-wrap:balance]">
                   <CmsText path="theoryToAircraft.title" value={c.theoryToAircraft.title} />
                 </h2>
+                <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl">
+                  <CmsText path="theoryToAircraft.intro" value={c.theoryToAircraft.intro} />
+                </p>
               </div>
 
-              <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl">
-                <CmsText path="theoryToAircraft.intro" value={c.theoryToAircraft.intro} />
-              </p>
-
-              {/* Module Tags */}
-              <div className="flex flex-wrap items-center gap-2.5 pt-2">
-                {(c.theoryToAircraft.tags || []).map((tag, idx) => (
-                  <span
+              {/* Topics covered */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 rounded-2xl border border-white/10 overflow-hidden divide-y divide-white/10 sm:divide-y-0">
+                {(c.theoryToAircraft.tags || []).map((tag, idx, all) => (
+                  <div
                     key={idx}
-                    className="relative inline-flex items-center gap-2 pl-4 pr-6 py-2 rounded-full text-xs font-semibold tracking-wide text-slate-200 bg-slate-900/90 border border-slate-800/90 shadow-2xs hover:border-[#34E06E]/50 transition-colors cursor-default"
+                    className={`relative flex items-center gap-3 px-4 py-3.5 bg-white/[0.02] ${
+                      idx % 2 === 0 ? 'sm:border-r sm:border-white/10' : ''
+                    } ${idx < all.length - (all.length % 2 === 0 ? 2 : 1) ? 'sm:border-b sm:border-white/10' : ''} ${
+                      all.length % 2 === 1 && idx === all.length - 1 ? 'sm:col-span-2 sm:border-r-0' : ''
+                    }`}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
-                    <span>
+                    <span className="font-mono text-[11px] font-bold text-[#34E06E] w-6 shrink-0">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-sm font-semibold text-slate-100">
                       <CmsText path={`theoryToAircraft.tags.${idx}`} value={tag} />
                     </span>
                     <CmsRemoveItem listPath="theoryToAircraft.tags" index={idx} label="Remove tag" />
-                  </span>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Right Card: B737-NG Aircraft Visual Card */}
-            <div className="lg:col-span-5">
-              <div className="relative w-full rounded-[2rem] overflow-hidden border border-slate-800 bg-[#0f172a] shadow-2xl aspect-video">
-                <img
-                  src={multipleAirImg}
-                  alt="B737-NG Aircraft Fleet Operations"
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                />
-              </div>
+            {/* Right: aircraft image, same height as the text column */}
+            <div className="relative min-h-[260px] rounded-2xl overflow-hidden border border-white/10 bg-[#0f172a]">
+              <img
+                src={multipleAirImg}
+                alt="B737-NG Aircraft Fleet Operations"
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+              />
             </div>
           </div>
         </div>

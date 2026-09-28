@@ -160,7 +160,14 @@ export function AdminContactMessagesPage() {
                       </Link>
                       <p className="text-xs text-gray-400">{m.email}</p>
                     </td>
-                    <td className="px-5 py-4 text-xs font-semibold text-gray-600">{m.topic || ' - '}</td>
+                    <td className="px-5 py-4 text-xs font-semibold text-gray-600">
+                      {m.topic || ' - '}
+                      {m.audience && (
+                        <p className="text-[11px] font-normal text-gray-400">
+                          {m.audience === 'operator' ? 'An operator' : 'An individual'}
+                        </p>
+                      )}
+                    </td>
                     <td className="px-5 py-4">
                       <span
                         className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border ${

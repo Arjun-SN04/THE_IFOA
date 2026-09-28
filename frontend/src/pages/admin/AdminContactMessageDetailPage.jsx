@@ -92,6 +92,11 @@ export function AdminContactMessageDetailPage() {
               <span className="rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-gray-600">
                 ID: {id}
               </span>
+              {message.audience && (
+                <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-800">
+                  {message.audience === 'operator' ? 'An operator' : 'An individual'}
+                </span>
+              )}
               {message.topic && (
                 <span className="rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-ifoa-navy">
                   Topic: {message.topic}

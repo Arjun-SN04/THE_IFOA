@@ -10,6 +10,8 @@ const OFFICE_INBOX = {
 
 const STATUSES = ['new', 'contacted', 'closed']
 
+const AUDIENCE_LABELS = { individual: 'An individual', operator: 'An operator' }
+
 const escapeHtml = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 
@@ -18,6 +20,8 @@ const escapeHtml = (s) =>
 // POST /api/contact
 const send = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, organization, topic, message, office } = req.body || {}
+  const audience = AUDIENCE_LABELS[req.body?.audience] ? req.body.audience : ''
+  const audienceLabel = AUDIENCE_LABELS[audience]
 
   if (!firstName || !lastName || !email || !message) {
     return res.status(400).json({ message: 'firstName, lastName, email and message are required' })
@@ -27,11 +31,12 @@ const send = asyncHandler(async (req, res) => {
   }
 
   // Save first so the enquiry is durable even if the email below fails.
-  await ContactMessage.create({ firstName, lastName, email, organization, topic, message, office })
+  await ContactMessage.create({ firstName, lastName, email, audience, organization, topic, message, office })
 
-  const to = OFFICE_INBOX[office] || OFFICE_INBOX.switzerland
+  const to = process.env.MAIL_TO || OFFICE_INBOX[office] || OFFICE_INBOX.switzerland
 
   const text = [
+    audienceLabel ? `I am: ${audienceLabel}` : null,
     `Name: ${firstName} ${lastName}`,
     `Email: ${email}`,
     organization ? `Organization: ${organization}` : null,
@@ -43,6 +48,7 @@ const send = asyncHandler(async (req, res) => {
     .join('\n')
 
   const html = `
+    ${audienceLabel ? `<p><strong>I am:</strong> ${audienceLabel}</p>` : ''}
     <p><strong>Name:</strong> ${escapeHtml(firstName)} ${escapeHtml(lastName)}</p>
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
     ${organization ? `<p><strong>Organization:</strong> ${escapeHtml(organization)}</p>` : ''}
@@ -56,7 +62,7 @@ const send = asyncHandler(async (req, res) => {
     await sendMail({
       to,
       replyTo: email,
-      subject: `New website enquiry: ${topic || 'General'} - ${firstName} ${lastName}`,
+      subject: `theIFOA website enquiry${audienceLabel ? ` (${audienceLabel})` : ''}: ${topic || 'General'} - ${firstName} ${lastName}`,
       text,
       html
     })

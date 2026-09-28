@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { RiBookReadFill, RiBookOpenFill } from 'react-icons/ri'
+import { RiBookReadFill, RiBookOpenFill, RiCheckLine } from 'react-icons/ri'
 import { PiAirplaneTakeoffFill, PiAirplaneTiltFill } from 'react-icons/pi'
 import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
 import { MdOutlineMail } from 'react-icons/md'
@@ -254,7 +254,7 @@ export function FoxtrotDeltaPage() {
                             key={idx}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50/80 border border-slate-100 text-xs text-slate-700"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
+                            <RiCheckLine className="w-3.5 h-3.5 text-[#16a952] shrink-0" />
                             <span className="font-semibold text-slate-800 truncate">
                               <CmsText path={`${issue._path}.highlights.${idx}`} value={item} />
                             </span>

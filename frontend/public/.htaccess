@@ -112,7 +112,7 @@
 </IfModule>
 
 # ----------------------------------------------------------------------
-# Caching — hashed assets are immutable, HTML must always revalidate
+# Caching: hashed assets are immutable, HTML must always revalidate
 # ----------------------------------------------------------------------
 <IfModule mod_expires.c>
   ExpiresActive On

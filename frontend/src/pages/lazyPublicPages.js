@@ -16,5 +16,6 @@ export const lazyPublicPages = {
   CourseEnrollmentPage: lazy(() =>
     import('./CourseEnrollmentPage').then((m) => ({ default: m.CourseEnrollmentPage }))
   ),
-  FoxtrotDeltaPage: lazy(() => import('./FoxtrotDeltaPage').then((m) => ({ default: m.FoxtrotDeltaPage })))
+  FoxtrotDeltaPage: lazy(() => import('./FoxtrotDeltaPage').then((m) => ({ default: m.FoxtrotDeltaPage }))),
+  UpcomingCoursesPage: lazy(() => import('./UpcomingCoursesPage').then((m) => ({ default: m.UpcomingCoursesPage })))
 }

@@ -98,6 +98,22 @@ const courseSchema = new mongoose.Schema(
       timeText: { type: String, default: '' }, // "MO - FRI 0900AM - 0500PM IST"
       timezone: { type: String, default: '' }
     },
+    // Price overrides by training location (matched against the enrollment
+    // form's "Where do you want to take the training?" answer).
+    locationPrices: {
+      type: [
+        new mongoose.Schema(
+          {
+            location: { type: String, required: true },
+            amount: { type: Number, required: true },
+            currency: { type: String, default: 'EUR' },
+            note: { type: String, default: '' }
+          },
+          { _id: false }
+        )
+      ],
+      default: []
+    },
     duration: { type: String, default: '' }, // "4 Weeks"
     location: { type: String, default: '' }, // "New Delhi"
     price: {
@@ -289,6 +305,12 @@ const courseSchema = new mongoose.Schema(
       metaTitle: { type: String, default: '' },
       metaDescription: { type: String, default: '' }
     },
+
+    // Approved page copy as ordered content blocks (hero + body). When set,
+    // the course page renders these instead of its fixed section template -
+    // see frontend/src/components/course/CourseOverview.jsx for block types
+    // and backend/scripts/courseOverviews.js for the shipped content.
+    overview: { type: mongoose.Schema.Types.Mixed, default: null },
 
     // Per-course overrides for the shared "courseDetail"/"courseEnrollment"
     // chrome templates (backend/utils/pageContent.js SCHEMAS/DEFAULTS). Empty

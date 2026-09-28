@@ -122,7 +122,7 @@ export function CountrySelect({
                     onClick={() => handleSelect(c)}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded-xl transition-colors text-left ${
                       isSelected
-                        ? 'bg-rocket-lime/20 font-bold text-black'
+                        ? 'bg-slate-100 font-bold text-slate-950'
                         : 'hover:bg-gray-100 text-gray-800'
                     }`}
                   >

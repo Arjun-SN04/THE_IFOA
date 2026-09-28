@@ -1,17 +1,13 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
-  RiFlightTakeoffLine,
-  RiUser3Line,
   RiCheckboxCircleFill,
   RiMailLine,
   RiPhoneLine,
   RiMapPin2Line,
-  RiSendPlaneFill,
-  RiArrowDownSLine
+  RiSendPlaneFill
 } from 'react-icons/ri'
-import { HiArrowUpRight, HiArrowRight } from 'react-icons/hi2'
+import { HiArrowRight } from 'react-icons/hi2'
 import { MdOutlineMail } from 'react-icons/md'
 
 import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
@@ -20,7 +16,7 @@ import { CmsText, CmsRemoveItem, CmsAddItem } from '@/components/admin/CmsEditab
 import { CustomSelect } from '@/components/ui/CustomSelect'
 import { usePageContent } from '@/hooks/usePageContent'
 import { Seo } from '@/components/common/Seo'
-import { graph, organizationSchema, localBusinessSchemas, breadcrumbSchema, faqSchema } from '@/lib/seo'
+import { graph, organizationSchema, localBusinessSchemas, breadcrumbSchema } from '@/lib/seo'
 import { api } from '@/lib/api'
 import flagSwitzerland from '@/assets/shared/flags/flag-switzerland.webp'
 import flagUsa from '@/assets/shared/flags/flag-usa.webp'
@@ -30,42 +26,35 @@ import bannerContactHero from '@/assets/shared/photos/IOFA-banner_10@1920x1280.j
 // Content the page ships with; the admin can override any of it via /admin/pages/contact.
 const FALLBACK = {
   hero: {
-    title: "Let's talk about your operation.",
-    subtitle: "Tell us who you are and what you need, and we'll route it to the right person.",
-    image: null,
-    cards: [
-      {
-        eyebrow: 'Airlines & Operators',
-        badge: 'For Airlines',
-        title: 'Training my team',
-        desc: 'Fleet-wide or role-specific training, built around your ops manual and your regulator.',
-        bullets: ['Fleet-Customized', 'OCC Consulting'],
-        ctaLabel: 'Corporate Training'
-      },
-      {
-        eyebrow: 'Individuals',
-        badge: 'For Individuals',
-        title: 'Becoming a dispatcher',
-        desc: 'Certification pathways and course dates for individual applicants.',
-        bullets: ['FAA & EASA Path', 'Direct Guidance'],
-        ctaLabel: 'Explore Training'
-      }
-    ]
+    title: 'Talk to us',
+    subtitle: "Tell us who you are and what you need. We'll pass it to the right person.",
+    image: null
   },
   form: {
     eyebrow: 'SEND A MESSAGE',
     title: 'Start the conversation',
-    submitLabel: 'Send Message',
+    submitLabel: 'Send message',
+    audienceLegend: 'I am',
+    audiences: [
+      { title: 'An individual', desc: 'Becoming a dispatcher, or joining a course' },
+      { title: 'An operator', desc: 'Training or consulting for my team' }
+    ],
     topics: [
-      'Training my OCC / dispatch team',
-      'Individual dispatcher certification',
-      'Flight Dispatch',
+      'FAA Aircraft Dispatcher',
+      'Flight Dispatcher Initial',
+      'Double Programme: FAA & EASA',
       'Dangerous Goods',
       'Train the Trainer',
-      'Human Factors for OCC',
+      'Which course is right for me?',
+      'Something else'
+    ],
+    operatorTopics: [
+      'Flight Dispatch: tailored initial, recurrent or advanced',
       'Crew Control',
-      'Consulting Services',
-      'Foxtrot Delta / press',
+      'Dangerous Goods for our crews',
+      'Train the Trainer in-house',
+      'Human Factors for the OCC',
+      'OCC consulting',
       'Something else'
     ],
     // Shown only when the "Flight Dispatch" topic is selected - two
@@ -73,11 +62,11 @@ const FALLBACK = {
     flightDispatchPathways: ['EASA', 'FAA Part 65']
   },
   offices: {
-    eyebrow: 'DIRECT LINES',
-    title: 'Our regional offices',
+    eyebrow: 'OFFICES',
+    title: 'Our offices',
     items: [
       {
-        region: 'Europe · Headquarters',
+        region: 'Headquarters',
         country: 'Switzerland',
         address: 'Oberdorf 26, 4314 Zeiningen, Aargau, Switzerland',
         phone: '+41 78 227 3103',
@@ -99,61 +88,51 @@ const FALLBACK = {
       }
     ]
   },
-  faq: {
-    eyebrow: 'FAQ',
-    title: 'Common questions',
-    intro: "Can't find what you're looking for? Send us a message and we'll get back to you directly.",
-    items: [
-      {
-        question: 'Do you train individuals, or only airlines and operators?',
-        answer:
-          "Both. Individuals can enroll directly in our open-enrollment certification pathways, while airlines and operators can book fleet-wide or role-specific training built around their own ops manual and regulator."
-      },
-      {
-        question: 'Is training delivered online, in person, or both?',
-        answer:
-          'Most programs are hybrid: online modules plus onsite practical sessions at one of our hubs. Some courses run fully virtual. Delivery mode is listed on each course page.'
-      },
-      {
-        question: 'Which regulatory standards do your certifications follow?',
-        answer:
-          'Our Flight Dispatcher programs are built to EASA ORO.GEN.110 and ICAO Doc 10106, and our US school is FAA Part 65 approved.'
-      },
-      {
-        question: 'Where are your training locations?',
-        answer:
-          'We operate three regional hubs: Basel, Switzerland (Europe HQ); Daytona Beach, Florida (IFOA USA); and New Delhi, India (IFOA India), alongside virtual classroom delivery worldwide.'
-      },
-      {
-        question: 'How do I enroll, and what happens after I apply?',
-        answer:
-          "Apply online for the intake you want. Our admissions team reviews your prerequisites and sends an official placement offer with payment and onboarding details."
-      },
-      {
-        question: 'Can you build a custom program for our airline or operation?',
-        answer:
-          "Yes. Airlines and operators don't have to wait for a public intake date: talk to us and we'll schedule fleet-wide or role-specific training around your operation."
-      }
-    ]
+  direct: {
+    eyebrow: 'DIRECT LINES',
+    title: 'Direct lines',
+    lines: [
+      { label: 'Email', value: 'info@theifoa.com', href: 'mailto:info@theifoa.com' },
+      { label: 'WhatsApp', value: '+41 78 227 3103', href: 'https://wa.me/41782273103' }
+    ],
+    replyNote: 'We reply to every enquiry within two working days.',
+    coursesPrefix: 'Looking for a course date? See',
+    coursesLinkLabel: 'upcoming courses'
   }
+}
+
+// Course slug -> the contact topic (and audience) it maps to.
+const COURSE_TOPICS = {
+  'flight-dispatcher-initial-certification': { topic: 'Flight Dispatcher Initial', audience: 'individual' },
+  'aircraft-dispatcher-training-faa-part-65': { topic: 'FAA Aircraft Dispatcher', audience: 'individual' },
+  'flight-dispatcher-double-programme': { topic: 'Double Programme: FAA & EASA', audience: 'individual' },
+  'train-the-trainer-icao-cbta-instructor': { topic: 'Train the Trainer', audience: 'individual' },
+  'dangerous-goods-regulations-cbta-initial': { topic: 'Dangerous Goods for our crews', audience: 'operator' },
+  'airline-crew-control-flight-rostering': { topic: 'Crew Control', audience: 'operator' },
+  'human-factors-in-the-occ': { topic: 'Human Factors for the OCC', audience: 'operator' },
+  'airline-occ-setup-operational-consulting': { topic: 'OCC consulting', audience: 'operator' },
+  'flight-dispatch-recurrent-refresher-course': { topic: 'Flight Dispatch: tailored initial, recurrent or advanced', audience: 'operator' }
 }
 
 export function ContactPage() {
   const { c } = usePageContent('contact', FALLBACK)
+  // Arriving from a course page (/contact?course=<slug>) pre-selects that
+  // course as the topic, and "An operator" for team/corporate courses.
+  const [searchParams] = useSearchParams()
+  const fromCourse = COURSE_TOPICS[searchParams.get('course')] || null
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     organization: '',
-    topic: c.form.topics[0] || 'Training my OCC / dispatch team',
+    audience: fromCourse?.audience || 'individual',
+    topic: fromCourse?.topic || '',
     pathway: '',
     message: ''
   })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  const [openFaqIndex, setOpenFaqIndex] = useState(0)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -162,9 +141,9 @@ export function ContactPage() {
     try {
       const topic =
         formData.topic === 'Flight Dispatch' && formData.pathway
-          ? `Flight Dispatch — ${formData.pathway}`
+          ? `Flight Dispatch: ${formData.pathway}`
           : formData.topic
-      await api.sendContact({ ...formData, topic })
+      await api.sendContact({ ...formData, topic: topic || topicOptions[0] })
       setSubmitted(true)
     } catch (err) {
       setError(err.message || 'Could not send your message. Please try again.')
@@ -173,7 +152,13 @@ export function ContactPage() {
     }
   }
 
-  const cards = c.hero.cards.map((card, i) => ({ ...card, _path: `hero.cards.${i}`, _index: i }))
+  const audiences = c.form.audiences || FALLBACK.form.audiences
+  // One topic list for everyone: switching "I am" never changes or clears the
+  // chosen topic. Individual topics first, then operator-only ones.
+  const allTopics = [...new Set([...(c.form.topics || []), ...(c.form.operatorTopics || FALLBACK.form.operatorTopics || [])])]
+  // Keep the catch-all option at the end of the combined list.
+  const topicOptions = [...allTopics.filter((x) => x !== 'Something else'), ...allTopics.filter((x) => x === 'Something else')]
+
   const offices = c.offices.items.map((o, i) => ({ ...o, _path: `offices.items.${i}`, _index: i }))
 
   return (
@@ -188,8 +173,7 @@ export function ContactPage() {
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'Contact', path: '/contact' }
-          ]),
-          faqSchema(c.faq.items)
+          ])
         )}
       />
       {/* 1. HERO SECTION */}
@@ -212,129 +196,50 @@ export function ContactPage() {
           <p className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
             <CmsText path="hero.subtitle" value={c.hero.subtitle} />
           </p>
-
-          {/* Clean 2-Column Audience Direct Routing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl pt-6">
-            {cards.map((card, idx) => {
-              const isAirline = idx === 0
-              return (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      topic: isAirline
-                        ? 'Training my OCC / dispatch team'
-                        : 'Individual dispatcher certification'
-                    }))
-                    document.getElementById('contact-main-section')?.scrollIntoView({ behavior: 'smooth' })
-                  }}
-                  className="relative rounded-[2rem] bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-8 flex flex-col justify-between space-y-6 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1.5"
-                >
-                  <CmsRemoveItem listPath="hero.cards" index={card._index} label="Remove card" />
-                  <div className="space-y-3.5">
-                    {/* Badge Header */}
-                    <div className="flex items-center justify-between min-h-[1.75rem]">
-                      {isAirline ? (
-                        <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-white border-b-2 border-[#34E06E] pb-0.5">
-                          <RiFlightTakeoffLine className="w-3.5 h-3.5 text-slate-300" />
-                          <span>
-                            <CmsText path={`${card._path}.badge`} value={card.badge} />
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-[#34E06E] border-b-2 border-[#34E06E] pb-0.5">
-                          <RiUser3Line className="w-3.5 h-3.5 text-[#34E06E]" />
-                          <span>
-                            <CmsText path={`${card._path}.badge`} value={card.badge} />
-                          </span>
-                        </div>
-                      )}
-
-                      <span className="text-[11px] text-slate-400 font-semibold tracking-wide uppercase font-mono">
-                        <CmsText path={`${card._path}.eyebrow`} value={card.eyebrow} />
-                      </span>
-                    </div>
-
-                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug min-h-[3.25rem] flex items-start">
-                      <CmsText path={`${card._path}.title`} value={card.title} />
-                    </h3>
-
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal min-h-[3.75rem]">
-                      <CmsText path={`${card._path}.desc`} value={card.desc} />
-                    </p>
-
-                    {/* Feature Highlights */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3.5 border-t border-white/10 text-xs text-slate-200 font-medium min-h-[3rem]">
-                      {(card.bullets || []).map((bullet, bIdx) => (
-                        <div key={bIdx} className="flex items-center gap-1.5">
-                          <RiCheckboxCircleFill
-                            className={`w-3.5 h-3.5 shrink-0 ${isAirline ? 'text-slate-300' : 'text-[#34E06E]'}`}
-                          />
-                          <span>
-                            <CmsText path={`${card._path}.bullets.${bIdx}`} value={bullet} />
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-auto pt-2">
-                    {isAirline ? (
-                      <button
-                        type="button"
-                        className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit"
-                      >
-                        <span>
-                          <CmsText path={`${card._path}.ctaLabel`} value={card.ctaLabel} />
-                        </span>
-                        <HiArrowUpRight className="w-3.5 h-3.5" />
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-5 py-2.5 rounded-full text-xs transition-colors inline-flex items-center gap-2 cursor-pointer w-fit shadow-md hover:shadow-[0_0_15px_rgba(52,224,110,0.4)]"
-                      >
-                        <span>
-                          <CmsText path={`${card._path}.ctaLabel`} value={card.ctaLabel} />
-                        </span>
-                        <HiArrowUpRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
         </div>
       </section>
 
-      {/* 2. MAIN CONTACT SECTION (FORM + REGIONAL OFFICES) */}
+      {/* 2. MAIN CONTACT SECTION (FORM + DIRECT LINES) */}
       <Reveal as="section" id="contact-main-section" className="py-20 sm:py-24 bg-white border-b border-slate-200/80 scroll-mt-20" data-purpose="contact-main">
         <div className="max-w-[1280px] mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
-            {/* Left: Contact Form */}
-            <div className="lg:col-span-7 flex flex-col space-y-6 h-full">
-              <div className="space-y-2">
-                <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                  <CmsText path="form.eyebrow" value={c.form.eyebrow} />
-                </span>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950">
-                  <CmsText path="form.title" value={c.form.title} />
-                </h2>
-              </div>
+          {/* Header Row: Locked to same top baseline */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start mb-6">
+            {/* Left Header */}
+            <div className="lg:col-span-7 space-y-2">
+              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 block w-fit">
+                <CmsText path="form.eyebrow" value={c.form.eyebrow} />
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
+                <CmsText path="form.title" value={c.form.title} />
+              </h2>
+            </div>
 
-              <div className="rounded-[2rem] bg-slate-50/70 border border-slate-200/90 p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex-1 flex flex-col justify-between">
+            {/* Right Header */}
+            <div className="lg:col-span-5 space-y-2">
+              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 block w-fit">
+                <CmsText path="direct.eyebrow" value={c.direct.eyebrow} />
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
+                <CmsText path="direct.title" value={c.direct.title} />
+              </h2>
+            </div>
+          </div>
+
+          {/* Cards Row: Perfectly Aligned Containers */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            {/* Left: Contact Form Card */}
+            <div className="lg:col-span-7">
+              <div className="rounded-[2rem] bg-slate-50/70 border border-slate-200/90 p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col justify-between">
                 {submitted ? (
                   <div className="text-center py-12 space-y-4 animate-in fade-in duration-300 my-auto">
                     <div className="w-16 h-16 rounded-full bg-slate-100 text-[#34E06E] flex items-center justify-center mx-auto">
                       <RiCheckboxCircleFill className="w-10 h-10" />
                     </div>
                     <h3 className="text-2xl font-bold text-slate-950">
-                      Message Transmitted
+                      Message sent
                     </h3>
                     <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-                      Thank you for contacting IFOA. An operational specialist from the appropriate regional desk will review your details and reach out within 24 hours.
+                      Thank you for contacting IFOA. We'll reply by email within two working days.
                     </p>
                     <button
                       onClick={() => setSubmitted(false)}
@@ -345,6 +250,56 @@ export function ContactPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 flex-1 flex flex-col justify-between">
+                    {/* Who is writing: switches the topic list */}
+                    <fieldset className="space-y-2">
+                      <legend className="text-xs font-mono font-bold uppercase text-slate-500 tracking-wider mb-2">
+                        <CmsText path="form.audienceLegend" value={c.form.audienceLegend} />
+                      </legend>
+                      
+                      {/* Smooth Animated Sliding Toggle */}
+                      <div className="relative rounded-2xl bg-white border border-slate-200/90 p-1.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5 shadow-2xs">
+                        {/* Hardware-accelerated sliding background pill (sm+) */}
+                        <div
+                          className="hidden sm:block absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-0.375rem)] rounded-xl bg-slate-950 shadow-sm transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none"
+                          style={{
+                            transform: formData.audience === 'operator' ? 'translateX(100%)' : 'translateX(0%)'
+                          }}
+                        />
+
+                        {['individual', 'operator'].map((value, i) => {
+                          const selected = formData.audience === value
+                          return (
+                            <button
+                              key={value}
+                              type="button"
+                              aria-pressed={selected}
+                              onClick={() => setFormData({ ...formData, audience: value })}
+                              className={`relative z-10 text-left px-5 py-3.5 rounded-xl transition-all duration-300 cursor-pointer ${
+                                selected
+                                  ? 'max-sm:bg-slate-950 text-white'
+                                  : 'max-sm:bg-transparent text-slate-900 hover:text-slate-950'
+                              }`}
+                            >
+                              <span
+                                className={`block text-base sm:text-lg font-bold tracking-tight transition-colors duration-200 ${
+                                  selected ? 'text-white' : 'text-slate-900'
+                                }`}
+                              >
+                                <CmsText path={`form.audiences.${i}.title`} value={audiences[i]?.title} />
+                              </span>
+                              <span
+                                className={`block mt-0.5 text-xs sm:text-sm transition-colors duration-200 ${
+                                  selected ? 'text-slate-300' : 'text-slate-500'
+                                }`}
+                              >
+                                <CmsText path={`form.audiences.${i}.desc`} value={audiences[i]?.desc} />
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </fieldset>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-xs font-mono font-bold uppercase text-slate-500 tracking-wider">
@@ -407,11 +362,11 @@ export function ContactPage() {
                         I'm interested in
                       </label>
                       <CustomSelect
-                        value={formData.topic || c.form.topics[0]}
+                        value={formData.topic || topicOptions[0]}
                         onChange={(val) =>
                           setFormData({ ...formData, topic: val, pathway: val === 'Flight Dispatch' ? formData.pathway : '' })
                         }
-                        options={c.form.topics}
+                        options={topicOptions}
                       />
                     </div>
 
@@ -434,7 +389,7 @@ export function ContactPage() {
                         Message
                       </label>
                       <textarea
-                        placeholder="Tell us about your fleet, your team size, or your timeline."
+                        placeholder="Tell us the course or topic, and for teams, the number of people."
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         className="w-full flex-1 min-h-[110px] px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-950 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] transition-all resize-y"
@@ -464,8 +419,51 @@ export function ContactPage() {
               </div>
             </div>
 
-            {/* Right: Regional Offices */}
-            <div className="lg:col-span-5 flex flex-col space-y-6 h-full">
+            {/* Right: Direct Lines Card */}
+            <div className="lg:col-span-5">
+              <div className="rounded-[2rem] bg-slate-50/70 border border-slate-200/90 p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col justify-between space-y-8">
+                <div className="divide-y divide-slate-200/80">
+                  {c.direct.lines.map((line, idx) => (
+                    <a
+                      key={idx}
+                      href={line.href}
+                      target={/^https?:/.test(line.href || '') ? '_blank' : undefined}
+                      rel={/^https?:/.test(line.href || '') ? 'noopener noreferrer' : undefined}
+                      className="relative flex items-center justify-between gap-4 py-4.5 first:pt-0 last:pb-0 group"
+                    >
+                      <CmsRemoveItem listPath="direct.lines" index={idx} label="Remove line" />
+                      <span className="text-sm sm:text-base text-slate-500 font-medium">
+                        <CmsText path={`direct.lines.${idx}.label`} value={line.label} />
+                      </span>
+                      <span className="text-sm sm:text-base font-bold text-slate-950 group-hover:text-[#1fa855] transition-colors">
+                        <CmsText path={`direct.lines.${idx}.value`} value={line.value} />
+                      </span>
+                    </a>
+                  ))}
+                  <CmsAddItem listPath="direct.lines" label="Add line" blank={{ label: 'New line', value: '', href: '' }} />
+                </div>
+
+                <div className="pt-6 border-t border-slate-200/80 space-y-4 text-sm text-slate-600 leading-relaxed">
+                  <p>
+                    <CmsText path="direct.replyNote" value={c.direct.replyNote} />
+                  </p>
+                  <div className="p-4 rounded-xl bg-white border border-slate-200/80 text-xs sm:text-sm text-slate-700">
+                    <CmsText path="direct.coursesPrefix" value={c.direct.coursesPrefix} />{' '}
+                    <Link to="/upcoming-courses" className="font-bold text-slate-950 underline underline-offset-4 hover:text-[#1fa855]">
+                      <CmsText path="direct.coursesLinkLabel" value={c.direct.coursesLinkLabel} />
+                    </Link>
+                    .
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* 3. REGIONAL OFFICES */}
+      <Reveal as="section" className="py-16 sm:py-20 bg-white border-b border-slate-200/80" data-purpose="contact-offices">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-8">
               <div className="space-y-2">
                 <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                   <CmsText path="offices.eyebrow" value={c.offices.eyebrow} />
@@ -475,7 +473,7 @@ export function ContactPage() {
                 </h2>
               </div>
 
-              <div className="flex-1 flex flex-col justify-between gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
                 {offices.map((office, idx) => {
                   const name = (office.country || '').toLowerCase()
                   const flagImg = name.includes('switzerland')
@@ -489,7 +487,7 @@ export function ContactPage() {
                   return (
                     <div
                       key={idx}
-                      className="group relative rounded-[2rem] bg-[#020617] border border-white/10 hover:border-[#34E06E]/40 shadow-xl hover:shadow-2xl transition-all duration-300 p-7 flex-1 flex flex-col justify-between space-y-4 overflow-hidden text-white min-h-[190px] hover:-translate-y-1"
+                      className="group relative rounded-[2rem] bg-[#020617] border border-white/10 hover:border-[#34E06E]/40 shadow-xl hover:shadow-2xl transition-all duration-300 p-7 flex flex-col justify-between space-y-4 overflow-hidden text-white min-h-[190px] hover:-translate-y-1"
                     >
                       <CmsRemoveItem listPath="offices.items" index={office._index} label="Remove office" />
                       {/* Ambient Flag Background Art */}
@@ -543,66 +541,6 @@ export function ContactPage() {
                   blank={{ region: 'New Region', country: 'New Country', address: '', phone: '', email: 'info@theifoa.com' }}
                 />
               </div>
-            </div>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* 3. FAQ */}
-      <Reveal as="section" className="py-16 sm:py-20 bg-white border-t border-slate-100" data-purpose="contact-faq">
-        <div className="max-w-[900px] mx-auto px-6 space-y-10">
-          <div className="text-center space-y-2.5">
-            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-              <CmsText path="faq.eyebrow" value={c.faq.eyebrow} />
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-              <CmsText path="faq.title" value={c.faq.title} />
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-xl mx-auto">
-              <CmsText path="faq.intro" value={c.faq.intro} />
-            </p>
-          </div>
-
-          <div className="divide-y divide-slate-200 border-y border-slate-200">
-            {c.faq.items.map((item, idx) => {
-              const open = openFaqIndex === idx
-              const itemPath = `faq.items.${idx}`
-              return (
-                <div key={idx} className="relative">
-                  <CmsRemoveItem listPath="faq.items" index={idx} label="Remove FAQ" />
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaqIndex(open ? -1 : idx)}
-                    aria-expanded={open}
-                    className="w-full flex items-center justify-between gap-4 py-5 text-left cursor-pointer"
-                  >
-                    <span className="text-sm sm:text-base font-bold text-slate-900">
-                      <CmsText path={`${itemPath}.question`} value={item.question} />
-                    </span>
-                    <motion.span
-                      animate={{ rotate: open ? 180 : 0 }}
-                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                      className="text-slate-400 group-hover:text-slate-700 transition-colors shrink-0 flex items-center justify-center ml-2"
-                    >
-                      <RiArrowDownSLine className="w-5 h-5" />
-                    </motion.span>
-                  </button>
-                  <div
-                    className={`grid transition-all duration-200 ease-out ${
-                      open ? 'grid-rows-[1fr] opacity-100 pb-5' : 'grid-rows-[0fr] opacity-0'
-                    }`}
-                  >
-                    <p className="overflow-hidden text-sm text-slate-600 leading-relaxed">
-                      <CmsText path={`${itemPath}.answer`} value={item.answer} />
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
-            <div className="py-4">
-              <CmsAddItem listPath="faq.items" label="Add FAQ" blank={{ question: 'New question?', answer: '' }} />
-            </div>
-          </div>
         </div>
       </Reveal>
     </div>

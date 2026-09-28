@@ -38,7 +38,8 @@ const first = (...vals) => vals.find((v) => v !== '' && v !== null && v !== unde
 // programme-overview thumbnail and the registration-form thumbnail.
 const PROGRAMME_BANNER = {
   'flight-dispatcher-initial-certification': bannerDispatcher,
-  'aircraft-dispatcher-training-faa-part-65': bannerPart65
+  'aircraft-dispatcher-training-faa-part-65': bannerPart65,
+  'flight-dispatcher-double-programme': bannerDispatcher
 }
 
 export function programmeBanner(course = {}) {
@@ -107,7 +108,7 @@ export function CourseCard({ course, preview = false }) {
       <img
         src={v.image}
         alt={title}
-        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
+        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 select-none"
       />
     </div>
   )

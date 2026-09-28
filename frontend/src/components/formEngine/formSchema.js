@@ -1,5 +1,6 @@
 // Client-side helpers for the dynamic enrollment form. Mirrors the server
 // rules in backend/utils/validateAnswers.js - keep the two in sync.
+import { isValidPhoneNumber, parsePhoneNumberFromString } from 'libphonenumber-js/min'
 
 export function emptyValueForField(field) {
   if (field.type === 'checkbox') return false
@@ -124,6 +125,48 @@ export function getSubmissionSearchText(submission) {
   return JSON.stringify(submission.answers || {}).toLowerCase()
 }
 
+const NAME_IDS = new Set(['firstName', 'first_name', 'surname', 'lastName', 'last_name'])
+const isPhoneField = (field) =>
+  field.type === 'tel' ||
+  field.id === 'mobilePhone' ||
+  field.id === 'telephone' ||
+  /phone|telephone/i.test(field.label || '')
+
+// Returns a short message when a filled-in value has the wrong format, or ''.
+// Empty values are left to the "required" check.
+export function getFormatError(field, value) {
+  if (value === undefined || value === null || typeof value !== 'string' || !value.trim()) return ''
+  const v = value.trim()
+
+  if (field.type === 'email' || /email/i.test(field.id)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Enter a valid email address, e.g. name@company.com'
+  }
+
+  if (isPhoneField(field)) {
+    const national = v.replace(/^\+\d{1,4}\s*/, '')
+    if (!national) return ''
+    if (!isValidPhoneNumber(v)) {
+      const dial = parsePhoneNumberFromString(v)?.countryCallingCode
+      return `Enter a valid phone number${dial ? ` for +${dial}` : ''}`
+    }
+  }
+
+  if (NAME_IDS.has(field.id) && !/^[\p{L}][\p{L}\p{M}' .-]*$/u.test(v)) return 'Use letters only'
+
+  if (field.type === 'date') {
+    const d = new Date(v)
+    if (Number.isNaN(d.getTime())) return 'Enter a valid date'
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (/birth/i.test(field.id) && d >= today) return 'Enter a date in the past'
+    if (/expir/i.test(field.id) && d <= today) return 'The passport must still be valid'
+  }
+
+  if (/zip|postal/i.test(field.id) && !/^[A-Za-z0-9][A-Za-z0-9 -]{1,9}$/.test(v)) return 'Enter a valid postal code'
+
+  return ''
+}
+
 export function getDetailedValidationErrors(sections, answers) {
   const errors = []
 
@@ -133,6 +176,12 @@ export function getDetailedValidationErrors(sections, answers) {
       // `intake` is validated against the course's live intakes by the caller.
       if (field.type === 'staticText' || field.type === 'intake') continue
       if (!isFieldVisible(field, sectionAnswers)) continue
+      const formatError = getFormatError(field, sectionAnswers[field.id])
+      if (formatError) {
+        const label = field.label || field.id
+        errors.push({ sectionId: section.id, fieldId: field.id, label, fieldMessage: formatError, message: `${section.title}: ${label}: ${formatError}.` })
+        continue
+      }
       if (isFieldRequired(field, sectionAnswers) && isFieldEmpty(field, sectionAnswers[field.id])) {
         const label = field.label || field.id
         const message =

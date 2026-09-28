@@ -194,7 +194,7 @@ export function SelectField({
                     onClick={() => handleSelect(optVal)}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs sm:text-sm transition-colors cursor-pointer ${
                       active
-                        ? 'bg-blue-50 font-semibold text-ifoa-navy'
+                        ? 'bg-slate-100 font-semibold text-slate-950'
                         : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
@@ -397,7 +397,7 @@ export function CountrySelectField({
                       onClick={() => handleSelect(c.name)}
                       className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs sm:text-sm transition-colors cursor-pointer ${
                         active
-                          ? 'bg-blue-50 font-semibold text-ifoa-navy'
+                          ? 'bg-slate-100 font-semibold text-slate-950'
                           : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                     >
@@ -631,7 +631,7 @@ export function PhoneInputField({
                       onClick={() => handleCountrySelect(c)}
                       className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs sm:text-sm transition-colors cursor-pointer ${
                         active
-                          ? 'bg-blue-50 font-semibold text-ifoa-navy'
+                          ? 'bg-slate-100 font-semibold text-slate-950'
                           : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                     >

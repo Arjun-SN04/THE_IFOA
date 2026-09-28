@@ -11,7 +11,7 @@
   --color-rocket-gray: #f8f9fa;
   --color-rocket-lime: #34E06E;
 
-  /* Enrollment form engine (ported from forms_ifoa) — themed to the site green */
+  /* Enrollment form engine (ported from forms_ifoa), themed to the site green */
   --color-ifoa-navy: #34E06E;
   --color-ifoa-navy-light: #28c85e;
 
@@ -330,7 +330,7 @@ html {
 }
 
 /* Admin inline-edit mode (only ever present inside the admin's live-preview
-   iframe, see components/admin/CmsEditable.jsx) — visually marks editable
+   iframe, see components/admin/CmsEditable.jsx): visually marks editable
    text regions without affecting the real public site. */
 .ifoa-cms-editable {
   outline: 1px dashed transparent;
@@ -347,4 +347,12 @@ html {
   outline: 2px solid #34E06E;
   outline-offset: 3px;
   background-color: rgba(52, 224, 110, 0.08);
+}
+/* Course overview: detail panel swap (TabCards) */
+@keyframes overviewFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-overview-fade { animation: none !important; }
 }

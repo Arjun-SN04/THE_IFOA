@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/button'
 import { Seo } from '@/components/common/Seo'
 import { Reveal } from '@/components/common/Reveal'
 import { graph, organizationSchema, ORGANIZATION_ID, SITE_NAME, SITE_URL } from '@/lib/seo'
@@ -9,20 +8,16 @@ import {
   RiCompass3Line,
   RiStarFill,
   RiUser3Line,
-  RiFlightTakeoffLine,
-  RiCheckboxCircleFill,
   RiArrowLeftSLine,
   RiArrowRightSLine,
   RiArrowRightLine,
-  RiSendPlaneFill,
-  RiChatQuoteLine,
-  RiApps2Line,
   RiGlobalLine,
   RiStackLine,
   RiComputerLine,
   RiMapPin2Line,
   RiCalendarEventLine,
-  RiCoinsLine
+  RiCoinsLine,
+  RiCheckLine
 } from 'react-icons/ri'
 import {
   PiAirplaneTiltFill,
@@ -60,6 +55,7 @@ import ifoaLogo from '@/assets/shared/brand/ifoa-logoweb.webp'
 // Tarmac Photography Banners
 const easaTarmacHero = '/course-images/EASA.jpeg'
 const faaTarmacHero = '/course-images/Part-65.jpeg'
+const doubleProgrammeHero = '/course-images/Flight-Dispatch-Webpage-Small.jpg'
 
 // Testimonial Brand Logos
 import logoDHL from '@/assets/partners/DHL-150.webp'
@@ -86,6 +82,11 @@ import logoFaa from '@/assets/shared/standards-logos/logo-faa.webp'
 import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
 import logoIcao from '@/assets/shared/standards-logos/logo-icao.webp'
 import logoDgca from '@/assets/shared/standards-logos/logo-dgca.webp'
+
+// Accent per region card (Europe, USA, India), cycled for extra cards.
+const REGION_COLORS = ['#E5A83B', '#38BDF8', '#34E06E']
+
+const STANDARD_LOGOS = { icao: logoIcao, faa: logoFaa, easa: logoEasa, dgca: logoDgca }
 
 import imageData from '../../assets/image.json'
 
@@ -176,114 +177,164 @@ const FALLBACK = {
     titleHighlight: 'Real-World Operations',
     subtitle:
       'IFOA prepares Flight Dispatchers and OCC teams to anticipate change, make sound decisions, and keep operations moving, because real operations don’t simply follow an exam syllabus.',
-    primaryLabel: 'Explore Programs',
-    secondaryLabel: 'Our Services',
+    primaryLabel: 'Find a course',
+    secondaryLabel: 'For operators',
     stats: [
-      { value: '500+', label: 'PROFESSIONALS TRAINED ANNUALLY' },
-      { value: '70+', label: 'AVIATION ORGANIZATIONS' },
-      { value: 'FAA', label: 'PART 65 APPROVED TRAINING' },
-      { value: 'Global', label: 'OPERATIONAL DELIVERY' }
+      { value: '500+', label: 'PROFESSIONALS TRAINED A YEAR' },
+      { value: '70+', label: 'OPERATORS AND ORGANISATIONS' },
+      { value: 'FAA', label: 'PART 65 APPROVED SCHOOL' },
+      { value: '4.7/5', label: 'FROM 458 POST-TRAINING SURVEYS' }
     ]
   },
   featuredCourses: {
     eyebrow: 'OPEN-ENROLLMENT PROGRAMS',
-    title: 'Your Next Step in Aviation Starts Here',
-    intro:
-      'Explore our range of open-enrollment programs, developed to build practical knowledge, professional skills, and operational capability across aviation. Find your program and join an upcoming intake.',
-    badgeLabel: 'International Open Enrollment'
+    title: 'Flight dispatcher courses',
+    intro: 'For individuals. Apply online, start on a published date.',
+    badgeLabel: 'Europe, USA and India'
+  },
+  regions: {
+    eyebrow: 'Where We Train',
+    title: 'Flight dispatcher training in Europe, the USA and India',
+    intro: 'Train where you plan to work, under the rules you’ll dispatch by.',
+    cards: [
+      {
+        name: 'Europe',
+        city: 'Sønderborg, Denmark',
+        desc: 'Both dispatcher programmes: Flight Dispatcher Initial (ICAO and EASA, 200 hours, 5 weeks) and FAA Aircraft Dispatcher (Part 65 approved course, 200 hours, 6 weeks).',
+        link1Label: 'Flight Dispatcher Initial',
+        link1Slug: 'flight-dispatcher-initial-certification',
+        link2Label: 'FAA Aircraft Dispatcher',
+        link2Slug: 'aircraft-dispatcher-training-faa-part-65'
+      },
+      {
+        name: 'USA',
+        city: 'Daytona Beach, Florida',
+        desc: 'FAA Aircraft Dispatcher: the Part 65 approved course that prepares you for the FAA certificate with practical exam preparation.',
+        link1Label: 'FAA Aircraft Dispatcher',
+        link1Slug: 'aircraft-dispatcher-training-faa-part-65',
+        link2Label: 'Double FAA & EASA Programme',
+        link2Slug: 'events-courses'
+      },
+      {
+        name: 'India',
+        city: 'New Delhi',
+        desc: 'Both dispatcher programmes: Flight Dispatcher Initial (ICAO and EASA, 200 hours, 5 weeks) and FAA Aircraft Dispatcher (Part 65 approved course, 200 hours, 6 weeks).',
+        link1Label: 'Flight Dispatcher Initial',
+        link1Slug: 'flight-dispatcher-initial-certification',
+        link2Label: 'FAA Aircraft Dispatcher',
+        link2Slug: 'aircraft-dispatcher-training-faa-part-65'
+      }
+    ]
   },
   trustRating: {
     eyebrow: 'Verified Post-Training Feedback',
-    title: 'Rated by the People We Trained',
-    desc:
-      "Every course closes with a post-training survey sent straight to our OCC teams and dispatchers. Across 458 completed surveys from 70+ aviation organizations, our training has been rated an average of 4.7 out of 5, with 98% saying they'd recommend IFOA.",
+    title: 'Rated by the people we trained',
+    desc: 'Average rating from 458 post-training surveys across 70+ organisations. 98% would recommend IFOA.',
     learnMoreLabel: 'Learn more',
     ratingValue: '4.7',
     ratingSuffix: '/5',
-    reviewCountLabel: '(458 verified post-training surveys)',
-    badgeLabel: '98% Recommendation Rate'
+    reviewCountLabel: '(458 post-training surveys)',
+    badgeLabel: '98% would recommend IFOA'
   },
   pathways: {
-    eyebrow: 'Global Training Pathways',
-    title: 'Certification Pathways Built for Operations',
+    eyebrow: 'For airlines and OCCs',
+    title: 'Delivered at your base or online, built around your manuals, fleet and procedures.',
     seeMoreLabel: 'See More',
     cards: [
       {
-        category: 'Flight Dispatcher Training',
-        title: 'EASA-Compliant Flight Dispatcher Training',
-        desc: 'Comprehensive 5-week programme developing the technical knowledge, operational skills and decision-making competencies required for professional Flight Dispatch.',
-        hours: '5 Weeks · Hybrid',
-        linkText: 'View Course Details',
-        courseSlug: 'flight-dispatcher-initial-certification'
+        category: 'FAA & EASA',
+        title: 'Double Programme: FAA & EASA',
+        desc: 'The FAA Part 65 approved course plus ICAO and EASA operations in one programme. The FAA certificate is issued by the FAA.',
+        hours: '280 Hours (7 Weeks) · Hybrid\nEurope · €5,500',
+        linkText: 'View programme',
+        courseSlug: 'flight-dispatcher-double-programme'
       },
       {
         category: 'FAA Part 65',
-        title: 'Aircraft Dispatcher Certification',
-        desc: 'FAA-approved 200-hour programme developing the knowledge, procedures and practical skills required to become an Aircraft Dispatcher.',
-        hours: '200 Hours · Hybrid',
-        linkText: 'View Course Details',
+        title: 'FAA Aircraft Dispatcher',
+        desc: 'Prepares you for the FAA Aircraft Dispatcher certificate. Part 65 approved.',
+        hours: '200 Hours (6 Weeks) · Hybrid\nEurope, USA, India · $4,500',
+        linkText: 'View course',
         courseSlug: 'aircraft-dispatcher-training-faa-part-65'
       },
       {
-        category: 'Multiple Certification',
-        title: 'EASA + FAA',
-        desc: 'Combined pathway integrating FAA Part 65 certification with European operational knowledge.',
-        hours: '200 Hours · Hybrid',
-        linkText: 'Explore Combined Training'
+        category: 'ICAO Doc 10106',
+        title: 'Flight Dispatcher Initial',
+        desc: 'ICAO and EASA-focused dispatcher training built on ICAO Doc 10106.',
+        hours: '200 Hours (5 Weeks) · Hybrid\nEurope, India · €3,500',
+        linkText: 'View course',
+        courseSlug: 'flight-dispatcher-initial-certification'
       },
       {
-        category: 'Maintain Competency',
-        title: 'Recurrent Training',
-        desc: 'Customized recurrent programs based on the operator, regulatory framework, and fleet.',
-        hours: 'Carrier-Customized',
-        linkText: 'Recurrent Programs'
+        category: 'Initial, Recurrent, Advanced',
+        title: 'Flight Dispatch for your team',
+        desc: 'Tailored initial, recurrent and advanced training, built around your manuals, fleet and regulator.',
+        hours: 'Operator Team Training\nOnline or at your base',
+        linkText: 'See operator programmes'
       },
       {
-        category: 'Professional Development',
-        title: 'Advanced Training',
-        desc: 'Advanced scenario-driven development for experienced dispatchers and OCC professionals.',
-        hours: 'Tailored Program for Air Operators',
-        linkText: 'Advanced Programs'
+        category: 'EASA Part FTL',
+        title: 'Crew Control',
+        desc: 'EASA Part FTL or your OM-A Chapter 7, with acclimatisation and long-haul exercises.',
+        hours: '2 Days Intensive Workshop\nOnline or on-site',
+        linkText: 'View course',
+        courseSlug: 'airline-crew-control-flight-rostering'
       },
       {
-        category: 'Operational Teams',
-        title: 'Specialist Training',
-        desc: 'Crew Control, Human Factors of OCC, Dangerous Goods and Train-the-Trainer programs.',
-        hours: 'CBTA Modular Tracks',
-        linkText: 'All Specialist Training'
+        category: 'Dangerous Goods',
+        title: 'Dangerous Goods for your crews',
+        desc: 'One programme for every role, adapted to your DG policy, with expiry tracking.',
+        hours: 'CBTA Compliant · Per group\nOnline or in-house',
+        linkText: 'View course',
+        courseSlug: 'dangerous-goods-regulations-cbta-initial'
+      },
+      {
+        category: 'Train the Trainer',
+        title: 'Train your instructors',
+        desc: 'Train the Trainer in-house, with teaching practice on your own training topics.',
+        hours: '4 Days Instructor Course\nDelivered at your base',
+        linkText: 'View course',
+        courseSlug: 'train-the-trainer-icao-cbta-instructor'
+      },
+      {
+        category: 'Human Factors',
+        title: 'Human Factors for the OCC',
+        desc: 'Not CRM for flight crew. Fatigue, stress, decisions and working alongside AI tools.',
+        hours: '2 Days TEM & Decision Making\nOnline or on-site',
+        linkText: 'View course',
+        courseSlug: 'human-factors-in-the-occ'
       }
     ]
   },
   network: {
     eyebrow: 'Global Airline Network',
-    title: 'Training Professionals for the Global Aviation Industry',
-    intro:
-      'Our training equips aviation professionals with the skills and expertise to pursue careers across commercial, cargo, and business aviation worldwide.'
+    title: 'Some of the 70+ organisations whose staff we’ve trained',
+    intro: 'Flight dispatcher training in Europe, the USA and India. Train where you plan to work, under the rules you’ll dispatch by.'
   },
   audience: {
     eyebrow: 'Two Different Needs',
     title: 'Built for careers. Built for operations.',
-    intro: 'Individuals and aviation organizations should not be forced through the same customer journey.',
+    intro: '',
     cards: [
       {
         eyebrow: 'For Individuals',
         trackBadge: 'Career Pathway',
-        title: 'Become Ready for the Modern OCC',
+        title: 'I want to become a dispatcher',
         desc:
-          'Gain the operational knowledge and practical competencies needed to perform confidently in a fast-paced airline Operations Control Centre.',
-        bullet1: 'FAA Part 65 & EASA',
-        bullet2: 'Scenario-Based Drills',
-        ctaLabel: 'Explore Training'
+          'FAA Part 65 approved and ICAO-based courses in Europe, the USA and India, with published fees and start dates.',
+        bullet1: 'Scenario-based training',
+        bullet2: 'FAA Part 65 & ICAO, in Europe, the USA and India',
+        ctaLabel: 'See dispatcher courses'
       },
       {
         eyebrow: 'For Airlines',
-        trackBadge: 'Airlines & OCCs',
-        title: 'Training Built Around Your Operations',
+        trackBadge: 'Airlines & OCC',
+        title: 'I train an OCC team',
         desc:
-          'Customized initial, recurrent, and advanced training designed around your fleet, manuals, procedures, and operational environment.',
-        bullet1: 'Customized Fleet Training',
-        bullet2: 'OCC Consulting',
-        ctaLabel: 'Corporate Training'
+          'Flight dispatch, crew control, dangerous goods, train the trainer and human factors, built around your operation.',
+        bullet1: 'Customised operations training',
+        bullet2: 'Online or at your base, built around your manuals',
+        ctaLabel: 'See operator training'
       }
     ]
   },
@@ -298,15 +349,35 @@ const FALLBACK = {
   },
   framework: {
     eyebrow: 'Training Framework',
-    title: 'Built on global aviation standards. Designed for real operations.',
-    desc:
-      'Our training draws from ICAO, FAA, and EASA frameworks to deliver internationally relevant knowledge, practical operational skills, and scenario-based learning for today’s aviation professionals.'
+    title: 'Built on the standards operators are audited against',
+    standards: [
+      { title: 'ICAO Doc 10106', logo: 'icao', desc: 'Competency-based training for flight operations officers and dispatchers' },
+      { title: 'FAA 14 CFR Part 65', logo: 'faa', desc: 'IFOA is an FAA-approved aircraft dispatcher school' },
+      { title: 'EASA Air Operations', logo: 'easa', desc: 'Regulation (EU) 965/2012, taught across our European courses' }
+    ]
+  },
+  beyond: {
+    cards: [
+      {
+        title: 'Smart Talent',
+        desc: 'Our aviation recruitment platform, connecting dispatchers and OCC professionals with operators.',
+        linkLabel: 'Visit Smart Talent',
+        url: 'https://talent.theifoa.com/'
+      },
+      {
+        title: 'Foxtrot Delta',
+        desc: 'Our magazine on flight dispatch and operations control.',
+        linkLabel: 'Read Foxtrot Delta',
+        url: '/foxtrot-delta'
+      }
+    ]
   },
   finalCta: {
     eyebrow: 'OPERATIONAL EXCELLENCE',
-    title: 'Train for the operation. Not only for the exam.',
-    desc: 'Explore individual programs or discuss a customized solution for your organization.',
-    ctaLabel: 'Contact IFOA'
+    title: 'Train for the operation, not only for the exam.',
+    desc: 'Find a course, or talk to us about training for your team.',
+    findCourseLabel: 'Find a course',
+    ctaLabel: 'Talk to us about your team'
   }
 }
 
@@ -679,14 +750,14 @@ export function HomePage() {
                 <CmsText path="featuredCourses.eyebrow" value={c.featuredCourses?.eyebrow || 'OPEN-ENROLLMENT PROGRAMS'} />
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-[42px] font-extrabold tracking-tight text-slate-950 leading-tight">
-                <CmsText path="featuredCourses.title" value={c.featuredCourses?.title || 'Your Next Step in Aviation Starts Here'} />
+                <CmsText path="featuredCourses.title" value={c.featuredCourses?.title || 'Flight dispatcher courses'} />
               </h2>
               <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
                 <CmsText
                   path="featuredCourses.intro"
                   value={
                     c.featuredCourses?.intro ||
-                    'Explore our range of open-enrollment programs, developed to build practical knowledge, professional skills, and operational capability across aviation. Find your program and join an upcoming intake.'
+                    'For individuals. Apply online, start on a published date.'
                   }
                 />
               </p>
@@ -696,109 +767,182 @@ export function HomePage() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-950 text-white border border-slate-800 text-xs sm:text-sm font-semibold shadow-2xs shrink-0 self-start md:self-auto">
               <RiGlobalLine className="w-4 h-4 text-[#34E06E] shrink-0" />
               <span>
-                <CmsText path="featuredCourses.badgeLabel" value={c.featuredCourses?.badgeLabel || 'International Open Enrollment'} />
+                <CmsText path="featuredCourses.badgeLabel" value={c.featuredCourses?.badgeLabel || 'Europe, USA and India'} />
               </span>
             </div>
           </div>
 
-          {/* Cards Grid: 2 High-Impact Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 max-w-[1280px] mx-auto">
-            {/* CARD 1: Flight Dispatcher Initial Training */}
-            <div className="rounded-[28px] overflow-hidden border border-slate-200/90 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          {/* Cards Grid: 3 Clean & Compact High-Impact Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-7 max-w-[1280px] mx-auto">
+            {/* CARD 0: Double Programme FAA + EASA */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
               {/* Image Banner */}
-              <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-slate-950 select-none">
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950 select-none">
                 <img
-                  src={easaTarmacHero}
-                  alt="Flight Dispatcher Initial Training"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  src={doubleProgrammeHero}
+                  alt="Double Programme: FAA & EASA"
+                  className="w-full h-full object-cover object-[center_60%] group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
 
               {/* Card Body */}
-              <div className="p-6 sm:p-7 space-y-5 flex-1 flex flex-col justify-between text-left">
-                <div className="space-y-4">
-                  {/* Pills & Authority Badge Row */}
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                      <span className="inline-flex items-center px-3 py-1 rounded-lg bg-slate-950 text-white font-mono text-[11px] font-bold tracking-wider uppercase border border-slate-800 shadow-2xs">
-                        FD - INITIAL
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 text-slate-800 text-[11px] font-semibold border border-slate-200/70">
-                        <RiStackLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>Hybrid</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 text-slate-800 text-[11px] font-semibold border border-slate-200/70">
-                        <TbClockHour4 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>5 Weeks</span>
-                      </span>
-                    </div>
-
-                    <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs shrink-0">
-                      <img src={logoEasa} alt="EASA" className="h-5 w-auto object-contain" />
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-800">EASA-Aligned</span>
+              <div className="p-5 flex-1 flex flex-col justify-between text-left space-y-4">
+                <div className="space-y-3">
+                  {/* Programme badges */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-950 text-white font-mono text-[10px] font-bold tracking-wider uppercase">
+                      FAA & EASA
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-200">
+                      <img src={logoFaa} alt="FAA" className="h-4 w-auto object-contain" />
+                      <img src={logoEasa} alt="EASA" className="h-4 w-auto object-contain" />
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-800">Double</span>
                     </div>
                   </div>
-
                   {/* Title & Desc */}
-                  <div className="space-y-2">
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight leading-snug">
-                      Flight Dispatcher Initial Training
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug line-clamp-2 min-h-[48px] flex items-center">
+                      Double Programme: FAA & EASA
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                      EASA-aligned professional training for aspiring Flight Dispatchers. Build the knowledge and operational skills required for an OCC career.
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-2 min-h-[34px]">
+                      The FAA Part 65 approved course plus ICAO and EASA operations in one programme. The FAA certificate is issued by the FAA.
                     </p>
                   </div>
 
-                  {/* 2-Column Format & Location Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 items-start text-xs sm:text-sm">
-                    <div className="flex items-start gap-2.5">
-                      <RiComputerLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div className="font-bold text-slate-900 leading-snug">
-                        <div>2 Weeks Online</div>
-                        <div>+ 3 Weeks On-site</div>
+                  {/* Compact Specs Grid */}
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50/90 border border-slate-100 text-left">
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Hybrid</span>
                       </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">280 Hrs · 7 Weeks</p>
                     </div>
-                    <div className="flex items-start gap-2.5">
-                      <RiMapPin2Line className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div>
-                        <div className="font-bold text-slate-900 leading-snug">Sønderborg, Denmark</div>
-                        <div className="text-[11px] text-slate-500 font-normal mt-0.5">At Air Alsie training facilities</div>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Europe</span>
                       </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">FAA, EASA & ICAO</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-2">
-                  {/* Divider */}
-                  <div className="border-t border-slate-100" />
-
+                {/* Footer: Fee & Action Buttons */}
+                <div className="space-y-3 pt-3 border-t border-slate-100">
                   {/* Training Fee */}
-                  <div className="flex items-start gap-2.5">
-                    <RiCoinsLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
+                  <div className="flex items-baseline justify-between gap-2">
                     <div>
                       <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
-                      <span className="text-lg sm:text-xl font-extrabold text-slate-950 block mt-0.5">€3,500</span>
-                      <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">
-                        Travel, accommodation, meals and visa costs not included.
-                      </span>
+                      <span className="text-xl font-extrabold text-slate-950 tracking-tight block mt-0.5">€5,500</span>
                     </div>
+                    <span className="text-[10px] text-slate-400 text-right leading-tight max-w-[130px]">
+                      Excl. travel & lodging
+                    </span>
                   </div>
 
                   {/* Action Buttons Row */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-2">
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <Link
+                      to="/courses/flight-dispatcher-double-programme"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
+                    >
+                      <span>VIEW DETAILS</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-400 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                    <Link
+                      to="/courses/flight-dispatcher-double-programme/enroll"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
+                    >
+                      <span>REGISTER INTEREST</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CARD 1: Flight Dispatcher Initial Training */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+              {/* Image Banner */}
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950 select-none">
+                <img
+                  src={easaTarmacHero}
+                  alt="Flight Dispatcher Initial Training"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 flex-1 flex flex-col justify-between text-left space-y-4">
+                <div className="space-y-3">
+                  {/* Programme badges */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-950 text-white font-mono text-[10px] font-bold tracking-wider uppercase">
+                      FD - INITIAL
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-200">
+                      <img src={logoEasa} alt="EASA" className="h-4 w-auto object-contain" />
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-800">EASA-Aligned</span>
+                    </div>
+                  </div>
+                  {/* Title & Desc */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug line-clamp-2 min-h-[48px] flex items-center">
+                      Flight Dispatcher Initial Training
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-2 min-h-[34px]">
+                      EASA-aligned professional training for aspiring Flight Dispatchers. Build the knowledge and operational skills required for an OCC career.
+                    </p>
+                  </div>
+
+                  {/* Compact Specs Grid */}
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50/90 border border-slate-100 text-left">
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Hybrid</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">200 Hrs · 5 Weeks</p>
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Denmark</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">Air Alsie Facilities</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer: Fee & Action Buttons */}
+                <div className="space-y-3 pt-3 border-t border-slate-100">
+                  {/* Training Fee */}
+                  <div className="flex items-baseline justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
+                      <span className="text-xl font-extrabold text-slate-950 tracking-tight block mt-0.5">€3,500</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 text-right leading-tight max-w-[130px]">
+                      Excl. travel & lodging
+                    </span>
+                  </div>
+
+                  {/* Action Buttons Row */}
+                  <div className="grid grid-cols-2 gap-2.5">
                     <Link
                       to="/courses/flight-dispatcher-initial-certification"
-                      className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border border-slate-300 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
                     >
-                      <span>VIEW PROGRAMME</span>
-                      <RiArrowRightSLine className="w-4 h-4 text-slate-500 group-hover/btn:translate-x-0.5 transition-transform" />
+                      <span>VIEW DETAILS</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-400 group-hover/btn:translate-x-0.5 transition-transform" />
                     </Link>
                     <Link
                       to="/courses/flight-dispatcher-initial-certification/enroll"
-                      className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
                     >
                       <span>REGISTER INTEREST</span>
-                      <RiArrowRightSLine className="w-4 h-4 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>
@@ -806,101 +950,86 @@ export function HomePage() {
             </div>
 
             {/* CARD 2: Aircraft Dispatcher Certification Course */}
-            <div className="rounded-[28px] overflow-hidden border border-slate-200/90 bg-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
               {/* Image Banner */}
-              <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-slate-950 select-none">
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950 select-none">
                 <img
                   src={faaTarmacHero}
                   alt="Aircraft Dispatcher Certification Course"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
 
               {/* Card Body */}
-              <div className="p-6 sm:p-7 space-y-5 flex-1 flex flex-col justify-between text-left">
-                <div className="space-y-4">
-                  {/* Pills & Authority Badge Row */}
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                      <span className="inline-flex items-center px-3 py-1 rounded-lg bg-slate-950 text-white font-mono text-[11px] font-bold tracking-wider uppercase border border-slate-800 shadow-2xs">
-                        FAA PART 65
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 text-slate-800 text-[11px] font-semibold border border-slate-200/70">
-                        <RiStackLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>Hybrid</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 text-slate-800 text-[11px] font-semibold border border-slate-200/70">
-                        <TbClockHour4 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>200 Hours</span>
-                      </span>
-                    </div>
-
-                    <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs shrink-0">
-                      <img src={logoFaa} alt="FAA" className="h-5 w-auto object-contain" />
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-800">FAA Approved</span>
+              <div className="p-5 flex-1 flex flex-col justify-between text-left space-y-4">
+                <div className="space-y-3">
+                  {/* Programme badges */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-950 text-white font-mono text-[10px] font-bold tracking-wider uppercase">
+                      FAA PART 65
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-200">
+                      <img src={logoFaa} alt="FAA" className="h-4 w-auto object-contain" />
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-800">FAA Approved</span>
                     </div>
                   </div>
-
                   {/* Title & Desc */}
-                  <div className="space-y-2">
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight leading-snug">
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug line-clamp-2 min-h-[48px] flex items-center">
                       Aircraft Dispatcher Certification Course
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-2 min-h-[34px]">
                       FAA-approved training leading toward Aircraft Dispatcher certification. Develop the technical knowledge and decision-making skills for a professional career in aviation.
                     </p>
                   </div>
 
-                  {/* 2-Column Format & Location Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 items-start text-xs sm:text-sm">
-                    <div className="flex items-start gap-2.5">
-                      <RiComputerLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div className="font-bold text-slate-900 leading-snug">
-                        <div>Online Preparation</div>
-                        <div>+ On-site Training</div>
+                  {/* Compact Specs Grid */}
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50/90 border border-slate-100 text-left">
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiComputerLine className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Hybrid</span>
                       </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">200 Hrs · 6 Weeks</p>
                     </div>
-                    <div className="flex items-start gap-2.5">
-                      <RiMapPin2Line className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
-                      <div>
-                        <div className="font-bold text-slate-900 leading-snug">Titusville, Florida, USA</div>
-                        <div className="text-[11px] text-slate-500 font-normal mt-0.5">Close to Kennedy Space Center</div>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-slate-900 text-xs font-bold truncate">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">Florida, USA</span>
                       </div>
+                      <p className="text-[11px] text-slate-500 font-medium pl-5 truncate">Near Space Center</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-2">
-                  {/* Divider */}
-                  <div className="border-t border-slate-100" />
-
+                {/* Footer: Fee & Action Buttons */}
+                <div className="space-y-3 pt-3 border-t border-slate-100">
                   {/* Training Fee */}
-                  <div className="flex items-start gap-2.5">
-                    <RiCoinsLine className="w-5 h-5 text-slate-800 shrink-0 mt-0.5" />
+                  <div className="flex items-baseline justify-between gap-2">
                     <div>
                       <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">TRAINING FEE</span>
-                      <span className="text-lg sm:text-xl font-extrabold text-slate-950 block mt-0.5">$4,500</span>
-                      <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">
-                        ADX examination ($175), examiner fee ($600), travel, accommodation, meals and visa costs not included.
-                      </span>
+                      <span className="text-xl font-extrabold text-slate-950 tracking-tight block mt-0.5">$4,500</span>
                     </div>
+                    <span className="text-[10px] text-slate-400 text-right leading-tight max-w-[130px]">
+                      Excl. ADX exam fee & travel
+                    </span>
                   </div>
 
                   {/* Action Buttons Row */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-2">
+                  <div className="grid grid-cols-2 gap-2.5">
                     <Link
                       to="/courses/aircraft-dispatcher-training-faa-part-65"
-                      className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border border-slate-300 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-900 text-[11px] font-bold uppercase tracking-wider transition-all shadow-2xs cursor-pointer text-center group/btn"
                     >
-                      <span>VIEW PROGRAMME</span>
-                      <RiArrowRightSLine className="w-4 h-4 text-slate-500 group-hover/btn:translate-x-0.5 transition-transform" />
+                      <span>VIEW DETAILS</span>
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-400 group-hover/btn:translate-x-0.5 transition-transform" />
                     </Link>
                     <Link
                       to="/courses/aircraft-dispatcher-training-faa-part-65/enroll"
-                      className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer text-center group/btn"
                     >
                       <span>REGISTER INTEREST</span>
-                      <RiArrowRightSLine className="w-4 h-4 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
+                      <RiArrowRightSLine className="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>
@@ -909,6 +1038,95 @@ export function HomePage() {
           </div>
         </div>
       </Reveal>
+
+      {/* BEGIN: Where We Train (Europe, USA, India) */}
+      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/70" data-purpose="where-we-train">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-10">
+          {/* Section Header */}
+          <div className="max-w-2xl space-y-3 text-left">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
+              <CmsText path="regions.eyebrow" value={c.regions.eyebrow} />
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-[40px] font-extrabold tracking-tight text-slate-950 leading-tight">
+              <CmsText path="regions.title" value={c.regions.title} />
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
+              <CmsText path="regions.intro" value={c.regions.intro} />
+            </p>
+          </div>
+
+          {/* 3-Column Clean Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+            {c.regions.cards.map((region, i) => {
+              const links = [
+                { label: region.link1Label, slug: region.link1Slug, n: 1 },
+                { label: region.link2Label, slug: region.link2Slug, n: 2 }
+              ].filter((l) => l.label || isPreviewEditMode())
+
+              return (
+                <div
+                  key={i}
+                  className="group relative rounded-2xl border border-slate-200/80 bg-white p-7 sm:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left"
+                >
+                  <CmsRemoveItem listPath="regions.cards" index={i} label="Remove region" />
+
+                  <div>
+                    {/* Top Tag & Location Pill */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                        Location 0{i + 1}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100/90 text-slate-700">
+                        <RiMapPin2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <CmsText path={`regions.cards.${i}.city`} value={region.city} />
+                      </span>
+                    </div>
+
+                    {/* Region Title */}
+                    <h3 className="mt-4 text-2xl sm:text-[26px] font-extrabold tracking-tight text-slate-950 leading-tight">
+                      <CmsText path={`regions.cards.${i}.name`} value={region.name} />
+                    </h3>
+
+                    {/* Description */}
+                    <p className="mt-3.5 text-sm text-slate-600 leading-relaxed font-normal min-h-[4.75rem]">
+                      <CmsText path={`regions.cards.${i}.desc`} value={region.desc} />
+                    </p>
+                  </div>
+
+                  {/* Courses offered here */}
+                  <div className="pt-6 mt-6 border-t border-slate-100">
+                    <span className="block mb-3 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">
+                      Available Courses
+                    </span>
+                    <div className="flex flex-col gap-2.5">
+                      {links.map((l) => (
+                        <Link
+                          key={l.n}
+                          to={l.slug ? (l.slug.startsWith('/') ? l.slug : `/courses/${l.slug}`) : '/events-courses'}
+                          className="group/link flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-slate-200/80 bg-slate-50/60 hover:bg-slate-100/80 hover:border-slate-300 text-sm font-semibold text-slate-800 hover:text-slate-950 transition-all duration-200"
+                        >
+                          <span className="truncate">
+                            <CmsText path={`regions.cards.${i}.link${l.n}Label`} value={l.label} />
+                          </span>
+                          <HiArrowRight
+                            className="w-4 h-4 shrink-0 text-slate-400 group-hover/link:text-slate-900 group-hover/link:translate-x-1 transition-all duration-200"
+                          />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+            <CmsAddItem
+              listPath="regions.cards"
+              label="Add region"
+              blank={{ name: 'New Region', city: '', desc: '', link1Label: '', link1Slug: '', link2Label: '', link2Slug: '' }}
+            />
+          </div>
+        </div>
+      </Reveal>
+      {/* END: Where We Train */}
 
       {/* BEGIN: Accredited Training Programs Trust & Verified Rating Showcase */}
       <Reveal as="section" className="pt-2 pb-14 sm:pb-16 bg-white" data-purpose="course-trust-rating-banner">
@@ -1094,7 +1312,7 @@ export function HomePage() {
                         </div>
 
                         <div className="mt-auto space-y-3 pt-4 border-t border-white/10">
-                          <div className="text-xs text-[#34E06E] font-mono font-semibold tracking-wide">
+                          <div className="text-xs text-[#34E06E] font-mono font-semibold tracking-wide whitespace-pre-line leading-relaxed min-h-[2.6rem] flex flex-col justify-center">
                             <CmsText path={`${item._path}.hours`} value={item.hours} />
                           </div>
                           <Link
@@ -1230,190 +1448,91 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Dual Cards Grid */}
+          {/* Two audiences, identical structure so both cards line up */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            {/* Card 1: For Individuals */}
-            <div className="rounded-[2rem] bg-white border border-slate-200/90 p-8 sm:p-10 flex flex-col justify-between space-y-6 text-slate-900 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1.5 transition-all duration-300 group">
-              <div className="space-y-4">
-                {/* Header Row: Clean Eyebrow & Track Badge */}
-                <div className="flex items-center justify-between gap-3 min-h-[1.75rem]">
-                  <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1">
-                    <RiUser3Line className="w-4 h-4 text-slate-700" />
-                    <span>
-                      <CmsText path="audience.cards.0.eyebrow" value={c.audience.cards[0].eyebrow} />
-                    </span>
+            {[
+              { card: c.audience.cards[0], i: 0, Icon: RiUser3Line, to: '/upcoming-courses', dark: false },
+              { card: c.audience.cards[1], i: 1, Icon: PiAirplaneTakeoffFill, to: '/services?for=operators', dark: true }
+            ].map(({ card, i, Icon, to, dark }) => (
+              <div
+                key={i}
+                className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-9 flex flex-col shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:shadow-[0_12px_32px_rgba(15,23,42,0.07)] transition-shadow duration-300"
+              >
+                {/* Audience label */}
+                <div className="flex items-center gap-3">
+                  <span className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5" />
                   </span>
-                  <span className="text-[11px] font-mono font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-3.5 py-1 rounded-full border border-slate-200/80">
-                    <CmsText path="audience.cards.0.trackBadge" value={c.audience.cards[0].trackBadge} />
+                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-slate-500">
+                    <CmsText path={`audience.cards.${i}.eyebrow`} value={card.eyebrow} />
                   </span>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-snug group-hover:text-black transition-colors pt-1 min-h-[4rem] flex items-start">
-                  <CmsText path="audience.cards.0.title" value={c.audience.cards[0].title} />
+                <h3 className="mt-6 text-2xl sm:text-[28px] font-bold text-slate-950 tracking-tight leading-tight">
+                  <CmsText path={`audience.cards.${i}.title`} value={card.title} />
                 </h3>
-
-                <p className="text-sm text-slate-600 leading-relaxed font-normal min-h-[3.75rem]">
-                  <CmsText path="audience.cards.0.desc" value={c.audience.cards[0].desc} />
+                <p className="mt-3 text-sm sm:text-[15px] text-slate-600 leading-relaxed">
+                  <CmsText path={`audience.cards.${i}.desc`} value={card.desc} />
                 </p>
 
-                {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 min-h-[3rem]">
-                  <div className="flex items-center gap-2.5">
-                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">
-                      <CmsText path="audience.cards.0.bullet1" value={c.audience.cards[0].bullet1} />
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">
-                      <CmsText path="audience.cards.0.bullet2" value={c.audience.cards[0].bullet2} />
-                    </span>
-                  </div>
+                {/* Highlights */}
+                <ul className="mt-6 space-y-2.5">
+                  {['bullet1', 'bullet2'].map((key) => (
+                    <li key={key} className="flex items-center gap-3 text-sm font-semibold text-slate-800">
+                      <span className="w-5 h-5 rounded-full bg-[#34E06E]/15 text-[#16a952] flex items-center justify-center shrink-0">
+<RiCheckLine className="w-3.5 h-3.5" />
+</span>
+                      <CmsText path={`audience.cards.${i}.${key}`} value={card[key]} />
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Action pinned to the bottom so both cards end level */}
+                <div className="mt-auto pt-8">
+                  <button
+                    type="button"
+                    onClick={() => navigate(to)}
+                    className={`group w-full flex items-center justify-between gap-3 rounded-2xl px-5 py-4 text-sm font-bold transition-colors cursor-pointer ${
+                      dark ? 'bg-slate-950 hover:bg-slate-800 text-white' : 'bg-[#34E06E] hover:bg-[#28c85e] text-slate-950'
+                    }`}
+                  >
+                    <CmsText path={`audience.cards.${i}.ctaLabel`} value={card.ctaLabel} />
+                    <HiArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
                 </div>
               </div>
-
-              <div className="mt-auto pt-2">
-                <Button
-                  onClick={() => navigate('/events-courses')}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-7 py-3.5 rounded-full text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] cursor-pointer"
-                >
-                  <span>
-                    <CmsText path="audience.cards.0.ctaLabel" value={c.audience.cards[0].ctaLabel} />
-                  </span>
-                  <HiArrowUpRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Card 2: For Organizations */}
-            <div className="rounded-[2rem] bg-white border border-slate-200/90 p-8 sm:p-10 flex flex-col justify-between space-y-6 text-slate-900 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1.5 transition-all duration-300 group">
-              <div className="space-y-4">
-                {/* Header Row: Clean Eyebrow & Track Badge */}
-                <div className="flex items-center justify-between gap-3 min-h-[1.75rem]">
-                  <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1">
-                    <RiFlightTakeoffLine className="w-4 h-4 text-slate-700" />
-                    <span>
-                      <CmsText path="audience.cards.1.eyebrow" value={c.audience.cards[1].eyebrow} />
-                    </span>
-                  </span>
-                  <span className="text-[11px] font-mono font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-3.5 py-1 rounded-full border border-slate-200/80">
-                    <CmsText path="audience.cards.1.trackBadge" value={c.audience.cards[1].trackBadge} />
-                  </span>
-                </div>
-
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-snug group-hover:text-black transition-colors pt-1 min-h-[4rem] flex items-start">
-                  <CmsText path="audience.cards.1.title" value={c.audience.cards[1].title} />
-                </h3>
-
-                <p className="text-sm text-slate-600 leading-relaxed font-normal min-h-[3.75rem]">
-                  <CmsText path="audience.cards.1.desc" value={c.audience.cards[1].desc} />
-                </p>
-
-                {/* Feature Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 min-h-[3rem]">
-                  <div className="flex items-center gap-2.5">
-                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">
-                      <CmsText path="audience.cards.1.bullet1" value={c.audience.cards[1].bullet1} />
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <RiCheckboxCircleFill className="w-4 h-4 text-[#34E06E] shrink-0" />
-                    <span className="font-semibold text-slate-800">
-                      <CmsText path="audience.cards.1.bullet2" value={c.audience.cards[1].bullet2} />
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-auto pt-2">
-                <Button
-                  onClick={() => navigate('/services')}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-950 hover:bg-slate-800 text-white font-bold px-7 py-3.5 rounded-full text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-sm cursor-pointer"
-                >
-                  <span>
-                    <CmsText path="audience.cards.1.ctaLabel" value={c.audience.cards[1].ctaLabel} />
-                  </span>
-                  <HiArrowUpRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </Reveal>
       {/* END: Audience Pathways */}
 
-      {/* BEGIN: From the Operation (Clean 3-Column Review Grid Showcase) */}
+      {/* BEGIN: From the Operation (testimonials) */}
       <Reveal as="section" className="py-14 sm:py-20 bg-[#f8fafc] border-y border-slate-200/80 text-rocket-dark" data-purpose="from-the-operation-grid">
         <div className="max-w-[1280px] mx-auto px-6 space-y-8">
 
           {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-slate-200/60">
-            <div className="space-y-2 max-w-2xl">
-              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                <CmsText path="testimonialsSection.eyebrow" value={c.testimonialsSection.eyebrow} />
-              </span>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                <CmsText path="testimonialsSection.title" value={c.testimonialsSection.title} />
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                <CmsText path="testimonialsSection.intro" value={c.testimonialsSection.intro} />
-              </p>
-            </div>
-
-            {/* Carousel Arrow Controls */}
-            <div className="flex items-center gap-3 shrink-0 self-start md:self-end">
-              <span className="text-xs font-mono font-bold text-slate-400">
-                {String(safePage + 1).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
-              </span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  onClick={handlePrevTestimonial}
-                  className="w-9 h-9 rounded-full bg-white hover:bg-slate-900 hover:text-white text-slate-700 border border-slate-200 flex items-center justify-center transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
-                  aria-label="Previous Reviews"
-                >
-                  <RiArrowLeftSLine className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={handleNextTestimonial}
-                  className="w-9 h-9 rounded-full bg-white hover:bg-slate-900 hover:text-white text-slate-700 border border-slate-200 flex items-center justify-center transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
-                  aria-label="Next Reviews"
-                >
-                  <RiArrowRightSLine className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
+          <div className="space-y-2 max-w-2xl">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
+              <CmsText path="testimonialsSection.eyebrow" value={c.testimonialsSection.eyebrow} />
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <CmsText path="testimonialsSection.title" value={c.testimonialsSection.title} />
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <CmsText path="testimonialsSection.intro" value={c.testimonialsSection.intro} />
+            </p>
           </div>
 
-          {/* Clean Segmented Tab Filters */}
-          <div className="flex items-center justify-start flex-wrap gap-4">
-            <div className="inline-flex items-center p-1.5 bg-slate-100/90 rounded-2xl sm:rounded-full border border-slate-200/90 shadow-2xs gap-1 sm:gap-1.5 flex-wrap">
+          {/* Controls: tabs left, pager right */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
               {[
-                {
-                  id: 'visual',
-                  label: c.testimonialsSection.visualTabLabel,
-                  path: 'testimonialsSection.visualTabLabel',
-                  count: testimonials.filter((t) => t.cardImage).length,
-                  icon: RiFlightTakeoffLine
-                },
-                {
-                  id: 'executive',
-                  label: c.testimonialsSection.executiveTabLabel,
-                  path: 'testimonialsSection.executiveTabLabel',
-                  count: testimonials.filter((t) => !t.cardImage).length,
-                  icon: RiChatQuoteLine
-                },
-                {
-                  id: 'all',
-                  label: c.testimonialsSection.allTabLabel,
-                  path: 'testimonialsSection.allTabLabel',
-                  count: testimonials.length,
-                  icon: RiApps2Line
-                }
+                { id: 'visual', label: c.testimonialsSection.visualTabLabel, path: 'testimonialsSection.visualTabLabel' },
+                { id: 'executive', label: c.testimonialsSection.executiveTabLabel, path: 'testimonialsSection.executiveTabLabel' },
+                { id: 'all', label: c.testimonialsSection.allTabLabel, path: 'testimonialsSection.allTabLabel' }
               ].map((tab) => {
                 const isActive = feedbackTab === tab.id
-                const Icon = tab.icon
                 return (
                   <button
                     key={tab.id}
@@ -1422,292 +1541,248 @@ export function HomePage() {
                       setActivePage(0)
                       resetTimer()
                     }}
-                    className={`relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold font-mono tracking-wide transition-all duration-300 flex items-center gap-2 cursor-pointer select-none group ${isActive
-                        ? 'bg-slate-950 text-white shadow-md'
-                        : 'text-slate-600 hover:text-slate-950 hover:bg-white/80'
-                      }`}
+                    className={`-mb-px pb-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors cursor-pointer ${
+                      isActive ? 'border-[#34E06E] text-slate-950' : 'border-transparent text-slate-500 hover:text-slate-900'
+                    }`}
                   >
-                    <Icon
-                      className={`w-3.5 h-3.5 transition-colors ${isActive ? 'text-[#34E06E]' : 'text-slate-400 group-hover:text-slate-700'
-                        }`}
-                    />
-                    <span>
-                      <CmsText path={tab.path} value={tab.label} />
-                    </span>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-tight transition-colors ${isActive
-                          ? 'bg-white/15 text-[#34E06E]'
-                          : 'bg-slate-200/80 text-slate-600 group-hover:bg-slate-300/80 group-hover:text-slate-900'
-                        }`}
-                    >
-                      {tab.count}
-                    </span>
+                    <CmsText path={tab.path} value={tab.label} />
                   </button>
                 )
               })}
             </div>
+
+            <div className="flex items-center gap-3 pb-2.5 shrink-0">
+              <span className="text-xs font-mono font-semibold text-slate-400">
+                {String(safePage + 1).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
+              </span>
+              <button
+                onClick={handlePrevTestimonial}
+                className="w-9 h-9 rounded-full bg-white hover:bg-slate-950 hover:text-white text-slate-700 border border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Previous reviews"
+              >
+                <RiArrowLeftSLine className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleNextTestimonial}
+                className="w-9 h-9 rounded-full bg-white hover:bg-slate-950 hover:text-white text-slate-700 border border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Next reviews"
+              >
+                <RiArrowRightSLine className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
-          {/* 3 Review Cards in One Row (Fixed Height + Butter-Smooth Motion) */}
-          <div className="relative min-h-[470px] sm:min-h-[490px] md:min-h-[500px] overflow-hidden">
+          {/* Review cards: square media, caption below; every card the same size */}
+          <div className="relative overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${feedbackTab}-${safePage}`}
-                initial={{ opacity: 0, x: 25 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -25 }}
-                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch w-full"
               >
                 {filteredTestimonials
                   .slice(safePage * reviewsPerView, safePage * reviewsPerView + reviewsPerView)
                   .map((item, idx) => (
-                    <div key={idx} className="flex flex-col h-[460px] sm:h-[480px] md:h-[490px]">
+                    <figure
+                      key={idx}
+                      className="flex flex-col rounded-2xl bg-white border border-slate-200/90 overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    >
                       {item.cardImage ? (
-                        /* Visual Card Display: Fixed Height + Clean Presentation */
-                        <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between group overflow-hidden">
-                          {/* Top Row: Company Logo & Category Badge */}
-                          <div className="flex items-center justify-between gap-3 pb-3 border-b border-slate-100 shrink-0 h-10">
-                            <div className="flex items-center h-8">
-                              {item.logo ? (
-                                <img
-                                  src={item.logo}
-                                  alt={item.company}
-                                  className="h-6 sm:h-7 max-w-[130px] w-auto object-contain select-none"
-                                />
-                              ) : (
-                                <span className="text-sm font-bold text-slate-900 tracking-wide">
-                                  {item.company}
-                                </span>
-                              )}
-                            </div>
-                            {item.badge && (
-                              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 border-b border-[#34E06E] pb-0.5 whitespace-nowrap">
-                                {item.badge}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Middle: Full Uncropped Graphic Endorsement inside Flex Area */}
-                          <div className="flex-1 w-full min-h-0 pt-3 flex items-center justify-center overflow-hidden">
-                            <img
-                              src={item.cardImage}
-                              alt={`${item.company} Endorsement`}
-                              className="max-h-full max-w-full w-auto h-auto object-contain select-none rounded-xl transition-transform duration-500 group-hover:scale-[1.01]"
-                            />
-                          </div>
+                        <div className="aspect-square bg-slate-100">
+                          <img
+                            src={item.cardImage}
+                            alt={`${item.company} testimonial`}
+                            className="w-full h-full object-cover select-none"
+                          />
                         </div>
                       ) : (
-                        /* Executive Text Card: Fixed Height + Clean Typography */
-                        <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between group overflow-hidden">
-                          {/* Top Row: Airline Logo & Badge */}
-                          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 shrink-0 h-11">
-                            <div className="flex items-center h-8">
-                              {item.logo ? (
-                                <img
-                                  src={item.logo}
-                                  alt={item.company}
-                                  className="h-7 max-w-[130px] w-auto object-contain select-none"
-                                />
-                              ) : (
-                                <span className="text-base font-bold text-slate-900 tracking-wide">
-                                  {item.company}
-                                </span>
-                              )}
-                            </div>
-                            {item.badge && (
-                              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 border-b border-[#34E06E] pb-0.5 whitespace-nowrap">
-                                {item.badge}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Center: Full Quote inside Flex Area */}
-                          <div className="flex-1 my-auto flex flex-col justify-center py-4 space-y-2 overflow-hidden">
-                            <span className="text-3xl font-serif text-slate-400 leading-none block select-none">
-                              “
-                            </span>
-                            <blockquote className="text-xs sm:text-sm font-normal text-slate-700 leading-relaxed italic line-clamp-6">
-                              {item.quote}
-                            </blockquote>
-                          </div>
-
-                          {/* Bottom: Author Credentials */}
-                          <div className="pt-4 border-t border-slate-100 space-y-0.5 shrink-0">
-                            <h4 className="text-sm font-bold text-slate-900 leading-tight">
-                              {item.name}
-                            </h4>
-                            <p className="text-[11px] text-slate-500 font-mono tracking-wide">
-                              {item.role}
-                            </p>
+                        <div className="aspect-square p-7 sm:p-8 flex flex-col bg-white">
+                          <span className="text-5xl font-serif text-[#34E06E] leading-none select-none" aria-hidden="true">
+                            “
+                          </span>
+                          <blockquote className="flex-1 mt-2 text-sm sm:text-[15px] text-slate-700 leading-relaxed line-clamp-[9]">
+                            {item.quote}
+                          </blockquote>
+                          <div className="pt-4 mt-4 border-t border-slate-100">
+                            <p className="text-sm font-bold text-slate-900 leading-tight">{item.name}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">{item.role}</p>
                           </div>
                         </div>
                       )}
-                    </div>
+
+                      {/* Caption: who it's from and which training */}
+                      <figcaption className="flex items-center justify-between gap-3 px-5 py-3.5 border-t border-slate-100 bg-slate-50/60 mt-auto">
+                        <span className="flex items-center h-7 min-w-0">
+                          {item.logo ? (
+                            <img
+                              src={item.logo}
+                              alt={item.company}
+                              className="h-6 max-w-[120px] w-auto object-contain select-none"
+                            />
+                          ) : (
+                            <span className="text-sm font-bold text-slate-900 truncate">{item.company}</span>
+                          )}
+                        </span>
+                        {item.badge && (
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-600 whitespace-nowrap">
+                            {item.badge}
+                          </span>
+                        )}
+                      </figcaption>
+                    </figure>
                   ))}
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Clean Grouped Logo Selector (Simple pairs of logos with active green underline) */}
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 pt-4 border-t border-slate-200/60">
-            {Array.from({ length: totalPages }, (_, pageIdx) => {
-              const isCurrentPage = safePage === pageIdx
-              const pageItems = filteredTestimonials.slice(
-                pageIdx * reviewsPerView,
-                pageIdx * reviewsPerView + reviewsPerView
-              )
-
-              return (
+          {/* Page dots */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2">
+              {Array.from({ length: totalPages }, (_, pageIdx) => (
                 <button
                   key={pageIdx}
                   onClick={() => {
                     setActivePage(pageIdx)
                     resetTimer()
                   }}
-                  className={`group relative pb-2.5 transition-all duration-300 flex items-center gap-4 sm:gap-7 cursor-pointer border-b-2 ${isCurrentPage
-                    ? 'border-[#34E06E] opacity-100 scale-100'
-                    : 'border-transparent opacity-40 hover:opacity-80'
-                    }`}
-                  aria-label={`View group ${pageIdx + 1}`}
-                >
-                  {pageItems.map((item, itemIdx) => (
-                    <div key={itemIdx} className="h-8 sm:h-9 flex items-center justify-center">
-                      {item.logo ? (
-                        <img
-                          src={item.logo}
-                          alt={item.company}
-                          draggable={false}
-                          className={`h-5 sm:h-6 max-w-[85px] sm:max-w-[105px] w-auto object-contain transition-all select-none pointer-events-none ${isCurrentPage
-                            ? 'grayscale-0'
-                            : 'grayscale group-hover:grayscale-0'
-                            }`}
-                        />
-                      ) : (
-                        <span
-                          className={`text-xs sm:text-sm font-bold tracking-tight whitespace-nowrap ${isCurrentPage ? 'text-slate-900' : 'text-slate-500'
-                            }`}
-                        >
-                          {item.company}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </button>
-              )
-            })}
-          </div>
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    safePage === pageIdx ? 'w-8 bg-[#34E06E]' : 'w-2 bg-slate-300 hover:bg-slate-400'
+                  }`}
+                  aria-label={`Show reviews page ${pageIdx + 1}`}
+                />
+              ))}
+            </div>
+          )}
 
         </div>
       </Reveal>
       {/* END: From the Operation */}
 
-      {/* BEGIN: Training Framework (International standards. Local operational relevance.) */}
+      {/* BEGIN: Training Framework (Standards operators are audited against) */}
       <Reveal as="section" className="py-16 sm:py-24 bg-white text-rocket-dark border-b border-slate-200/80" data-purpose="training-framework-standards">
-        <div className="max-w-[1280px] mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left Column: 4 Standard Authority Cards (FAA, EASA, ICAO, DGCA) */}
-            <div className="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4">
-              {/* FAA Box */}
-              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
-                <img
-                  src={logoFaa}
-                  alt="FAA"
-                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
-                />
-                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
-                  FAA
-                </span>
-                <span className="text-[10px] font-mono text-slate-400">Part 65</span>
-              </div>
+        <div className="max-w-[1280px] mx-auto px-6 space-y-6 sm:space-y-8">
+          <div className="space-y-4">
+            <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
+              <CmsText path="framework.eyebrow" value={c.framework.eyebrow} />
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
+              <CmsText path="framework.title" value={c.framework.title} />
+            </h2>
+          </div>
 
-              {/* EASA Box */}
-              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
-                <img
-                  src={logoEasa}
-                  alt="EASA"
-                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
-                />
-                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
-                  EASA
+          <div className="grid grid-cols-1 md:grid-cols-3 border-t border-slate-200">
+            {c.framework.standards.map((std, i) => (
+              <div key={i} className="relative py-5 md:pr-6 border-b border-slate-200">
+                <CmsRemoveItem listPath="framework.standards" index={i} label="Remove standard" />
+                {STANDARD_LOGOS[std.logo] && (
+                  <img
+                    src={STANDARD_LOGOS[std.logo]}
+                    alt={std.logo.toUpperCase()}
+                    className="h-10 sm:h-12 w-auto max-w-[110px] object-contain select-none mb-3"
+                  />
+                )}
+                <strong className="block text-base sm:text-lg font-bold text-slate-950">
+                  <CmsText path={`framework.standards.${i}.title`} value={std.title} />
+                </strong>
+                <span className="block mt-1 text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
+                  <CmsText path={`framework.standards.${i}.desc`} value={std.desc} />
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">ORO.GEN 110</span>
               </div>
-
-              {/* ICAO Box */}
-              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
-                <img
-                  src={logoIcao}
-                  alt="ICAO"
-                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
-                />
-                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
-                  ICAO
-                </span>
-                <span className="text-[10px] font-mono text-slate-400">Doc 10106</span>
-              </div>
-
-              {/* DGCA Box */}
-              <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group">
-                <img
-                  src={logoDgca}
-                  alt="DGCA"
-                  className="h-10 sm:h-12 w-auto max-w-[85px] object-contain select-none mb-2 group-hover:scale-105 transition-transform"
-                />
-                <span className="text-xs font-bold text-slate-900 tracking-wider uppercase">
-                  DGCA
-                </span>
-                <span className="text-[10px] font-mono text-slate-400">India CAR</span>
-              </div>
-            </div>
-
-            {/* Right Column: Training Framework Narrative */}
-            <div className="lg:col-span-7 space-y-4">
-              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
-                <CmsText path="framework.eyebrow" value={c.framework.eyebrow} />
-              </span>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-                <CmsText path="framework.title" value={c.framework.title} />
-              </h2>
-              <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
-                <CmsText path="framework.desc" value={c.framework.desc} />
-              </p>
-            </div>
+            ))}
+            <CmsAddItem listPath="framework.standards" label="Add standard" blank={{ title: 'New Standard', desc: '' }} />
           </div>
         </div>
       </Reveal>
       {/* END: Training Framework */}
 
-      {/* BEGIN: Train for the Operation Green Callout Banner */}
+      {/* BEGIN: Beyond the Course (Smart Talent & Foxtrot Delta) */}
+      <Reveal as="section" className="pt-12 sm:pt-16 bg-white" data-purpose="beyond-the-course">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 rounded-3xl border border-slate-200/90 bg-white overflow-hidden divide-y md:divide-y-0 md:divide-x divide-slate-200/90">
+            {c.beyond.cards.map((card, i) => {
+              const external = /^https?:/.test(card.url || '')
+              const LinkTag = external ? 'a' : Link
+              const linkProps = external
+                ? { href: card.url, target: '_blank', rel: 'noopener noreferrer' }
+                : { to: card.url || '/' }
+              return (
+                <div key={i} className="relative p-7 sm:p-8 space-y-2 group">
+                  <CmsRemoveItem listPath="beyond.cards" index={i} label="Remove card" />
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-950 group-hover:text-[#1fa855] transition-colors">
+                    <CmsText path={`beyond.cards.${i}.title`} value={card.title} />
+                  </h3>
+                  <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed">
+                    <CmsText path={`beyond.cards.${i}.desc`} value={card.desc} />
+                  </p>
+                  <LinkTag
+                    {...linkProps}
+                    className="inline-flex items-center gap-1.5 pt-1 text-sm font-bold text-slate-950 hover:text-[#1fa855] transition-colors group/link"
+                  >
+                    <span>
+                      <CmsText path={`beyond.cards.${i}.linkLabel`} value={card.linkLabel} />
+                    </span>
+                    <HiArrowRight className="w-3.5 h-3.5 text-[#34E06E] group-hover/link:translate-x-1 transition-transform" />
+                  </LinkTag>
+                </div>
+              )
+            })}
+            <CmsAddItem
+              listPath="beyond.cards"
+              label="Add card"
+              blank={{ title: 'New Card', desc: '', linkLabel: 'Learn more', url: '/' }}
+            />
+          </div>
+        </div>
+      </Reveal>
+      {/* END: Beyond the Course */}
+
+      {/* BEGIN: Train for the Operation (closing call to action) */}
       <Reveal as="section" className="py-12 sm:py-16 bg-white" data-purpose="train-for-operation-cta">
         <div className="max-w-[1280px] mx-auto px-6">
-          <div className="relative rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-[#020617] p-8 sm:p-11 md:p-12 text-white shadow-2xl border border-white/10 overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-8">
-            {/* Ambient Background Accents */}
-            <div className="absolute -right-16 -top-16 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -left-16 -bottom-16 w-60 h-60 bg-emerald-900/10 rounded-full blur-2xl pointer-events-none" />
-
-            <div className="relative z-10 space-y-2.5 max-w-2xl">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-100 block">
+          <div className="rounded-3xl bg-slate-950 text-white border border-white/10 p-8 sm:p-10 lg:p-12 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-12 items-center">
+            <div className="space-y-4">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-white border-b-2 border-[#34E06E] pb-1 inline-block">
                 <CmsText path="finalCta.eyebrow" value={c.finalCta.eyebrow} />
               </span>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-bold tracking-tight leading-[1.15] [text-wrap:balance]">
                 <CmsText path="finalCta.title" value={c.finalCta.title} />
               </h2>
-              <p className="text-xs sm:text-sm md:text-base text-emerald-50 max-w-xl font-normal leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-lg">
                 <CmsText path="finalCta.desc" value={c.finalCta.desc} />
               </p>
             </div>
 
-            <div className="relative z-10 shrink-0">
-              <Button
-                onClick={() => navigate('/contact')}
-                className="bg-[#34E06E] text-slate-950 hover:bg-[#28c85e] font-extrabold px-7 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-lg hover:shadow-[0_0_25px_rgba(52,224,110,0.4)] transition-all hover:scale-105 inline-flex items-center gap-2.5 cursor-pointer group"
+            {/* Two clear paths */}
+            <div className="grid gap-3">
+              <button
+                type="button"
+                onClick={() => navigate('/upcoming-courses')}
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-white/15 hover:border-white/40 bg-white/[0.03] hover:bg-white/[0.06] px-5 py-4 text-left transition-colors cursor-pointer"
               >
                 <span>
-                  <CmsText path="finalCta.ctaLabel" value={c.finalCta.ctaLabel} />
+                  <span className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">For individuals</span>
+                  <span className="block mt-1 text-base font-bold">
+                    <CmsText path="finalCta.findCourseLabel" value={c.finalCta.findCourseLabel} />
+                  </span>
                 </span>
-                <RiSendPlaneFill className="w-4 h-4 text-slate-950 group-hover:translate-x-0.5 transition-transform" />
-              </Button>
+                <HiArrowRight className="w-5 h-5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0" />
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/contact')}
+                className="group flex items-center justify-between gap-4 rounded-2xl bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 px-5 py-4 text-left transition-colors cursor-pointer"
+              >
+                <span>
+                  <span className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-800/80">For operators</span>
+                  <span className="block mt-1 text-base font-bold">
+                    <CmsText path="finalCta.ctaLabel" value={c.finalCta.ctaLabel} />
+                  </span>
+                </span>
+                <HiArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform shrink-0" />
+              </button>
             </div>
           </div>
         </div>

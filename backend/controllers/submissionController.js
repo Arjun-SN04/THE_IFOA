@@ -3,7 +3,7 @@ const Course = require('../models/Course')
 const FormSchema = require('../models/FormSchema')
 const Submission = require('../models/Submission')
 const { asyncHandler } = require('../middleware/error')
-const { validateAnswers, findIntakeFieldId } = require('../utils/validateAnswers')
+const { validateAnswers, findIntakeFieldId, conditionMet } = require('../utils/validateAnswers')
 const { sendMail } = require('../utils/mailer')
 
 const STATUSES = ['new', 'contacted', 'confirmed', 'rejected']
@@ -13,15 +13,17 @@ const escapeHtml = (s) =>
 
 const formatAnswer = (field, value) => {
   if (field.type === 'checkbox') return value === true ? 'Yes' : 'No'
-  if (field.type === 'checkboxGroup') return Array.isArray(value) && value.length ? value.join(', ') : '—'
-  if (value === undefined || value === null || value === '') return '—'
+  if (field.type === 'checkboxGroup') return Array.isArray(value) && value.length ? value.join(', ') : 'Not provided'
+  if (value === undefined || value === null || value === '') return 'Not provided'
   return String(value)
 }
 
 // Best-effort notification to the office inbox with the full submission -
 // mirrors contactController's pattern (save first, email is not required to succeed).
-async function notifySubmission({ course, intake, sections, answers }) {
+async function notifySubmission({ course, intake, sections, answers, submissionId }) {
   let replyTo
+  let applicant = ''
+  let trainingLocation = ''
   const rows = []
 
   for (const section of sections) {
@@ -29,22 +31,47 @@ async function notifySubmission({ course, intake, sections, answers }) {
     const fields = [...section.fields].sort((a, b) => (a.order || 0) - (b.order || 0))
     for (const field of fields) {
       if (field.type === 'staticText') continue
+      // Skip fields the applicant never saw (e.g. company details when they
+      // answered "No" to enrolling on behalf of a company).
+      if (field.visibleIf && !conditionMet(field.visibleIf, sectionAnswers)) continue
       const value = sectionAnswers[field.id]
       if (field.type === 'email' && !replyTo && typeof value === 'string' && value) replyTo = value
+      if (field.id === 'trainingCountry' && value) trainingLocation = String(value)
+      if (section.id === 'student-info' && (field.id === 'firstName' || field.id === 'surname') && value) {
+        applicant = applicant ? `${applicant} ${value}` : String(value)
+      }
       rows.push({ section: section.title, label: field.label || field.id, value: formatAnswer(field, value) })
     }
   }
 
+  // Tuition for the chosen training location (falls back to the course price).
+  const lp = (course.locationPrices || []).find((p) => p.location === trainingLocation)
+  const price = lp || course.price
+  const tuition =
+    price && price.amount != null
+      ? `${Number(price.amount).toLocaleString(price.currency === 'INR' ? 'en-IN' : 'en-US')} ${price.currency || ''}`.trim()
+      : ''
+
   const text = [
-    `Course: ${course.title}`,
+    `Course: ${course.title}${course.refCode ? ` (${course.refCode})` : ''}`,
+    applicant ? `Applicant: ${applicant}` : null,
+    trainingLocation ? `Training location: ${trainingLocation}` : null,
+    tuition ? `Tuition: ${tuition}` : null,
     `Intake: ${intake || 'Not specified'}`,
+    `Submission ID: ${submissionId}`,
     '',
     ...rows.map((r) => `${r.section} - ${r.label}: ${r.value}`)
-  ].join('\n')
+  ]
+    .filter((line) => line !== null)
+    .join('\n')
 
   const html = `
-    <p><strong>Course:</strong> ${escapeHtml(course.title)}</p>
+    <p><strong>Course:</strong> ${escapeHtml(course.title)}${course.refCode ? ` (${escapeHtml(course.refCode)})` : ''}</p>
+    ${applicant ? `<p><strong>Applicant:</strong> ${escapeHtml(applicant)}</p>` : ''}
+    ${trainingLocation ? `<p><strong>Training location:</strong> ${escapeHtml(trainingLocation)}</p>` : ''}
+    ${tuition ? `<p><strong>Tuition:</strong> ${escapeHtml(tuition)}</p>` : ''}
     <p><strong>Intake:</strong> ${escapeHtml(intake || 'Not specified')}</p>
+    <p><strong>Submission ID:</strong> ${escapeHtml(submissionId)}</p>
     ${Object.entries(
       rows.reduce((acc, r) => {
         ;(acc[r.section] = acc[r.section] || []).push(r)
@@ -66,9 +93,9 @@ async function notifySubmission({ course, intake, sections, answers }) {
   `
 
   await sendMail({
-    to: 'info@theifoa.com',
+    to: process.env.MAIL_TO || 'info@theifoa.com',
     replyTo,
-    subject: `New enrollment: ${course.title}${intake ? ` (${intake})` : ''}`,
+    subject: `New enrollment: ${course.title}${intake ? ` (${intake})` : ''}${applicant ? ` - ${applicant}` : ''}`,
     text,
     html
   })
@@ -125,7 +152,7 @@ const create = asyncHandler(async (req, res) => {
   })
 
   try {
-    await notifySubmission({ course, intake, sections, answers })
+    await notifySubmission({ course, intake, sections, answers, submissionId: String(submission._id) })
   } catch (err) {
     console.error('submissionController.create: notifySubmission failed', err)
   }

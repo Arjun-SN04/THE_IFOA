@@ -18,6 +18,7 @@ import { ContactPage } from './ContactPage'
 import { CourseDetailPage } from './CourseDetailPage'
 import { CourseEnrollmentPage } from './CourseEnrollmentPage'
 import { FoxtrotDeltaPage } from './FoxtrotDeltaPage'
+import { UpcomingCoursesPage } from './UpcomingCoursesPage'
 
 export const eagerPublicPages = {
   HomePage,
@@ -28,5 +29,6 @@ export const eagerPublicPages = {
   ContactPage,
   CourseDetailPage,
   CourseEnrollmentPage,
-  FoxtrotDeltaPage
+  FoxtrotDeltaPage,
+  UpcomingCoursesPage
 }

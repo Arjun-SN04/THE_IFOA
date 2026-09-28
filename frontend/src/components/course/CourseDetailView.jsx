@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useGoBack } from '@/hooks/useGoBack'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   RiArrowLeftLine,
@@ -15,12 +16,12 @@ import {
   RiAddLine,
   RiSubtractLine,
   RiUserLine,
-  RiCheckLine,
   RiFlightTakeoffLine,
   RiGlobalLine,
   RiCompass3Line,
   RiAwardLine,
-  RiInformationLine
+  RiInformationLine,
+  RiCheckLine
 } from 'react-icons/ri'
 import { TbClockHour4, TbCertificate, TbBook2 } from 'react-icons/tb'
 import { HiArrowUpRight } from 'react-icons/hi2'
@@ -30,6 +31,7 @@ import { mergeContent } from '@/hooks/usePageContent'
 
 // Assets
 import { resolveCard, programmeBanner, hasEnrollmentForm } from '@/components/course/CourseCard'
+import { OverviewHero, OverviewBlocks, DgProvider, DgSidebar } from '@/components/course/CourseOverview'
 import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
 import logoIcao from '@/assets/shared/standards-logos/logo-icao.webp'
 import logoDgca from '@/assets/shared/standards-logos/logo-dgca.webp'
@@ -187,6 +189,22 @@ function formatPrice(price) {
 }
 
 export function CourseDetailView({ course, preview = false }) {
+  const handleBack = useGoBack('/events')
+
+  // Sidebar scrolls with the page until its image has gone off screen, then
+  // sticks, so the price, actions and facts stay in view while reading.
+  const NAV_OFFSET = 96
+  const sidebarImgRef = useRef(null)
+  const [sidebarTop, setSidebarTop] = useState(NAV_OFFSET)
+  useEffect(() => {
+    const img = sidebarImgRef.current
+    if (!img || typeof ResizeObserver === 'undefined') return undefined
+    const measure = () => setSidebarTop(NAV_OFFSET - (img.offsetTop + img.offsetHeight + 16))
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(img)
+    return () => ro.disconnect()
+  }, [])
   const [copied, setCopied] = useState(false)
   const [activePhase, setActivePhase] = useState(0)
   const [activeRoleIdx, setActiveRoleIdx] = useState(0)
@@ -284,8 +302,17 @@ export function CourseDetailView({ course, preview = false }) {
     course.slug?.includes('dgr') ||
     course.title?.toLowerCase().includes('dangerous goods')
 
+  // Course-specific overview blocks (approved page copy) replace the fixed
+  // section template when present.
+  const overview = course.overview?.blocks?.length ? course.overview : null
+  // Red-hatched sidebar border for Dangerous Goods, like a Shipper's Declaration.
+  const dgHatch = { background: 'repeating-linear-gradient(-45deg, #C8102E 0 9px, transparent 9px 18px)' }
+  // Dangerous Goods: the sidebar card follows the role/operation picked in the page body.
+  const dgBlock = overview?.blocks?.find((b) => b.type === 'dgExplorer') || null
   const sidebarBanner = programmeBanner(course)
-  const enrollHref = hasEnrollmentForm(course) ? `/courses/${course.slug}/enroll` : '/contact'
+  // Contact links carry the course so the Contact form pre-selects its topic.
+  const contactHref = `/contact?course=${course.slug}`
+  const enrollHref = hasEnrollmentForm(course) ? `/courses/${course.slug}/enroll` : contactHref
   const sidebarImgSrc =
     sidebarBanner ||
     course.card?.image?.url ||
@@ -296,6 +323,7 @@ export function CourseDetailView({ course, preview = false }) {
     (isDgrCourse ? imgDgr : null)
 
   return (
+    <DgProvider block={dgBlock}>
     <div
       className={`w-full min-h-screen bg-[#f8fafc] text-slate-900 font-sans antialiased selection:bg-[#34E06E] selection:text-slate-950 ${preview ? '' : 'pt-24 pb-16'
         }`}
@@ -320,13 +348,14 @@ export function CourseDetailView({ course, preview = false }) {
               {/* Sleek Breadcrumb & Action Bar */}
               <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-slate-200/80">
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-500 min-w-0">
-                  <Link
-                    to="/events"
+                  <button
+                    type="button"
+                    onClick={handleBack}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-950 hover:bg-slate-800 text-white transition-all text-xs font-semibold shadow-xs group cursor-pointer shrink-0"
                   >
                     <RiArrowLeftLine className="w-3.5 h-3.5 text-slate-300 group-hover:text-white group-hover:-translate-x-0.5 transition-transform" />
-                    <span>All Programmes</span>
-                  </Link>
+                    <span>Back</span>
+                  </button>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -341,6 +370,10 @@ export function CourseDetailView({ course, preview = false }) {
                 </div>
               </div>
 
+              {overview ? (
+                <OverviewHero hero={overview.hero || {}} fallbackTitle={course.title} fallbackLead={course.summary} />
+              ) : (
+                <>
               {/* Title & Authoritative Headline */}
               <div className="space-y-3.5">
                 {course.eyebrow && (
@@ -418,7 +451,7 @@ export function CourseDetailView({ course, preview = false }) {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 w-full max-w-lg sm:max-w-none">
                 {course.isCorporate ? (
                   <Link
-                    to="/contact"
+                    to={contactHref}
                     className="inline-flex items-center justify-center gap-2.5 bg-[#34E06E] hover:bg-[#2fe069] active:bg-[#28c85e] text-slate-950 font-bold px-7 py-3.5 rounded-full text-xs sm:text-sm tracking-wide transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer text-center w-full sm:w-auto"
                   >
                     <span>{course.ctaLabel || 'Request a Corporate Quote'}</span>
@@ -442,15 +475,21 @@ export function CourseDetailView({ course, preview = false }) {
                   <span>{c.labels.viewModulesLabel}</span>
                 </a>
               </div>
+                </>
+              )}
             </section>
 
+            {overview ? (
+              <OverviewBlocks blocks={overview.blocks || []} courseSlug={course.slug} />
+            ) : (
+              <>
             {/* 2B. ROLE + OPERATION EXPLORER (Dangerous Goods only - dgrExplorer set) */}
             {dgrExplorer && (
               <section className="space-y-8">
                 {/* Step 1 - Role */}
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                    <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                       Step 1 • Your Role
                     </span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">
@@ -584,7 +623,7 @@ export function CourseDetailView({ course, preview = false }) {
                 {/* Step 2 - Operation segment */}
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                    <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                       Step 2 • Your Operation
                     </span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">
@@ -624,7 +663,7 @@ export function CourseDetailView({ course, preview = false }) {
             <section id="modules" className="space-y-6 sm:space-y-7 scroll-mt-16">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3.5 border-b border-slate-200/80">
                 <div className="space-y-1.5">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                     {course.curriculum?.eyebrow || c.curriculum.eyebrow}
                   </span>
                   <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-950 tracking-tight">
@@ -829,7 +868,7 @@ export function CourseDetailView({ course, preview = false }) {
                                           key={topicIdx}
                                           className="text-xs font-semibold text-slate-800 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5"
                                         >
-                                          <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
+                                          <RiCheckLine className="w-3.5 h-3.5 text-[#16a952] shrink-0" />
                                           <span>{t}</span>
                                         </div>
                                       ))}
@@ -917,7 +956,7 @@ export function CourseDetailView({ course, preview = false }) {
                                         key={topicIdx}
                                         className="text-xs sm:text-sm font-semibold text-slate-800 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5"
                                       >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
+                                        <RiCheckLine className="w-3.5 h-3.5 text-[#16a952] shrink-0" />
                                         <span>{t}</span>
                                       </div>
                                     ))}
@@ -941,7 +980,7 @@ export function CourseDetailView({ course, preview = false }) {
             {/* 4. OPERATIONAL COMPETENCIES */}
             <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-7">
               <div className="space-y-1.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                   {course.whatYouWillLearn?.eyebrow || c.labels.outcomesEyebrow}
                 </span>
                 <h2 className="text-xl sm:text-2xl lg:text-[26px] font-bold text-slate-950 tracking-tight">
@@ -955,9 +994,7 @@ export function CourseDetailView({ course, preview = false }) {
                     key={i}
                     className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50/70 border border-slate-100/90 hover:bg-slate-50 hover:border-slate-200 transition-colors text-xs sm:text-sm text-slate-800 leading-snug"
                   >
-                    <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                      <RiCheckLine className="w-3.5 h-3.5 stroke-[1.5]" />
-                    </div>
+                    <RiCheckLine className="w-3.5 h-3.5 text-[#16a952] shrink-0 mt-[3px]" />
                     <span>{point}</span>
                   </div>
                 ))}
@@ -1077,7 +1114,7 @@ export function CourseDetailView({ course, preview = false }) {
               <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-7">
                 <div className="space-y-1.5">
                   {course.trainingPhilosophy.eyebrow && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                    <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                       {course.trainingPhilosophy.eyebrow}
                     </span>
                   )}
@@ -1107,7 +1144,7 @@ export function CourseDetailView({ course, preview = false }) {
             {/* 6. WHO SHOULD ATTEND (Audience Profile) */}
             <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-7">
               <div className="border-b border-slate-100 pb-3.5 space-y-1.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                   {course.whoShouldAttend?.eyebrow || c.labels.eligibilityEyebrow}
                 </span>
                 <h2 className="text-xl font-bold text-slate-950 tracking-tight">
@@ -1165,7 +1202,7 @@ export function CourseDetailView({ course, preview = false }) {
             {entryRequirements.length > 0 && (
               <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-5 sm:space-y-6">
                 <div className="space-y-1.5">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                     {c.labels.entryReqEyebrow}
                   </span>
                   <h2 className="text-xl font-bold text-slate-950 tracking-tight">{c.labels.entryReqTitle}</h2>
@@ -1192,7 +1229,7 @@ export function CourseDetailView({ course, preview = false }) {
                 {assessmentPoints.length > 0 && (
                   <div className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-4">
                     <div className="space-y-1.5">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                      <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                         {c.labels.assessmentEyebrow}
                       </span>
                       <h2 className="text-lg font-bold text-slate-950 tracking-tight">{c.labels.assessmentTitle}</h2>
@@ -1211,7 +1248,7 @@ export function CourseDetailView({ course, preview = false }) {
                 {certificationText && (
                   <div className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-4">
                     <div className="space-y-1.5">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                      <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5 w-fit">
                         {c.labels.certEyebrow}
                       </span>
                       <h2 className="text-lg font-bold text-slate-950 tracking-tight">{c.labels.certTitle}</h2>
@@ -1225,43 +1262,6 @@ export function CourseDetailView({ course, preview = false }) {
               </section>
             )}
 
-            {/* 10. UPCOMING INTAKES / DATES (Only if not corporate) */}
-            {!course.isCorporate && upcomingDates.length > 0 && (
-              <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-5 sm:space-y-6">
-                <div className="space-y-1.5">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
-                    {c.labels.datesEyebrow}
-                  </span>
-                  <h2 className="text-xl font-bold text-slate-950 tracking-tight">{c.labels.datesTitle}</h2>
-                </div>
-                <div className="space-y-3">
-                  {upcomingDates.map((intake, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between gap-3 p-4.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 transition-colors"
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center shadow-2xs">
-                          <RiCalendarEventLine className="w-4 h-4 text-slate-500" />
-                        </div>
-                        <div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-900 block">{intake.label}</span>
-                          <span className="text-[11px] text-slate-500">Live Intake Confirmation</span>
-                        </div>
-                      </div>
-                      {intake.startDate && (
-                        <div className="text-right">
-                          <span className="text-xs sm:text-sm font-extrabold text-slate-950 font-mono block">
-                            {formatDate(intake.startDate)}
-                          </span>
-                          <span className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">Seats Open</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
 
             {/* 12. BOTTOM CALLOUT BANNER */}
             <section
@@ -1283,7 +1283,7 @@ export function CourseDetailView({ course, preview = false }) {
               <div className="flex flex-wrap items-center gap-3 shrink-0">
                 {course.isCorporate ? (
                   <Link
-                    to="/contact"
+                    to={contactHref}
                     className="inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-7 rounded-full text-xs uppercase tracking-wider transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span>{course.bottomBanner?.ctaLabel || 'Request a Corporate Quote'}</span>
@@ -1308,17 +1308,26 @@ export function CourseDetailView({ course, preview = false }) {
                 </a>
               </div>
             </section>
+              </>
+            )}
           </main>
 
           {/* ===================================================================== */}
           {/* RIGHT STICKY SIDEBAR (Executive Overview Panel) (4.5 Cols)             */}
           {/* ===================================================================== */}
           <aside
-            className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 bg-white text-slate-900 border border-slate-200/90 rounded-[2rem] p-6 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6"
+            className={`lg:col-span-5 xl:col-span-4 lg:sticky text-slate-900 ${
+              dgBlock
+                ? 'p-3 rounded-md'
+                : 'bg-white border border-slate-200/90 rounded-[2rem] p-6 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)]'
+            }`}
+            style={{ ...(dgBlock ? dgHatch : {}), top: sidebarTop }}
             aria-label="Programme overview"
           >
+            <div className={dgBlock ? 'bg-white rounded-sm p-6 sm:p-7 space-y-6' : 'space-y-6'}>
             {/* Top Course Card Thumbnail - Rounded inset frame */}
             <div
+              ref={sidebarImgRef}
               className={`relative aspect-[16/10] rounded-2xl overflow-hidden select-none border border-slate-100 shadow-2xs ${
                 sidebarBanner ? 'bg-slate-950/5 p-2 flex items-center justify-center' : 'bg-slate-950'
               }`}
@@ -1330,16 +1339,19 @@ export function CourseDetailView({ course, preview = false }) {
               />
             </div>
 
+            {dgBlock ? (
+              <DgSidebar block={dgBlock} contactHref={contactHref} />
+            ) : (
+              <>
             {/* Header & Price / Rate Display */}
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[11px] font-bold uppercase tracking-wider">
-                {course.isCorporate ? (course.rateCard?.eyebrow || 'CORPORATE TRAINING') : c.labels.sidebarOverviewLabel}
-              </span>
-
-              <div className="pt-3.5 pb-1">
+              <div>
                 {course.isCorporate ? (
                   <>
-                    <strong className="block text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-tight">
+                    <span className="block text-[11px] font-mono uppercase text-slate-400 tracking-wider">
+                      {c.labels.sidebarTuitionLabel}
+                    </span>
+                    <strong className="block text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-tight mt-0.5">
                       {course.rateCard?.value && course.rateCard.value !== 'Corporate Rate' ? course.rateCard.value : 'Training Fee'}
                     </strong>
                     <p className="text-xs text-slate-600 font-normal mt-2 leading-relaxed">
@@ -1373,14 +1385,14 @@ export function CourseDetailView({ course, preview = false }) {
               {course.isCorporate ? (
                 <>
                   <Link
-                    to="/contact"
+                    to={contactHref}
                     className="w-full block text-center bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-5 rounded-full text-xs uppercase tracking-wider transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 cursor-pointer"
                   >
                     {course.ctaLabel || 'Request a Corporate Quote'}
                   </Link>
 
                   <Link
-                    to="/contact"
+                    to={contactHref}
                     className="w-full block text-center bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold py-3 px-4 rounded-full text-xs transition-colors cursor-pointer"
                   >
                     {course.rateCard?.secondaryCtaLabel || 'Contact Training Team'}
@@ -1444,7 +1456,7 @@ export function CourseDetailView({ course, preview = false }) {
                     <span>{c.labels.sidebarLocationLabel}</span>
                   </span>
                   <strong className="font-bold text-slate-950 text-right leading-snug">
-                    {course.location || (isIndiaProgram ? 'New Delhi' : 'Online 2 Weeks + 3 Weeks Onsite Sønderborg (Denmark)')}
+                    {course.location || (isIndiaProgram ? 'New Delhi' : 'Online 2 Weeks, 3 Weeks Onsite Sønderborg (Denmark)')}
                   </strong>
                 </div>
 
@@ -1480,11 +1492,18 @@ export function CourseDetailView({ course, preview = false }) {
               </div>
             )}
 
+            {overview?.sidebarNote && (
+              <p className="text-[11px] text-slate-500 leading-relaxed">{overview.sidebarNote}</p>
+            )}
+
             {/* Trust Badge at bottom of sidebar */}
             {course.isCorporate && (
               <div className="rounded-2xl bg-emerald-50/90 text-emerald-900 border border-emerald-200/90 p-3 text-center text-xs font-bold">
                 {course.rateCard?.trustBadge || 'Delivered to 70+ operators worldwide'}
               </div>
+            )}
+
+              </>
             )}
 
             {/* Additional Certification Costs */}
@@ -1509,24 +1528,23 @@ export function CourseDetailView({ course, preview = false }) {
               </div>
             )}
 
-            {/* Assistance Sub-Box */}
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100 space-y-1.5 text-xs">
-              <span className="font-bold text-slate-900 block">{c.labels.sidebarSupportTitle}</span>
-              <p className="text-slate-500 text-[11px] leading-relaxed">
-                {c.labels.sidebarSupportDesc}
-              </p>
+            {/* Help line */}
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3 text-xs">
+              <span className="text-slate-500">{c.labels.sidebarSupportTitle}</span>
               <a
                 href="mailto:info@theifoa.com"
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-800 hover:text-[#16a952] transition-colors pt-1"
+                className="inline-flex items-center gap-1.5 font-bold text-slate-900 hover:text-[#16a952] transition-colors"
               >
-                <MdOutlineMail className="w-3.5 h-3.5 text-slate-500" />
-                <span>info@theifoa.com</span>
+                <MdOutlineMail className="w-3.5 h-3.5 text-slate-400" />
+                info@theifoa.com
               </a>
+            </div>
             </div>
           </aside>
         </div>
       </div>
     </div>
+    </DgProvider>
   )
 }
 

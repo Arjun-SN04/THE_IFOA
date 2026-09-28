@@ -54,6 +54,23 @@ function validateAnswers(sections, answers) {
         (field.requiredIf && conditionMet(field.requiredIf, sectionAnswers)) ||
         isConsentOrAgreement
 
+      const value = sectionAnswers[field.id]
+      if (typeof value === 'string' && value.trim()) {
+        const label = field.label || field.id
+        const v = value.trim()
+        if ((field.type === 'email' || /email/i.test(field.id)) && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+          errors.push(`${section.title}: ${label} is not a valid email address.`)
+          continue
+        }
+        const isPhone = field.type === 'tel' || field.id === 'mobilePhone' || field.id === 'telephone'
+        const digits = v.replace(/\D/g, '')
+        // Ignore a bare dial code ("+41") - that is an empty number, handled below.
+        if (isPhone && v.replace(/^\+\d{1,4}\s*/, '') && (digits.length < 7 || digits.length > 15)) {
+          errors.push(`${section.title}: ${label} is not a valid phone number.`)
+          continue
+        }
+      }
+
       if (isRequired && isEmpty(field, sectionAnswers[field.id])) {
         const label = field.label || field.id
         const msg =
@@ -68,4 +85,4 @@ function validateAnswers(sections, answers) {
   return errors
 }
 
-module.exports = { validateAnswers, findIntakeFieldId }
+module.exports = { validateAnswers, findIntakeFieldId, conditionMet }

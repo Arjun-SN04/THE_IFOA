@@ -1,7 +1,7 @@
 import { Document, Page, View, Text, Image, StyleSheet, Svg, Polyline } from '@react-pdf/renderer';
-import logoSrc from '../assets/shared/brand/ifoa-logo.webp';
-import watermarkSrc from '../assets/shared/brand/ifoa-watermark.webp';
-import signatureSrc from '../assets/shared/brand/ifoa-signature.webp';
+import logoSrc from '../assets/shared/brand/ifoa-logo.png';
+import watermarkSrc from '../assets/shared/brand/ifoa-watermark.png';
+import signatureSrc from '../assets/shared/brand/ifoa-signature.png';
 import { isFieldVisible } from '../components/formEngine/formSchema.js';
 
 const NAVY = '#000021';
@@ -491,7 +491,7 @@ export function EnrollmentPdfDocument({ submission }) {
         <View style={styles.masthead}>
           <View>
             <Text style={styles.title}>ENROLLMENT FORM</Text>
-            <Text style={styles.subtitle}>INITIAL TRAINING for Flight Dispatchers - EASA Regulations</Text>
+            <Text style={styles.subtitle}>{submission.courseTitle || 'IFOA Training Programme'}</Text>
             <Text style={styles.promo}>
               Intake: <Text style={styles.promoStrong}>{intake}</Text>
               {'  |  Submitted: '}

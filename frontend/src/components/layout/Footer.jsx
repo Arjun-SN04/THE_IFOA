@@ -159,12 +159,14 @@ export function Footer() {
 
           <button
             onClick={scrollToTop}
-            className="group flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-[#34E06E] text-slate-400 hover:text-slate-950 border border-white/10 hover:border-[#34E06E] transition-all duration-300 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.35)] cursor-pointer"
-            title="Scroll to top"
-            aria-label="Scroll to top"
+            className="group inline-flex items-center gap-2 py-1 text-slate-400 hover:text-white transition-colors duration-200 cursor-pointer"
+            title="Back to top"
+            aria-label="Back to top"
           >
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider">Top</span>
-            <RiArrowUpLine className="w-4 h-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
+            <span className="text-xs font-semibold tracking-wide">Back to top</span>
+            <span className="w-7 h-7 rounded-full border border-slate-600 group-hover:border-[#34E06E] group-hover:text-[#34E06E] flex items-center justify-center transition-colors duration-200">
+              <RiArrowUpLine className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-y-0.5" />
+            </span>
           </button>
         </div>
       </div>

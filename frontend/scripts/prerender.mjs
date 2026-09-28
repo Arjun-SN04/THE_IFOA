@@ -35,7 +35,8 @@ const STATIC_ROUTES = [
   { path: '/events-courses', priority: '0.5', changefreq: 'weekly' },
   { path: '/about', priority: '0.7', changefreq: 'monthly' },
   { path: '/contact', priority: '0.7', changefreq: 'yearly' },
-  { path: '/foxtrot-delta', priority: '0.6', changefreq: 'monthly' }
+  { path: '/foxtrot-delta', priority: '0.6', changefreq: 'monthly' },
+  { path: '/upcoming-courses', priority: '0.8', changefreq: 'weekly' }
 ]
 
 const SEO_BLOCK = /<!--SEO:START-->[\s\S]*?<!--SEO:END-->/

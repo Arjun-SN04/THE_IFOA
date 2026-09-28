@@ -84,8 +84,8 @@ export function CustomSelect({
                 onClick={() => handleSelect(opt.value)}
                 className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-left flex items-center justify-between transition-colors duration-150 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#34E06E]/15 text-slate-900 font-semibold'
-                    : 'text-slate-700 hover:bg-slate-50 hover:text-rocket-dark font-normal'
+                    ? 'bg-slate-100 text-slate-950 font-semibold'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-950 font-normal'
                 }`}
               >
                 <span className="truncate">{opt.label}</span>

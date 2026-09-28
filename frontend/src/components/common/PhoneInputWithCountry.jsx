@@ -154,7 +154,7 @@ export function PhoneInputWithCountry({
                     onClick={() => handleCountrySelect(c)}
                     className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-colors text-left ${
                       isSelected
-                        ? 'bg-rocket-lime/20 font-bold text-black'
+                        ? 'bg-slate-100 font-bold text-slate-950'
                         : 'hover:bg-gray-100 text-gray-800'
                     }`}
                   >

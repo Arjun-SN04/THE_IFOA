@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   RiCheckboxCircleFill,
   RiLoader4Line,
@@ -15,7 +15,7 @@ import {
 } from '@/components/formEngine/formSchema'
 import { downloadEnrollmentPdf } from '@/pdf/generateEnrollmentPdf'
 
-export function RegistrationForm({ slug, courseTitle }) {
+export function RegistrationForm({ slug, courseTitle, onAnswersChange, locationPrices = [] }) {
   const [sections, setSections] = useState(null)
   const [formAvailable, setFormAvailable] = useState(true)
   const [course, setCourse] = useState(null)
@@ -57,6 +57,31 @@ export function RegistrationForm({ slug, courseTitle }) {
 
   const intakes = course?.intakes || []
 
+  // The "Selected Training Program" box shows the price for the chosen
+  // training location when the course has one (e.g. India in INR).
+  const trainingCountry = answers?.intake?.trainingCountry
+  const displaySections = useMemo(() => {
+    const lp = locationPrices.find((p) => p.location === trainingCountry)
+    if (!lp) return sections
+    const priceText = `${Number(lp.amount).toLocaleString('en-IN')} ${lp.currency}`
+    return sections.map((s) => ({
+      ...s,
+      fields: s.fields.map((f) =>
+        f.id === 'programInfo' && f.content
+          ? {
+              ...f,
+              content: f.content.replace(/^(.*?),\s*[\d.,]+\s*[A-Z]{2,4}(\s*)$/m, `$1, ${priceText}$2`)
+            }
+          : f
+      )
+    }))
+  }, [sections, locationPrices, trainingCountry])
+
+  // Lets the page react to answers (e.g. price by training location).
+  useEffect(() => {
+    onAnswersChange?.(answers)
+  }, [answers, onAnswersChange])
+
   function updateSection(sectionId, sectionAnswers) {
     setAnswers((prev) => ({ ...prev, [sectionId]: sectionAnswers }))
     setFieldErrors((prev) => {
@@ -90,8 +115,9 @@ export function RegistrationForm({ slug, courseTitle }) {
     if (detailed.length > 0) {
       const map = {}
       detailed.forEach((err) => {
-        map[`${err.sectionId}.${err.fieldId}`] = `${err.label} is required`
-        map[err.fieldId] = `${err.label} is required`
+        const msg = err.fieldMessage || `${err.label} is required`
+        map[`${err.sectionId}.${err.fieldId}`] = msg
+        map[err.fieldId] = msg
       })
       setFieldErrors(map)
       setErrors(detailed.map((d) => d.message))
@@ -129,6 +155,7 @@ export function RegistrationForm({ slug, courseTitle }) {
   async function handleDownloadPdf() {
     if (!done) return
     setPdfBusy(true)
+    setSubmitError('')
     try {
       const { submission } = await api.getSubmission(done)
       await downloadEnrollmentPdf(submission, `IFOA-Enrollment-${done}.pdf`)
@@ -173,25 +200,75 @@ export function RegistrationForm({ slug, courseTitle }) {
   }
 
   if (done) {
+    const steps = [
+      { title: 'Download your application', text: 'Your completed form as a PDF.' },
+      {
+        title: 'Sign and send it',
+        text: (
+          <>
+            Email the signed copy with two copies of your passport or photo ID to{' '}
+            <a className="font-semibold text-slate-900 underline underline-offset-2 hover:text-[#16a952]" href="mailto:info@theifoa.com">
+              info@theifoa.com
+            </a>
+            .
+          </>
+        )
+      },
+      { title: 'We confirm your place', text: 'Admissions checks your application and sends your place offer and invoice.' }
+    ]
     return (
-      <div className="rounded-2xl border border-rocket-lime bg-rocket-lime/10 p-8 text-center space-y-4">
-        <RiCheckboxCircleFill className="w-12 h-12 mx-auto text-rocket-dark" />
-        <h2 className="text-2xl font-bold text-rocket-dark">Enrollment submitted</h2>
-        <p className="text-gray-700 max-w-lg mx-auto text-sm">
-          Download your completed enrollment form, sign it, and email the signed copy plus two ID copies to{' '}
-          <a className="font-semibold underline" href="mailto:info@theifoa.com">info@theifoa.com</a>. Our
-          admissions team will confirm your place and issue the invoice.
-        </p>
-        <button
-          type="button"
-          onClick={handleDownloadPdf}
-          disabled={pdfBusy}
-          className="inline-flex items-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-sm px-6 py-3 rounded-xl shadow-md disabled:opacity-60 transition"
-        >
-          {pdfBusy ? <RiLoader4Line className="w-4 h-4 animate-spin" /> : <RiDownload2Line className="w-4 h-4" />}
-          {pdfBusy ? 'Preparing PDF…' : 'Download Official PDF'}
-        </button>
-        <p className="text-[11px] text-gray-500">Reference: {done}</p>
+      <div className="rounded-[2rem] bg-white border border-slate-200/90 shadow-[0_16px_48px_rgba(15,23,42,0.06)] p-7 sm:p-10 max-w-2xl mx-auto animate-in fade-in zoom-in-95 duration-300">
+        {/* Header */}
+        <div className="flex items-start gap-4 pb-6 border-b border-slate-100">
+          <span className="w-11 h-11 rounded-full bg-[#34E06E]/15 text-[#16a952] flex items-center justify-center shrink-0">
+            <RiCheckboxCircleFill className="w-6 h-6" />
+          </span>
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">Application received</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Thank you. Your application{courseTitle ? ` for ${courseTitle}` : ''} has been sent to our admissions team.
+            </p>
+          </div>
+        </div>
+
+        {/* Next steps */}
+        <div className="py-6 space-y-4">
+          <span className="block text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">Next steps</span>
+          <ol className="space-y-4">
+            {steps.map((step, i) => (
+              <li key={i} className="flex gap-3.5">
+                <span className="w-7 h-7 rounded-md bg-slate-950 text-white font-mono text-[11px] font-bold flex items-center justify-center shrink-0">
+                  {i + 1}
+                </span>
+                <div className="pt-0.5">
+                  <strong className="block text-sm font-bold text-slate-950">{step.title}</strong>
+                  <p className="text-[13px] text-slate-600 leading-relaxed">{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        {/* Action + reference */}
+        <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <button
+            type="button"
+            onClick={handleDownloadPdf}
+            disabled={pdfBusy}
+            className="inline-flex items-center justify-center gap-2 bg-slate-950 hover:bg-slate-800 text-white font-bold text-sm px-6 py-3 rounded-full transition-colors disabled:opacity-60 cursor-pointer"
+          >
+            {pdfBusy ? <RiLoader4Line className="w-4 h-4 animate-spin" /> : <RiDownload2Line className="w-4 h-4" />}
+            <span>{pdfBusy ? 'Preparing PDF…' : 'Download application (PDF)'}</span>
+          </button>
+          <div className="text-xs text-slate-500">
+            Reference <span className="font-mono font-semibold text-slate-800 break-all">{done}</span>
+          </div>
+        </div>
+        {submitError && (
+          <p className="mt-4 text-xs font-medium text-red-600">
+            Could not create the PDF ({submitError}). Please try again, or email info@theifoa.com with your reference.
+          </p>
+        )}
       </div>
     )
   }
@@ -217,9 +294,6 @@ export function RegistrationForm({ slug, courseTitle }) {
               Please complete all required fields marked with an asterisk (<span className="text-red-400 font-bold">*</span>)
             </p>
           </div>
-          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 shrink-0 mt-1">
-            Official Intake Form
-          </span>
         </div>
       </div>
 
@@ -238,7 +312,7 @@ export function RegistrationForm({ slug, courseTitle }) {
         )}
 
         <div className="space-y-2">
-          {sections.map((section, idx) => (
+          {displaySections.map((section, idx) => (
             <DynamicSection
               key={section.id}
               section={section}

@@ -11,6 +11,12 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
+  // Pre-bundle the PDF renderer at startup. It is only imported lazily (when
+  // someone downloads an enrollment PDF), so Vite would otherwise discover it
+  // mid-session, re-optimize, and the open page gets "504 Outdated Optimize Dep".
+  optimizeDeps: {
+    include: ["@react-pdf/renderer"],
+  },
   build: {
     outDir: "public_html",
     emptyOutDir: true,

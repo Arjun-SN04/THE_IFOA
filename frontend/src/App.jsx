@@ -92,6 +92,7 @@ function PublicSite({ pages }) {
     ServicesPage: Services,
     EventsPage: Events,
     FoxtrotDeltaPage: FoxtrotDelta,
+    UpcomingCoursesPage: UpcomingCourses,
     AboutPage: About,
     ContactPage: Contact,
     CourseDetailPage: CourseDetail,
@@ -112,6 +113,7 @@ function PublicSite({ pages }) {
             <Route path="/events" element={<Events />} />
             <Route path="/events-courses" element={<Navigate to="/events" replace />} />
             <Route path="/foxtrot-delta" element={<FoxtrotDelta />} />
+            <Route path="/upcoming-courses" element={<UpcomingCourses />} />
             <Route path="/magazine" element={<Navigate to="/foxtrot-delta" replace />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
