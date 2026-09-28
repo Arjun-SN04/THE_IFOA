@@ -12,7 +12,9 @@
     "seed:catalog": "node scripts/seedCatalog.js",
     "seed:form-template": "node scripts/seedFormTemplate.js",
     "seed:course-forms": "node scripts/seedCourseForms.js",
-    "extract:inbox": "node scripts/extractReviewsFromInbox.js"
+    "extract:inbox": "node scripts/extractReviewsFromInbox.js",
+    "content:export": "node scripts/exportContent.js",
+    "content:import": "node scripts/importContent.js"
   },
   "keywords": [],
   "author": "",
