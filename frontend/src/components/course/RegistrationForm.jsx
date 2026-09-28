@@ -202,12 +202,12 @@ export function RegistrationForm({ slug, courseTitle }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm bg-white"
+      className="w-full rounded-[2rem] border border-slate-200/90 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] bg-white"
     >
       <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 px-6 sm:px-8 py-6 sm:py-7 text-white border-b border-slate-800">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-slate-400 inline-block">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#34E06E] inline-block">
               Candidate Registration Form
             </span>
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -225,7 +225,7 @@ export function RegistrationForm({ slug, courseTitle }) {
 
       <div className="p-5 sm:p-8 bg-white">
         {errors.length > 0 && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50/90 p-4">
+          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50/90 p-4.5">
             <p className="text-sm font-bold text-red-900">
               Please complete all required fields ({errors.length}):
             </p>
@@ -252,7 +252,7 @@ export function RegistrationForm({ slug, courseTitle }) {
         </div>
 
         {submitError && (
-          <p className="mt-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3">
+          <p className="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3">
             {submitError}
           </p>
         )}
@@ -266,7 +266,7 @@ export function RegistrationForm({ slug, courseTitle }) {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-sm px-8 py-4 rounded-xl shadow-[0_4px_20px_rgba(52, 224, 110,0.35)] disabled:opacity-60 disabled:cursor-not-allowed transition transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold text-xs uppercase tracking-wider px-8 py-4 rounded-full shadow-[0_4px_20px_rgba(52,224,110,0.35)] disabled:opacity-60 disabled:cursor-not-allowed transition transform hover:-translate-y-0.5"
           >
             {submitting && <RiLoader4Line className="w-4 h-4 animate-spin" />}
             {submitting ? 'Submitting Application…' : 'Submit Application Now'}

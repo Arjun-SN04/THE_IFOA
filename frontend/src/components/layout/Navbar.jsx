@@ -147,6 +147,8 @@ export function Navbar({ variant = 'fixed' }) {
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
     { name: 'Events', path: '/events' },
+    { name: 'Agent for Service', path: 'https://agent.theifoa.com/', external: true },
+    { name: 'Smart Talent', path: 'https://talent.theifoa.com/', external: true },
     { name: 'Contact', path: '/contact' }
   ]
 

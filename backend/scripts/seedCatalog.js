@@ -108,7 +108,7 @@ const courses = [
     // pageContent.courseDetail.curriculum.phases below.
     slug: 'aircraft-dispatcher-training-faa-part-65',
     authority: 'FAA Part 65 Standards',
-    format: 'Classroom + Online ADX Support (Daytona Beach, FL)',
+    format: 'Classroom + Online ADX Support (Titusville, FL)',
     careerPath: 'Commercial Airline Dispatcher, Cargo Flight Follower, Corporate OCC Specialist',
     intakeLabel: 'Rolling Admissions',
     title: 'Aircraft Dispatcher Initial Certification',
@@ -124,10 +124,10 @@ const courses = [
     heroImage: null,
     schedule: {
       mode: 'Hybrid',
-      timeText: 'Classroom + Online ADX Support, Daytona Beach (FL)'
+      timeText: 'Classroom + Online ADX Support, Titusville (FL)'
     },
     duration: '200 Hours',
-    location: 'Daytona Beach, FL',
+    location: 'Titusville, FL',
     price: {
       amount: 4500,
       currency: 'USD',
@@ -145,10 +145,10 @@ const courses = [
       ]
     },
     delivery: {
-      intro: 'Classroom instruction combined with online ADX preparation support at IFOA USA, Daytona Beach (FL).',
+      intro: 'Classroom instruction combined with online ADX preparation support at IFOA USA, Titusville (FL).',
       items: [
         { label: 'School', title: 'IFOA USA', description: 'Delivered by the International Flight Operations Academy' },
-        { label: 'Format', title: 'Classroom + Online ADX Support', description: 'Daytona Beach (FL)' }
+        { label: 'Format', title: 'Classroom + Online ADX Support', description: 'Titusville (FL)' }
       ]
     },
     trainingStandards: {

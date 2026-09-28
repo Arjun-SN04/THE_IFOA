@@ -59,10 +59,18 @@ const FALLBACK = {
     topics: [
       'Training my OCC / dispatch team',
       'Individual dispatcher certification',
-      'Consulting services',
+      'Flight Dispatch',
+      'Dangerous Goods',
+      'Train the Trainer',
+      'Human Factors for OCC',
+      'Crew Control',
+      'Consulting Services',
       'Foxtrot Delta / press',
       'Something else'
-    ]
+    ],
+    // Shown only when the "Flight Dispatch" topic is selected - two
+    // certification pathways exist for that discipline.
+    flightDispatchPathways: ['EASA', 'FAA Part 65']
   },
   offices: {
     eyebrow: 'DIRECT LINES',
@@ -90,11 +98,6 @@ const FALLBACK = {
         email: 'info@theifoa.com'
       }
     ]
-  },
-  newsletter: {
-    title: 'Stay informed on operational developments',
-    desc: 'Occasional briefings on regulatory changes, training best practices, and industry analysis. No spam.',
-    successMessage: 'Subscribed! Check your inbox for confirmation.'
   },
   faq: {
     eyebrow: 'FAQ',
@@ -143,16 +146,12 @@ export function ContactPage() {
     email: '',
     organization: '',
     topic: c.form.topics[0] || 'Training my OCC / dispatch team',
+    pathway: '',
     message: ''
   })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  const [newsletterEmail, setNewsletterEmail] = useState('')
-  const [newsletterSuccess, setNewsletterSuccess] = useState(false)
-  const [newsletterLoading, setNewsletterLoading] = useState(false)
-  const [newsletterError, setNewsletterError] = useState('')
 
   const [openFaqIndex, setOpenFaqIndex] = useState(0)
 
@@ -161,28 +160,16 @@ export function ContactPage() {
     setError('')
     setLoading(true)
     try {
-      await api.sendContact(formData)
+      const topic =
+        formData.topic === 'Flight Dispatch' && formData.pathway
+          ? `Flight Dispatch — ${formData.pathway}`
+          : formData.topic
+      await api.sendContact({ ...formData, topic })
       setSubmitted(true)
     } catch (err) {
       setError(err.message || 'Could not send your message. Please try again.')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleNewsletter = async (e) => {
-    e.preventDefault()
-    if (!newsletterEmail) return
-    setNewsletterError('')
-    setNewsletterLoading(true)
-    try {
-      await api.subscribeNewsletter(newsletterEmail)
-      setNewsletterSuccess(true)
-      setNewsletterEmail('')
-    } catch (err) {
-      setNewsletterError(err.message || 'Could not subscribe. Please try again.')
-    } finally {
-      setNewsletterLoading(false)
     }
   }
 
@@ -242,7 +229,7 @@ export function ContactPage() {
                     }))
                     document.getElementById('contact-main-section')?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="relative rounded-3xl bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-7 sm:p-8 flex flex-col justify-between space-y-5 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1"
+                  className="relative rounded-[2rem] bg-white/[0.06] hover:bg-white/[0.1] backdrop-blur-md border border-white/15 hover:border-white/30 p-8 flex flex-col justify-between space-y-6 text-white shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1.5"
                 >
                   <CmsRemoveItem listPath="hero.cards" index={card._index} label="Remove card" />
                   <div className="space-y-3.5">
@@ -323,7 +310,7 @@ export function ContactPage() {
       </section>
 
       {/* 2. MAIN CONTACT SECTION (FORM + REGIONAL OFFICES) */}
-      <Reveal as="section" id="contact-main-section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80 scroll-mt-20" data-purpose="contact-main">
+      <Reveal as="section" id="contact-main-section" className="py-20 sm:py-24 bg-white border-b border-slate-200/80 scroll-mt-20" data-purpose="contact-main">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
             {/* Left: Contact Form */}
@@ -332,18 +319,18 @@ export function ContactPage() {
                 <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                   <CmsText path="form.eyebrow" value={c.form.eyebrow} />
                 </span>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950">
                   <CmsText path="form.title" value={c.form.title} />
                 </h2>
               </div>
 
-              <div className="rounded-3xl bg-slate-50/70 border border-slate-200/90 p-7 sm:p-9 shadow-sm flex-1 flex flex-col justify-between">
+              <div className="rounded-[2rem] bg-slate-50/70 border border-slate-200/90 p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex-1 flex flex-col justify-between">
                 {submitted ? (
                   <div className="text-center py-12 space-y-4 animate-in fade-in duration-300 my-auto">
                     <div className="w-16 h-16 rounded-full bg-slate-100 text-[#34E06E] flex items-center justify-center mx-auto">
                       <RiCheckboxCircleFill className="w-10 h-10" />
                     </div>
-                    <h3 className="text-2xl font-bold text-rocket-dark">
+                    <h3 className="text-2xl font-bold text-slate-950">
                       Message Transmitted
                     </h3>
                     <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
@@ -369,7 +356,7 @@ export function ContactPage() {
                           placeholder="Jane"
                           value={formData.firstName}
                           onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
+                          className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-950 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] transition-all"
                         />
                       </div>
 
@@ -383,7 +370,7 @@ export function ContactPage() {
                           placeholder="Doe"
                           value={formData.lastName}
                           onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                          className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
+                          className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-950 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] transition-all"
                         />
                       </div>
                     </div>
@@ -398,7 +385,7 @@ export function ContactPage() {
                         placeholder="jane.doe@airline.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-950 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] transition-all"
                       />
                     </div>
 
@@ -411,7 +398,7 @@ export function ContactPage() {
                         placeholder="Airline, operator, or 'individual'"
                         value={formData.organization}
                         onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                        className="w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-950 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] transition-all"
                       />
                     </div>
 
@@ -421,10 +408,26 @@ export function ContactPage() {
                       </label>
                       <CustomSelect
                         value={formData.topic || c.form.topics[0]}
-                        onChange={(val) => setFormData({ ...formData, topic: val })}
+                        onChange={(val) =>
+                          setFormData({ ...formData, topic: val, pathway: val === 'Flight Dispatch' ? formData.pathway : '' })
+                        }
                         options={c.form.topics}
                       />
                     </div>
+
+                    {formData.topic === 'Flight Dispatch' ? (
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-mono font-bold uppercase text-slate-500 tracking-wider">
+                          Which certification?
+                        </label>
+                        <CustomSelect
+                          value={formData.pathway}
+                          onChange={(val) => setFormData({ ...formData, pathway: val })}
+                          options={c.form.flightDispatchPathways || ['EASA', 'FAA Part 65']}
+                          placeholder="Select EASA or FAA Part 65..."
+                        />
+                      </div>
+                    ) : null}
 
                     <div className="space-y-1.5 flex-1 flex flex-col">
                       <label className="text-xs font-mono font-bold uppercase text-slate-500 tracking-wider">
@@ -434,7 +437,7 @@ export function ContactPage() {
                         placeholder="Tell us about your fleet, your team size, or your timeline."
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full flex-1 min-h-[110px] px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-rocket-dark placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all resize-y"
+                        className="w-full flex-1 min-h-[110px] px-4 py-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-950 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] transition-all resize-y"
                       />
                     </div>
 
@@ -467,12 +470,12 @@ export function ContactPage() {
                 <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                   <CmsText path="offices.eyebrow" value={c.offices.eyebrow} />
                 </span>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950">
                   <CmsText path="offices.title" value={c.offices.title} />
                 </h2>
               </div>
 
-              <div className="flex-1 flex flex-col justify-between gap-4">
+              <div className="flex-1 flex flex-col justify-between gap-5">
                 {offices.map((office, idx) => {
                   const name = (office.country || '').toLowerCase()
                   const flagImg = name.includes('switzerland')
@@ -486,7 +489,7 @@ export function ContactPage() {
                   return (
                     <div
                       key={idx}
-                      className="group relative rounded-3xl bg-[#020617] border border-white/10 hover:border-white/25 shadow-xl hover:shadow-2xl transition-all duration-300 p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4 overflow-hidden text-white min-h-[190px]"
+                      className="group relative rounded-[2rem] bg-[#020617] border border-white/10 hover:border-[#34E06E]/40 shadow-xl hover:shadow-2xl transition-all duration-300 p-7 flex-1 flex flex-col justify-between space-y-4 overflow-hidden text-white min-h-[190px] hover:-translate-y-1"
                     >
                       <CmsRemoveItem listPath="offices.items" index={office._index} label="Remove office" />
                       {/* Ambient Flag Background Art */}
@@ -494,9 +497,9 @@ export function ContactPage() {
                         <img
                           src={flagImg}
                           alt=""
-                          className="w-full h-full object-cover object-center opacity-25 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700 select-none filter contrast-125"
+                          className="w-full h-full object-cover object-center opacity-20 group-hover:opacity-35 group-hover:scale-105 transition-all duration-700 select-none filter contrast-125"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/75 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/80 to-transparent" />
                       </div>
 
                       <div className="relative z-10 space-y-1.5 max-w-sm">
@@ -545,55 +548,7 @@ export function ContactPage() {
         </div>
       </Reveal>
 
-      {/* 3. NEWSLETTER BOX */}
-      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/60" data-purpose="newsletter-strip">
-        <div className="max-w-[1280px] mx-auto px-6">
-          <div className="rounded-3xl bg-[#020617] text-white p-8 sm:p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-            <div className="space-y-2 max-w-lg">
-              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                <CmsText path="newsletter.title" value={c.newsletter.title} />
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                <CmsText path="newsletter.desc" value={c.newsletter.desc} />
-              </p>
-            </div>
-
-            {newsletterSuccess ? (
-              <div className="inline-flex items-center gap-2 text-[#34E06E] text-xs font-mono font-bold">
-                <RiCheckboxCircleFill className="w-4 h-4" />
-                <span>
-                  <CmsText path="newsletter.successMessage" value={c.newsletter.successMessage} />
-                </span>
-              </div>
-            ) : (
-              <div className="w-full md:w-auto space-y-2">
-                <form onSubmit={handleNewsletter} className="flex flex-wrap sm:flex-nowrap gap-3 w-full md:w-auto">
-                  <input
-                    type="email"
-                    required
-                    placeholder="you@airline.com"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="w-full sm:w-72 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 transition-all"
-                  />
-                  <button
-                    type="submit"
-                    disabled={newsletterLoading}
-                    className="w-full sm:w-auto bg-[#34E06E] hover:bg-[#28c85e] disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
-                  >
-                    {newsletterLoading ? 'Subscribing…' : 'Subscribe'}
-                  </button>
-                </form>
-                {newsletterError && (
-                  <p className="text-xs font-mono text-red-400">{newsletterError}</p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </Reveal>
-
-      {/* 4. FAQ */}
+      {/* 3. FAQ */}
       <Reveal as="section" className="py-16 sm:py-20 bg-white border-t border-slate-100" data-purpose="contact-faq">
         <div className="max-w-[900px] mx-auto px-6 space-y-10">
           <div className="text-center space-y-2.5">

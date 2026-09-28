@@ -14,6 +14,7 @@ import { CosmicParallaxBg } from '@/components/common/CosmicParallaxBg'
 import RegistrationForm from '@/components/course/RegistrationForm'
 import { Seo } from '@/components/common/Seo'
 import { mergeContent } from '@/hooks/usePageContent'
+import { programmeBanner } from '@/components/course/CourseCard'
 
 // Standards Logos
 import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
@@ -186,8 +187,8 @@ export function CourseEnrollmentPage() {
 
           {/* Heading */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-2 flex-1 max-w-4xl">
-              <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-[#34E06E] border-b-2 border-[#34E06E] pb-1 inline-block">
+            <div className="space-y-2.5 flex-1 max-w-4xl">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-[#34E06E] font-mono text-xs font-bold uppercase tracking-wider">
                 {c.header.eyebrow}
               </span>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight [text-wrap:balance]">
@@ -201,7 +202,7 @@ export function CourseEnrollmentPage() {
             {/* Link Back to Course Details */}
             <Link
               to={`/courses/${course.slug}`}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-white/10 hover:bg-white/15 border border-white/15 px-4 py-2.5 rounded-xl transition shrink-0"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-200 hover:text-white bg-white/10 hover:bg-white/15 border border-white/15 px-5 py-2.5 rounded-full transition shadow-xs shrink-0"
             >
               <RiArrowLeftLine className="w-4 h-4" />
               <span>{c.header.backLabel}</span>
@@ -215,14 +216,14 @@ export function CourseEnrollmentPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
           {/* Left Sticky Sidebar: Course Highlights & Details */}
-          <aside className="lg:col-span-4 sticky top-24 space-y-6">
+          <aside className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
             {/* Course Summary Card */}
-            <div className="rounded-3xl bg-white border border-slate-200/90 shadow-sm overflow-hidden p-6 space-y-6">
+            <div className="rounded-[2rem] bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] overflow-hidden p-6 sm:p-7 space-y-6">
               {/* Image & Title Header */}
               <div className="space-y-3">
-                <div className="aspect-[3/2] rounded-2xl overflow-hidden bg-white border border-slate-100 relative flex items-center justify-center p-2">
+                <div className="aspect-[3/2] rounded-2xl overflow-hidden bg-slate-950/5 border border-slate-100 relative flex items-center justify-center p-2 shadow-2xs">
                   <img
-                    src={course.image || bannerCourseHero}
+                    src={programmeBanner(course) || course.image || bannerCourseHero}
                     alt={course.title}
                     className="w-full h-full object-contain object-center"
                   />
@@ -234,7 +235,7 @@ export function CourseEnrollmentPage() {
               </div>
 
               {/* Tuition & Pricing */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+              <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-100 space-y-1">
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 block">
                   {c.sidebar.tuitionLabel}
                 </span>
@@ -258,7 +259,7 @@ export function CourseEnrollmentPage() {
                     <RiCalendarEventLine className="w-4 h-4 text-slate-400" />
                     <span>{c.sidebar.intakeLabel}</span>
                   </span>
-                  <strong className="text-slate-900 text-right font-bold">
+                  <strong className="text-slate-900 text-right font-bold font-mono">
                     {schedule.startDate ? formatDate(schedule.startDate) : course.intakeLabel || 'To be announced'}
                   </strong>
                 </div>
@@ -302,7 +303,7 @@ export function CourseEnrollmentPage() {
               </div>
 
               {/* Admissions WhatsApp Support Box */}
-              <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/70 space-y-2 text-xs">
+              <div className="p-4.5 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 space-y-2 text-xs">
                 <strong className="font-bold text-[#0d6833] block">{c.support.title}</strong>
                 <p className="text-slate-600 leading-relaxed">
                   {c.support.desc}

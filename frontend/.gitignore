@@ -13,6 +13,7 @@ dist-ssr
 public_html
 *.local
 .env
+.env.*
 
 # Editor directories and files
 .vscode/*

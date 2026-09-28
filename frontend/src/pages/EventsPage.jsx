@@ -280,7 +280,7 @@ export function EventsPage() {
           {/* Intakes Cards List - driven by published courses from the admin console */}
           <div className="space-y-4">
             {liveCourses.length === 0 && (
-              <div className="rounded-3xl bg-white border border-dashed border-slate-300 p-10 text-center space-y-2">
+              <div className="rounded-[2rem] bg-white border border-dashed border-slate-300 p-10 text-center space-y-2">
                 <p className="text-base font-bold text-slate-900">
                   <CmsText path="programs.emptyTitle" value={c.programs.emptyTitle} />
                 </p>
@@ -299,22 +299,22 @@ export function EventsPage() {
               return (
                 <div
                   key={course._id || course.slug || idx}
-                  className="group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 p-5 sm:px-7 sm:py-5 flex flex-col md:flex-row md:items-center justify-between gap-5"
+                  className="group rounded-[1.75rem] bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1 transition-all duration-300 p-6 sm:px-8 sm:py-6 flex flex-col md:flex-row md:items-center justify-between gap-5"
                 >
                   {/* Left Info Column */}
                   <div className="space-y-2.5 min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs">
-                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-900 bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-md shrink-0 inline-flex items-center justify-center text-center sm:w-[116px]">
+                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 bg-slate-100 border border-slate-200/80 px-3 py-1 rounded-full shrink-0 inline-flex items-center justify-center text-center">
                         {course.refCode || `INTAKE 0${idx + 1}`}
                       </span>
 
-                      <span className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200/70 px-2.5 py-0.5 rounded-full shrink-0 sm:w-[96px]">
+                      <span className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200/70 px-3 py-1 rounded-full shrink-0">
                         {getModeIcon(course.schedule?.mode)}
                         <span>{course.schedule?.mode || 'Virtual'}</span>
                       </span>
 
                       {durationLabel && (
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-50/80 border border-slate-200/60 px-2.5 py-0.5 rounded-full shrink-0">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-50/80 border border-slate-200/60 px-3 py-1 rounded-full shrink-0">
                           <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>{durationLabel}</span>
                         </span>
@@ -323,7 +323,7 @@ export function EventsPage() {
 
                     <Link
                       to={`/courses/${course.slug}`}
-                      className="block text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors"
+                      className="block text-base sm:text-lg font-bold text-slate-950 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors"
                     >
                       {course.title}
                     </Link>
@@ -342,7 +342,7 @@ export function EventsPage() {
 
                     <Link
                       to={`/courses/${course.slug}`}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#020617] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-150 shadow-2xs hover:shadow-md cursor-pointer shrink-0 sm:min-w-[160px]"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-950 hover:bg-[#34E06E] hover:text-slate-950 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.35)] cursor-pointer shrink-0 sm:min-w-[160px]"
                     >
                       <span>Register Interest</span>
                       <HiArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -356,7 +356,7 @@ export function EventsPage() {
       </Reveal>
 
       {/* 3. WHAT YOU DEVELOP */}
-      <Reveal as="section" className="py-16 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="what-you-develop">
+      <Reveal as="section" className="py-20 sm:py-24 bg-white border-b border-slate-200/80" data-purpose="what-you-develop">
         <div className="max-w-[1280px] mx-auto px-6 space-y-12">
           {/* Header Row */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end justify-between">
@@ -364,7 +364,7 @@ export function EventsPage() {
               <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                 <CmsText path="develop.eyebrow" value={c.develop.eyebrow} />
               </span>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
                 <CmsText path="develop.title" value={c.develop.title} />
               </h2>
             </div>
@@ -401,13 +401,13 @@ export function EventsPage() {
             ].map((pillar, idx) => (
               <div
                 key={idx}
-                className="group rounded-3xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-6"
+                className="group rounded-[2rem] bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1.5 transition-all duration-300 p-8 flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-4">
                   <span className="text-xs font-mono font-black text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block">
                     {pillar.num}
                   </span>
-                  <h3 className="text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors min-h-[1.75rem] flex items-start">
+                  <h3 className="text-xl font-bold text-slate-950 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors min-h-[1.75rem] flex items-start">
                     {pillar.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal min-h-[4.5rem]">
@@ -421,7 +421,7 @@ export function EventsPage() {
       </Reveal>
 
       {/* 4. FROM THEORY TO THE AIRCRAFT (B737-NG OPERATIONAL TRAINING) */}
-      <Reveal as="section" className="py-16 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
+      <Reveal as="section" className="py-20 sm:py-24 bg-[#0a0f1d] text-white border-b border-slate-800" data-purpose="b737-operational-training">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left Content */}
@@ -444,7 +444,7 @@ export function EventsPage() {
                 {(c.theoryToAircraft.tags || []).map((tag, idx) => (
                   <span
                     key={idx}
-                    className="relative inline-flex items-center gap-2 pl-3.5 pr-6 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-200 bg-slate-900/90 border border-slate-800/90 shadow-2xs hover:border-slate-700 transition-colors cursor-default"
+                    className="relative inline-flex items-center gap-2 pl-4 pr-6 py-2 rounded-full text-xs font-semibold tracking-wide text-slate-200 bg-slate-900/90 border border-slate-800/90 shadow-2xs hover:border-[#34E06E]/50 transition-colors cursor-default"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
                     <span>
@@ -458,7 +458,7 @@ export function EventsPage() {
 
             {/* Right Card: B737-NG Aircraft Visual Card */}
             <div className="lg:col-span-5">
-              <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 bg-[#0f172a] shadow-2xl aspect-video">
+              <div className="relative w-full rounded-[2rem] overflow-hidden border border-slate-800 bg-[#0f172a] shadow-2xl aspect-video">
                 <img
                   src={multipleAirImg}
                   alt="B737-NG Aircraft Fleet Operations"
@@ -471,33 +471,34 @@ export function EventsPage() {
         </div>
       </Reveal>
 
-
       {/* 5. FINAL FLEET-WIDE CTA */}
-      <Reveal as="section" className="py-16 sm:py-24 bg-white text-center" data-purpose="events-final-cta">
-        <div className="max-w-[800px] mx-auto px-6 space-y-6">
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
-            <CmsText path="finalCta.title" value={c.finalCta.title} />
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-xl mx-auto">
-            <CmsText path="finalCta.desc" value={c.finalCta.desc} />
-          </p>
+      <Reveal as="section" className="py-20 sm:py-28 bg-white text-center" data-purpose="events-final-cta">
+        <div className="max-w-[1000px] mx-auto px-6 sm:px-8">
+          <div className="relative rounded-[2.5rem] bg-[#020617] border border-white/10 p-10 sm:p-16 text-center text-white overflow-hidden shadow-2xl space-y-6">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight max-w-2xl mx-auto">
+              <CmsText path="finalCta.title" value={c.finalCta.title} />
+            </h2>
+            <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl mx-auto">
+              <CmsText path="finalCta.desc" value={c.finalCta.desc} />
+            </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <button
-              onClick={() => navigate('/contact')}
-              className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:scale-105 cursor-pointer"
-            >
-              <CmsText path="finalCta.primaryLabel" value={c.finalCta.primaryLabel} />
-            </button>
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-rocket-dark font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 group"
-            >
-              <span>
-                <CmsText path="finalCta.secondaryLabel" value={c.finalCta.secondaryLabel} />
-              </span>
-              <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+              <button
+                onClick={() => navigate('/contact')}
+                className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-9 py-4 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:shadow-[0_0_24px_rgba(52,224,110,0.45)] hover:scale-105 cursor-pointer"
+              >
+                <CmsText path="finalCta.primaryLabel" value={c.finalCta.primaryLabel} />
+              </button>
+              <Link
+                to="/services"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-8 py-4 rounded-full text-xs uppercase tracking-widest transition-all duration-200 group"
+              >
+                <span>
+                  <CmsText path="finalCta.secondaryLabel" value={c.finalCta.secondaryLabel} />
+                </span>
+                <HiArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              </Link>
+            </div>
           </div>
         </div>
       </Reveal>

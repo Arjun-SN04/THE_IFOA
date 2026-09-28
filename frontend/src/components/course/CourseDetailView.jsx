@@ -29,7 +29,7 @@ import { MdOutlineMail } from 'react-icons/md'
 import { mergeContent } from '@/hooks/usePageContent'
 
 // Assets
-import { resolveCard } from '@/components/course/CourseCard'
+import { resolveCard, programmeBanner, hasEnrollmentForm } from '@/components/course/CourseCard'
 import logoEasa from '@/assets/shared/standards-logos/logo-easa.webp'
 import logoIcao from '@/assets/shared/standards-logos/logo-icao.webp'
 import logoDgca from '@/assets/shared/standards-logos/logo-dgca.webp'
@@ -284,7 +284,10 @@ export function CourseDetailView({ course, preview = false }) {
     course.slug?.includes('dgr') ||
     course.title?.toLowerCase().includes('dangerous goods')
 
+  const sidebarBanner = programmeBanner(course)
+  const enrollHref = hasEnrollmentForm(course) ? `/courses/${course.slug}/enroll` : '/contact'
   const sidebarImgSrc =
+    sidebarBanner ||
     course.card?.image?.url ||
     (isDgrCourse && (!course.heroImage?.url || course.heroImage?.url?.includes('ground') || course.heroImage?.url?.includes('dispatcher'))
       ? imgDgr
@@ -310,31 +313,27 @@ export function CourseDetailView({ course, preview = false }) {
           {/* ===================================================================== */}
           {/* LEFT CONTENT COLUMN (7.5 - 8 Cols)                                    */}
           {/* ===================================================================== */}
-          <main className="lg:col-span-7 xl:col-span-8 min-w-0 space-y-12 sm:space-y-16 lg:space-y-20">
+          <main className="lg:col-span-7 xl:col-span-8 min-w-0 space-y-10 sm:space-y-14 lg:space-y-16">
 
             {/* 1. HERO SECTION (Executive, Sleek & Clean) */}
-            <section id="overview" className="space-y-7 sm:space-y-9">
+            <section id="overview" className="space-y-6 sm:space-y-8">
               {/* Sleek Breadcrumb & Action Bar */}
               <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-slate-200/80">
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-500 min-w-0">
                   <Link
                     to="/events"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-white transition-all text-xs font-semibold shadow-2xs group cursor-pointer shrink-0"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-950 hover:bg-slate-800 text-white transition-all text-xs font-semibold shadow-xs group cursor-pointer shrink-0"
                   >
                     <RiArrowLeftLine className="w-3.5 h-3.5 text-slate-300 group-hover:text-white group-hover:-translate-x-0.5 transition-transform" />
                     <span>All Programmes</span>
                   </Link>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="hidden sm:inline-block text-xs font-mono font-bold uppercase tracking-wider text-slate-900 border-b-2 border-[#34E06E] pb-0.5">
-                    Intake Open
-                  </span>
-
+                <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     type="button"
                     onClick={handleShare}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-white hover:bg-slate-50 border border-slate-200/90 px-3 py-1.5 rounded-lg transition-all shadow-2xs cursor-pointer active:scale-95"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-white hover:bg-slate-50 border border-slate-200/90 px-3.5 py-1.5 rounded-full transition-all shadow-2xs cursor-pointer active:scale-95"
                   >
                     <RiShareForwardLine className="w-3.5 h-3.5 text-slate-500" />
                     <span>{copied ? c.labels.copiedLabel : c.labels.shareLabel}</span>
@@ -343,9 +342,9 @@ export function CourseDetailView({ course, preview = false }) {
               </div>
 
               {/* Title & Authoritative Headline */}
-              <div className="space-y-3">
+              <div className="space-y-3.5">
                 {course.eyebrow && (
-                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#16a952] block">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800">
                     {course.eyebrow}
                   </span>
                 )}
@@ -361,7 +360,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                 {/* Optional single-point clarifying callout */}
                 {course.heroNote && (
-                  <div className="flex items-start gap-2.5 bg-emerald-50/80 border border-emerald-200/80 rounded-xl px-4 py-3 max-w-2xl">
+                  <div className="flex items-start gap-3 bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-4 max-w-2xl shadow-2xs">
                     <RiInformationLine className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-emerald-900 leading-relaxed font-medium">
                       {course.heroNote}
@@ -376,7 +375,7 @@ export function CourseDetailView({ course, preview = false }) {
                   {course.badges.map((badge, idx) => (
                     <div
                       key={idx}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-2xs"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-xs"
                     >
                       <RiShieldCheckFill className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
                       <span className="font-mono tracking-tight">{badge}</span>
@@ -385,8 +384,8 @@ export function CourseDetailView({ course, preview = false }) {
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-0.5">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-2xs">
-                    <RiShieldCheckFill className="w-4 h-4 text-[#34E06E] shrink-0" />
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-xs">
+                    <RiShieldCheckFill className="w-3.5 h-3.5 text-[#34E06E] shrink-0" />
                     <span className="font-mono tracking-tight font-bold">
                       {isIndiaProgram
                         ? c.labels.dgcaComplianceBadge
@@ -396,12 +395,12 @@ export function CourseDetailView({ course, preview = false }) {
                     </span>
                   </div>
                   {!isFaaProgram && (
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-2xs">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-xs">
                       <RiGlobalLine className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       <span className="font-mono tracking-tight">ICAO Standard Aligned</span>
                     </div>
                   )}
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-2xs">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-slate-800 text-white text-xs font-semibold shadow-xs">
                     <RiAwardLine className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <span className="font-mono tracking-tight">{c.labels.cbtaBadge}</span>
                   </div>
@@ -420,15 +419,15 @@ export function CourseDetailView({ course, preview = false }) {
                 {course.isCorporate ? (
                   <Link
                     to="/contact"
-                    className="inline-flex items-center justify-center gap-2.5 bg-[#34E06E] hover:bg-[#2fe069] active:bg-[#28c85e] text-slate-950 font-bold px-6 py-3.5 rounded-xl text-xs sm:text-sm tracking-wide transition-all duration-150 shadow-xs hover:shadow-md active:scale-[0.98] group cursor-pointer text-center w-full sm:w-auto"
+                    className="inline-flex items-center justify-center gap-2.5 bg-[#34E06E] hover:bg-[#2fe069] active:bg-[#28c85e] text-slate-950 font-bold px-7 py-3.5 rounded-full text-xs sm:text-sm tracking-wide transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer text-center w-full sm:w-auto"
                   >
                     <span>{course.ctaLabel || 'Request a Corporate Quote'}</span>
                     <HiArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
                 ) : (
                   <Link
-                    to={`/courses/${course.slug}/enroll`}
-                    className="inline-flex items-center justify-center gap-2.5 bg-[#34E06E] hover:bg-[#2fe069] active:bg-[#28c85e] text-slate-950 font-bold px-6 py-3.5 rounded-xl text-xs sm:text-sm tracking-wide transition-all duration-150 shadow-xs hover:shadow-md active:scale-[0.98] group cursor-pointer text-center w-full sm:w-auto"
+                    to={enrollHref}
+                    className="inline-flex items-center justify-center gap-2.5 bg-[#34E06E] hover:bg-[#2fe069] active:bg-[#28c85e] text-slate-950 font-bold px-7 py-3.5 rounded-full text-xs sm:text-sm tracking-wide transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer text-center w-full sm:w-auto"
                   >
                     <span>{c.labels.applyOnlineLabel}</span>
                     <HiArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -437,7 +436,7 @@ export function CourseDetailView({ course, preview = false }) {
 
                 <a
                   href="#modules"
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-900 hover:text-white border border-slate-300/90 hover:border-slate-900 text-slate-800 font-semibold px-5 py-3.5 rounded-xl text-xs sm:text-sm transition-all duration-150 shadow-2xs group cursor-pointer text-center w-full sm:w-auto"
+                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-900 hover:text-white border border-slate-300 hover:border-slate-900 text-slate-800 font-semibold px-6 py-3.5 rounded-full text-xs sm:text-sm transition-all duration-150 shadow-2xs hover:-translate-y-0.5 group cursor-pointer text-center w-full sm:w-auto"
                 >
                   <TbBook2 className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
                   <span>{c.labels.viewModulesLabel}</span>
@@ -450,62 +449,143 @@ export function CourseDetailView({ course, preview = false }) {
               <section className="space-y-8">
                 {/* Step 1 - Role */}
                 <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
-                      Step 1 - Your Role
+                  <div className="space-y-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                      Step 1 • Your Role
                     </span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">
                       What do you actually deal with?
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* Desktop / Tablet: Expanding Strips (mirrors curriculum phase explorer below) */}
+                  <div className="hidden md:flex flex-row items-stretch gap-3.5 w-full h-[380px]">
                     {dgrExplorer.roles.map((role, idx) => {
-                      const isSel = activeRoleIdx === idx
+                      const isActive = activeRoleIdx === idx
+                      const roleNum = idx + 1 < 10 ? `0${idx + 1}` : `${idx + 1}`
+
                       return (
-                        <button
+                        <motion.div
                           key={role.code || idx}
-                          type="button"
+                          layout
+                          transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                          onMouseEnter={() => setActiveRoleIdx(idx)}
                           onClick={() => setActiveRoleIdx(idx)}
-                          className={`text-left rounded-2xl border-2 p-4 transition-colors cursor-pointer ${isSel ? 'bg-emerald-50/80 border-emerald-500' : 'bg-white border-slate-200/90 hover:border-slate-300'
+                          className={`relative h-full rounded-[2rem] border overflow-hidden cursor-pointer select-none transition-shadow duration-200 ${isActive
+                              ? 'flex-[4] min-w-[340px] bg-white border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.04)] p-6 sm:p-7 flex flex-col'
+                              : 'flex-[0.6] min-w-[56px] max-w-[80px] bg-white/80 hover:bg-white hover:border-slate-300 border-slate-200/90 shadow-2xs p-3 py-6 flex flex-col items-center justify-between'
                             }`}
                         >
-                          {role.code && (
-                            <div
-                              className={`text-[11px] font-mono font-bold uppercase tracking-wider mb-1 ${isSel ? 'text-emerald-700' : 'text-slate-500'
-                                }`}
+                          {isActive ? (
+                            <motion.div
+                              key="active-pane"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.12 }}
+                              className="flex flex-col h-full w-full overflow-y-auto space-y-4"
                             >
-                              Category {role.code}
-                            </div>
+                              {role.code && (
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 text-white shadow-2xs shrink-0 w-fit">
+                                  <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-slate-200">
+                                    Category {role.code}
+                                  </span>
+                                </div>
+                              )}
+
+                              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">
+                                {role.title}
+                              </h3>
+
+                              {role.scenarios?.length > 0 && (
+                                <div className="space-y-2.5 pt-1">
+                                  {role.scenarios.map((s, sIdx) => (
+                                    <div
+                                      key={sIdx}
+                                      className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                                    >
+                                      <span className="text-[#0E7A4B] font-bold shrink-0">&rsaquo;</span>
+                                      <span>{s}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              key="collapsed-pane"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.12 }}
+                              className="flex flex-col items-center justify-between h-full w-full"
+                            >
+                              <div className="w-8 h-8 rounded-full border border-slate-200/90 bg-slate-100 flex items-center justify-center text-slate-700 font-mono text-xs font-bold shadow-2xs shrink-0">
+                                {roleNum}
+                              </div>
+                              <div className="flex-1 flex items-center justify-center my-4 overflow-hidden w-full">
+                                <span className="text-xs sm:text-sm font-semibold text-slate-600 whitespace-nowrap [writing-mode:vertical-rl] rotate-180 tracking-wide text-center">
+                                  {role.title}
+                                </span>
+                              </div>
+                              <div className="text-xs font-mono font-bold text-slate-400 shrink-0">
+                                {roleNum}
+                              </div>
+                            </motion.div>
                           )}
-                          <div className="text-base font-bold text-slate-950">{role.title}</div>
-                        </button>
+                        </motion.div>
                       )
                     })}
                   </div>
 
-                  {activeExplorerRole?.scenarios?.length > 0 && (
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
-                      <div className="text-xs font-bold text-[#0A5E39] uppercase tracking-wider mb-3">
-                        What {activeExplorerRole.title} actually deal with
-                      </div>
-                      <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
-                        {activeExplorerRole.scenarios.map((s, idx) => (
-                          <div key={idx} className="flex items-start gap-2.5 text-sm text-slate-700 leading-relaxed">
-                            <span className="text-[#0E7A4B] font-bold shrink-0">&rsaquo;</span>
-                            <span>{s}</span>
-                          </div>
-                        ))}
-                      </div>
+                  {/* Mobile: tap-select cards + detail box below */}
+                  <div className="md:hidden space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {dgrExplorer.roles.map((role, idx) => {
+                        const isSel = activeRoleIdx === idx
+                        return (
+                          <button
+                            key={role.code || idx}
+                            type="button"
+                            onClick={() => setActiveRoleIdx(idx)}
+                            className={`text-left rounded-2xl border-2 p-4 transition-colors cursor-pointer ${isSel ? 'bg-emerald-50/80 border-emerald-500' : 'bg-white border-slate-200/90 hover:border-slate-300'
+                              }`}
+                          >
+                            {role.code && (
+                              <div
+                                className={`text-[11px] font-mono font-bold uppercase tracking-wider mb-1 ${isSel ? 'text-emerald-700' : 'text-slate-500'
+                                  }`}
+                              >
+                                Category {role.code}
+                              </div>
+                            )}
+                            <div className="text-base font-bold text-slate-950">{role.title}</div>
+                          </button>
+                        )
+                      })}
                     </div>
-                  )}
+
+                    {activeExplorerRole?.scenarios?.length > 0 && (
+                      <div className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+                        <div className="text-xs font-bold text-[#0A5E39] uppercase tracking-wider mb-3">
+                          What {activeExplorerRole.title} actually deal with
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                          {activeExplorerRole.scenarios.map((s, idx) => (
+                            <div key={idx} className="flex items-start gap-2.5 text-sm text-slate-700 leading-relaxed">
+                              <span className="text-[#0E7A4B] font-bold shrink-0">&rsaquo;</span>
+                              <span>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Step 2 - Operation segment */}
                 <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
-                      Step 2 - Your Operation
+                  <div className="space-y-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
+                      Step 2 • Your Operation
                     </span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">
                       No-carry isn't a shorter carry course
@@ -520,8 +600,8 @@ export function CourseDetailView({ course, preview = false }) {
                           key={segment.id || idx}
                           type="button"
                           onClick={() => setActiveSegmentIdx(idx)}
-                          className={`px-4 py-2.5 rounded-full border-2 text-sm font-bold transition-colors cursor-pointer ${isSel
-                              ? 'bg-emerald-50/80 border-emerald-500 text-[#0A5E39]'
+                          className={`px-5 py-2.5 rounded-full border-2 text-sm font-bold transition-all cursor-pointer ${isSel
+                              ? 'bg-emerald-50/80 border-emerald-500 text-[#0A5E39] shadow-xs'
                               : 'bg-white border-slate-200/90 text-slate-600 hover:border-slate-300'
                             }`}
                         >
@@ -532,7 +612,7 @@ export function CourseDetailView({ course, preview = false }) {
                   </div>
 
                   {activeExplorerSegment?.descriptor && (
-                    <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-xl px-4 py-3.5 text-sm text-emerald-900 font-medium leading-relaxed">
+                    <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-4 sm:p-5 text-sm text-emerald-900 font-medium leading-relaxed">
                       {activeExplorerSegment.descriptor}
                     </div>
                   )}
@@ -543,8 +623,8 @@ export function CourseDetailView({ course, preview = false }) {
             {/* 3. CURRICULUM FRAMEWORK & INTERACTIVE PHASE EXPLORER (EXPANDS ON HOVER & CLICK) */}
             <section id="modules" className="space-y-6 sm:space-y-7 scroll-mt-16">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3.5 border-b border-slate-200/80">
-                <div className="space-y-1">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                <div className="space-y-1.5">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                     {course.curriculum?.eyebrow || c.curriculum.eyebrow}
                   </span>
                   <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-950 tracking-tight">
@@ -566,7 +646,7 @@ export function CourseDetailView({ course, preview = false }) {
               {phaseCurriculum.length <= 5 ? (
                 <>
                   {/* Desktop / Tablet: Expanding Strips Accordion (GPU-Accelerated Layout, Zero Ghosting) */}
-                  <div className="hidden md:flex flex-row items-stretch gap-3 w-full h-[510px]">
+                  <div className="hidden md:flex flex-row items-stretch gap-3.5 w-full h-[510px]">
                     {phaseCurriculum.map((phase, idx) => {
                       const isActive = activePhase === idx
                       const phaseNum = phase.num || (idx + 1 < 10 ? `0${idx + 1}` : `${idx + 1}`)
@@ -579,9 +659,9 @@ export function CourseDetailView({ course, preview = false }) {
                           transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                           onMouseEnter={() => setActivePhase(idx)}
                           onClick={() => setActivePhase(idx)}
-                          className={`relative h-full rounded-3xl border overflow-hidden cursor-pointer select-none ${isActive
-                              ? 'flex-[4] min-w-[340px] bg-white border-slate-200/90 shadow-sm p-6 sm:p-7 flex flex-col justify-between'
-                              : 'flex-[0.6] min-w-[56px] max-w-[80px] bg-white/70 hover:bg-white hover:border-slate-300 border-slate-200/90 shadow-2xs p-3 py-6 flex flex-col items-center justify-between'
+                          className={`relative h-full rounded-[2rem] border overflow-hidden cursor-pointer select-none transition-shadow duration-200 ${isActive
+                              ? 'flex-[4] min-w-[340px] bg-white border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.04)] p-6 sm:p-7 flex flex-col justify-between'
+                              : 'flex-[0.6] min-w-[56px] max-w-[80px] bg-white/80 hover:bg-white hover:border-slate-300 border-slate-200/90 shadow-2xs p-3 py-6 flex flex-col items-center justify-between'
                             }`}
                         >
                           {isActive ? (
@@ -595,13 +675,20 @@ export function CourseDetailView({ course, preview = false }) {
                               <div className="space-y-4">
                                 {/* Top Header Row */}
                                 <div className="flex items-center justify-between gap-3">
-                                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950 text-white shadow-2xs shrink-0">
-                                    <span className="w-5 h-5 rounded-md bg-white/20 text-white font-mono font-bold text-[10px] flex items-center justify-center">
-                                      {phaseNum}
-                                    </span>
-                                    <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-slate-200">
-                                      PHASE
-                                    </span>
+                                  <div className="flex items-center gap-2">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 text-white shadow-2xs shrink-0">
+                                      <span className="w-5 h-5 rounded-full bg-white/20 text-white font-mono font-bold text-[10px] flex items-center justify-center">
+                                        {phaseNum}
+                                      </span>
+                                      <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-slate-200">
+                                        PHASE
+                                      </span>
+                                    </div>
+                                    {phase.adaptive && dgrExplorer && (
+                                      <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full uppercase tracking-wider shadow-2xs">
+                                        Adapted
+                                      </span>
+                                    )}
                                   </div>
 
                                   <span className="text-[11px] font-mono font-bold tracking-wider text-slate-950 uppercase relative pb-1 border-b-2 border-[#34E06E] shrink-0 select-none">
@@ -658,7 +745,7 @@ export function CourseDetailView({ course, preview = false }) {
                               className="flex flex-col items-center justify-between h-full w-full"
                             >
                               {/* Top Number Box */}
-                              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-slate-200/90 bg-white flex items-center justify-center text-slate-700 font-mono text-xs font-bold shadow-2xs shrink-0">
+                              <div className="w-8 h-8 rounded-full border border-slate-200/90 bg-slate-100 flex items-center justify-center text-slate-700 font-mono text-xs font-bold shadow-2xs shrink-0">
                                 {phaseNum}
                               </div>
 
@@ -696,20 +783,28 @@ export function CourseDetailView({ course, preview = false }) {
                               : 'bg-white/80 border-slate-200/80 hover:bg-white'
                             }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <span className="w-7 h-7 rounded-lg bg-slate-950 text-white font-mono font-bold text-xs grid place-items-center shadow-2xs">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="w-7 h-7 rounded-full bg-slate-950 text-white font-mono font-bold text-xs grid place-items-center shadow-2xs shrink-0">
                                 {phaseNum}
                               </span>
                               <span className="font-bold text-sm text-slate-900">{phase.title}</span>
                             </div>
-                            <motion.span
-                              animate={{ rotate: isActive ? 180 : 0 }}
-                              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                              className="text-slate-500 flex items-center justify-center"
-                            >
-                              <RiArrowDownSLine className="w-5 h-5" />
-                            </motion.span>
+
+                            <div className="flex items-center gap-2.5 shrink-0">
+                              {phase.adaptive && dgrExplorer && (
+                                <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-2xs">
+                                  Adapted
+                                </span>
+                              )}
+                              <motion.span
+                                animate={{ rotate: isActive ? 180 : 0 }}
+                                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                                className="text-slate-500 flex items-center justify-center"
+                              >
+                                <RiArrowDownSLine className="w-5 h-5" />
+                              </motion.span>
+                            </div>
                           </div>
 
                           <AnimatePresence initial={false}>
@@ -772,19 +867,19 @@ export function CourseDetailView({ course, preview = false }) {
                           }`}
                       >
                         <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3">
-                            <span className="w-8 h-8 rounded-lg bg-slate-950 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            <span className="w-8 h-8 rounded-full bg-slate-950 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                               {phaseNum}
                             </span>
                             <span className="font-bold text-sm sm:text-base text-slate-900">{phase.title}</span>
+                          </div>
+
+                          <div className="flex items-center gap-3 shrink-0 ml-auto">
                             {phase.adaptive && dgrExplorer && (
-                              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-wide shrink-0">
+                              <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full uppercase tracking-wider shadow-2xs">
                                 Adapted
                               </span>
                             )}
-                          </div>
-
-                          <div className="flex items-center gap-3 shrink-0">
                             {isActive && (
                               <span className="hidden sm:inline-block text-[10px] font-mono font-bold tracking-wider text-slate-950 uppercase relative pb-0.5 border-b-2 border-[#34E06E]">
                                 ACTIVE MODULE
@@ -844,9 +939,9 @@ export function CourseDetailView({ course, preview = false }) {
             </section>
 
             {/* 4. OPERATIONAL COMPETENCIES */}
-            <section className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-xs space-y-6 sm:space-y-7">
+            <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-7">
               <div className="space-y-1.5">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                   {course.whatYouWillLearn?.eyebrow || c.labels.outcomesEyebrow}
                 </span>
                 <h2 className="text-xl sm:text-2xl lg:text-[26px] font-bold text-slate-950 tracking-tight">
@@ -858,7 +953,7 @@ export function CourseDetailView({ course, preview = false }) {
                 {learningOutcomes.map((point, i) => (
                   <div
                     key={i}
-                    className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50/60 border border-slate-100/90 hover:bg-slate-50 hover:border-slate-200 transition-colors text-xs sm:text-sm text-slate-800 leading-snug"
+                    className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50/70 border border-slate-100/90 hover:bg-slate-50 hover:border-slate-200 transition-colors text-xs sm:text-sm text-slate-800 leading-snug"
                   >
                     <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
                       <RiCheckLine className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -868,10 +963,10 @@ export function CourseDetailView({ course, preview = false }) {
                 ))}
               </div>
 
-              {/* Process Steps Flow Banner (e.g. IDENTIFY THE OPERATION → APPLY THE CORRECT FTL RULE → CHECK LIMITS → CONSIDER FATIGUE RISK) */}
+              {/* Process Steps Flow Banner */}
               {course.processSteps?.length > 0 && (
                 <div className="pt-2">
-                  <div className="rounded-xl sm:rounded-2xl bg-[#E8F8F0] py-3.5 px-4 sm:px-6 flex flex-wrap items-center justify-center gap-x-2.5 sm:gap-x-4 gap-y-2 text-center">
+                  <div className="rounded-2xl sm:rounded-full bg-emerald-50/80 border border-emerald-200/60 py-3.5 px-5 sm:px-8 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-2 text-center">
                     {course.processSteps.map((step, idx) => (
                       <React.Fragment key={idx}>
                         <span className="text-[11px] sm:text-xs font-bold sm:font-extrabold uppercase tracking-wider text-[#085A3C]">
@@ -890,9 +985,9 @@ export function CourseDetailView({ course, preview = false }) {
             </section>
 
             {/* 5. REGULATORY & TRAINING FRAMEWORK (Sleek Dark Aviation Panel) */}
-            <section className="rounded-3xl bg-gradient-to-br from-slate-950 via-[#0a1120] to-[#040814] text-white p-8 sm:p-9 lg:p-10 shadow-md border border-slate-800 space-y-6 sm:space-y-7 relative overflow-hidden">
+            <section className="rounded-[2rem] bg-gradient-to-br from-slate-950 via-[#0a1120] to-[#040814] text-white p-8 sm:p-9 lg:p-10 shadow-lg border border-white/10 space-y-6 sm:space-y-7 relative overflow-hidden">
               <div className="space-y-1.5">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#34E06E] block">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[#34E06E] font-mono text-xs font-bold uppercase tracking-wider">
                   {course.trainingStandards?.eyebrow || c.labels.complianceEyebrow}
                 </span>
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
@@ -915,7 +1010,7 @@ export function CourseDetailView({ course, preview = false }) {
                   {course.trainingStandards.cards.map((card, idx) => (
                     <div
                       key={idx}
-                      className="p-4.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors space-y-1.5"
+                      className="p-4.5 rounded-2xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors space-y-1.5"
                     >
                       <div className="text-sm font-mono font-bold text-[#34E06E]">
                         {card.code}
@@ -928,8 +1023,8 @@ export function CourseDetailView({ course, preview = false }) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
-                  <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors">
-                    <div className="h-10 w-14 bg-white rounded-lg flex items-center justify-center p-1.5 shrink-0 shadow-xs">
+                  <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors">
+                    <div className="h-10 w-14 bg-white rounded-xl flex items-center justify-center p-1.5 shrink-0 shadow-xs">
                       <img
                         src={isIndiaProgram ? logoDgca : isFaaProgram ? logoFaa : logoEasa}
                         alt={isIndiaProgram ? 'DGCA' : isFaaProgram ? 'FAA' : 'EASA'}
@@ -951,8 +1046,8 @@ export function CourseDetailView({ course, preview = false }) {
                   </div>
 
                   {isFaaProgram ? (
-                    <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors">
-                      <div className="h-10 w-14 bg-white rounded-lg flex items-center justify-center p-1.5 shrink-0 shadow-xs">
+                    <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors">
+                      <div className="h-10 w-14 bg-white rounded-xl flex items-center justify-center p-1.5 shrink-0 shadow-xs">
                         <TbCertificate className="w-6 h-6 text-slate-700" />
                       </div>
                       <div className="min-w-0">
@@ -961,8 +1056,8 @@ export function CourseDetailView({ course, preview = false }) {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors">
-                      <div className="h-10 w-14 bg-white rounded-lg flex items-center justify-center p-1.5 shrink-0 shadow-xs">
+                    <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white/[0.05] border border-white/10 hover:border-white/20 transition-colors">
+                      <div className="h-10 w-14 bg-white rounded-xl flex items-center justify-center p-1.5 shrink-0 shadow-xs">
                         <img src={logoIcao} alt="ICAO" className="max-h-7 max-w-full object-contain" />
                       </div>
                       <div className="min-w-0">
@@ -979,10 +1074,10 @@ export function CourseDetailView({ course, preview = false }) {
 
             {/* TRAINING PHILOSOPHY */}
             {course.trainingPhilosophy?.title && (
-              <section className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-xs space-y-6 sm:space-y-7">
+              <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-7">
                 <div className="space-y-1.5">
                   {course.trainingPhilosophy.eyebrow && (
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                       {course.trainingPhilosophy.eyebrow}
                     </span>
                   )}
@@ -999,7 +1094,7 @@ export function CourseDetailView({ course, preview = false }) {
                 {course.trainingPhilosophy.cards?.length > 0 && (
                   <div className="grid sm:grid-cols-3 gap-3.5">
                     {course.trainingPhilosophy.cards.map((card, idx) => (
-                      <div key={idx} className="p-4.5 rounded-xl bg-slate-50/70 border border-slate-100 space-y-1.5">
+                      <div key={idx} className="p-4.5 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1.5">
                         <div className="text-sm font-bold text-slate-900">{card.title}</div>
                         <p className="text-xs text-slate-600 leading-relaxed">{card.desc}</p>
                       </div>
@@ -1010,9 +1105,9 @@ export function CourseDetailView({ course, preview = false }) {
             )}
 
             {/* 6. WHO SHOULD ATTEND (Audience Profile) */}
-            <section className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-xs space-y-6 sm:space-y-7">
-              <div className="border-b border-slate-100 pb-3.5 space-y-1">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+            <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-7">
+              <div className="border-b border-slate-100 pb-3.5 space-y-1.5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                   {course.whoShouldAttend?.eyebrow || c.labels.eligibilityEyebrow}
                 </span>
                 <h2 className="text-xl font-bold text-slate-950 tracking-tight">
@@ -1021,20 +1116,20 @@ export function CourseDetailView({ course, preview = false }) {
               </div>
 
               {course.whoShouldAttend?.intro && (
-                <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200/80 text-xs sm:text-sm font-bold text-emerald-900">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs sm:text-sm font-bold text-emerald-900">
                   <RiCheckboxCircleFill className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>{course.whoShouldAttend.intro}</span>
                 </div>
               )}
 
               {audienceProfiles.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {audienceProfiles.map((item, idx) => {
                     const isLastOdd = audienceProfiles.length % 2 === 1 && idx === audienceProfiles.length - 1
                     return item.desc ? (
                       <div
                         key={idx}
-                        className={`p-4 rounded-xl bg-slate-50/70 border border-slate-200/70 hover:border-slate-300 transition-colors space-y-1.5 ${
+                        className={`p-4 rounded-2xl bg-slate-50/70 border border-slate-200/70 hover:border-slate-300 transition-colors space-y-1.5 ${
                           isLastOdd ? 'sm:col-span-2 sm:w-[calc(50%-0.375rem)] sm:mx-auto w-full' : ''
                         }`}
                       >
@@ -1047,7 +1142,7 @@ export function CourseDetailView({ course, preview = false }) {
                     ) : (
                       <div
                         key={idx}
-                        className={`p-3.5 rounded-xl bg-slate-50/70 border border-slate-200/70 flex items-center gap-2.5 text-xs sm:text-sm text-slate-800 leading-snug font-medium ${
+                        className={`p-3.5 rounded-2xl bg-slate-50/70 border border-slate-200/70 flex items-center gap-2.5 text-xs sm:text-sm text-slate-800 leading-snug font-medium ${
                           isLastOdd ? 'sm:col-span-2 sm:w-[calc(50%-0.375rem)] sm:mx-auto w-full' : ''
                         }`}
                       >
@@ -1068,9 +1163,9 @@ export function CourseDetailView({ course, preview = false }) {
 
             {/* 7. ENTRY REQUIREMENTS */}
             {entryRequirements.length > 0 && (
-              <section className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-xs space-y-5 sm:space-y-6">
+              <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-5 sm:space-y-6">
                 <div className="space-y-1.5">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                     {c.labels.entryReqEyebrow}
                   </span>
                   <h2 className="text-xl font-bold text-slate-950 tracking-tight">{c.labels.entryReqTitle}</h2>
@@ -1082,7 +1177,7 @@ export function CourseDetailView({ course, preview = false }) {
                 </div>
                 <div className="grid sm:grid-cols-2 gap-3.5">
                   {entryRequirements.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 p-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs sm:text-sm text-slate-700 leading-snug">
+                    <div key={idx} className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100 text-xs sm:text-sm text-slate-700 leading-snug">
                       <RiCheckboxCircleFill className="w-4 h-4 text-[#16a952] shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
@@ -1095,9 +1190,9 @@ export function CourseDetailView({ course, preview = false }) {
             {(assessmentPoints.length > 0 || certificationText) && (
               <section className="grid sm:grid-cols-2 gap-6 sm:gap-7">
                 {assessmentPoints.length > 0 && (
-                  <div className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 shadow-xs space-y-4">
+                  <div className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-4">
                     <div className="space-y-1.5">
-                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                         {c.labels.assessmentEyebrow}
                       </span>
                       <h2 className="text-lg font-bold text-slate-950 tracking-tight">{c.labels.assessmentTitle}</h2>
@@ -1114,14 +1209,14 @@ export function CourseDetailView({ course, preview = false }) {
                 )}
 
                 {certificationText && (
-                  <div className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 shadow-xs space-y-4">
+                  <div className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-4">
                     <div className="space-y-1.5">
-                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                         {c.labels.certEyebrow}
                       </span>
                       <h2 className="text-lg font-bold text-slate-950 tracking-tight">{c.labels.certTitle}</h2>
                     </div>
-                    <div className="flex items-start gap-3.5 p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
+                    <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
                       <TbCertificate className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                       <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">{certificationText}</p>
                     </div>
@@ -1132,9 +1227,9 @@ export function CourseDetailView({ course, preview = false }) {
 
             {/* 10. UPCOMING INTAKES / DATES (Only if not corporate) */}
             {!course.isCorporate && upcomingDates.length > 0 && (
-              <section className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-xs space-y-5 sm:space-y-6">
+              <section className="rounded-[2rem] bg-white border border-slate-200/90 p-7 sm:p-8 lg:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-5 sm:space-y-6">
                 <div className="space-y-1.5">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#16a952] block">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-bold uppercase tracking-wider">
                     {c.labels.datesEyebrow}
                   </span>
                   <h2 className="text-xl font-bold text-slate-950 tracking-tight">{c.labels.datesTitle}</h2>
@@ -1143,10 +1238,10 @@ export function CourseDetailView({ course, preview = false }) {
                   {upcomingDates.map((intake, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between gap-3 p-4.5 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-slate-300 transition-colors"
+                      className="flex items-center justify-between gap-3 p-4.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 transition-colors"
                     >
                       <div className="flex items-center gap-3.5">
-                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 flex items-center justify-center shadow-2xs">
+                        <div className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center shadow-2xs">
                           <RiCalendarEventLine className="w-4 h-4 text-slate-500" />
                         </div>
                         <div>
@@ -1171,10 +1266,10 @@ export function CourseDetailView({ course, preview = false }) {
             {/* 12. BOTTOM CALLOUT BANNER */}
             <section
               id="quote"
-              className="rounded-3xl bg-gradient-to-br from-slate-950 via-[#0a1220] to-slate-950 text-white p-7 sm:p-9 border border-slate-800 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6"
+              className="rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-[#0a1220] to-slate-950 text-white p-8 sm:p-10 border border-white/10 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6"
             >
               <div className="space-y-2 max-w-md">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#34E06E] block">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[#34E06E] font-mono text-xs font-bold uppercase tracking-wider">
                   {course.bottomBanner?.eyebrow || c.labels.admissionsEyebrow}
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">
@@ -1189,14 +1284,14 @@ export function CourseDetailView({ course, preview = false }) {
                 {course.isCorporate ? (
                   <Link
                     to="/contact"
-                    className="inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-bold py-3.5 px-6 rounded-xl text-xs uppercase tracking-wider transition-all duration-150 shadow-sm hover:shadow-md cursor-pointer"
+                    className="inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-7 rounded-full text-xs uppercase tracking-wider transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span>{course.bottomBanner?.ctaLabel || 'Request a Corporate Quote'}</span>
                   </Link>
                 ) : (
                   <Link
-                    to={`/courses/${course.slug}/enroll`}
-                    className="inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-bold py-3.5 px-6 rounded-xl text-xs uppercase tracking-wider transition-all duration-150 shadow-sm hover:shadow-md cursor-pointer"
+                    to={enrollHref}
+                    className="inline-flex items-center justify-center gap-2 bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-7 rounded-full text-xs uppercase tracking-wider transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span>{c.labels.admissionsApplyLabel}</span>
                   </Link>
@@ -1206,7 +1301,7 @@ export function CourseDetailView({ course, preview = false }) {
                   href="https://wa.me/41782273103"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-500 bg-white/5 hover:bg-white/10 text-white font-semibold py-3 px-4 rounded-xl text-xs transition-colors cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 border border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold py-3.5 px-5 rounded-full text-xs transition-colors cursor-pointer"
                 >
                   <RiWhatsappFill className="w-4 h-4 text-[#25D366]" />
                   <span>{c.labels.admissionsWhatsappLabel}</span>
@@ -1219,21 +1314,25 @@ export function CourseDetailView({ course, preview = false }) {
           {/* RIGHT STICKY SIDEBAR (Executive Overview Panel) (4.5 Cols)             */}
           {/* ===================================================================== */}
           <aside
-            className="lg:col-span-5 xl:col-span-4 sticky top-24 bg-white text-slate-900 border border-slate-200/90 rounded-3xl p-6 shadow-sm space-y-6"
+            className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 bg-white text-slate-900 border border-slate-200/90 rounded-[2rem] p-6 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-6"
             aria-label="Programme overview"
           >
-            {/* Top Course Card Thumbnail */}
-            <div className="relative aspect-[16/10] -mx-6 -mt-6 rounded-t-3xl overflow-hidden bg-slate-950 select-none border-b border-slate-100">
+            {/* Top Course Card Thumbnail - Rounded inset frame */}
+            <div
+              className={`relative aspect-[16/10] rounded-2xl overflow-hidden select-none border border-slate-100 shadow-2xs ${
+                sidebarBanner ? 'bg-slate-950/5 p-2 flex items-center justify-center' : 'bg-slate-950'
+              }`}
+            >
               <img
                 src={sidebarImgSrc}
                 alt={course.title}
-                className="w-full h-full object-cover object-center"
+                className={`w-full h-full object-center ${sidebarBanner ? 'object-contain' : 'object-cover'}`}
               />
             </div>
 
             {/* Header & Price / Rate Display */}
             <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#16a952] pb-1 border-b-2 border-[#34E06E] inline-block">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[11px] font-bold uppercase tracking-wider">
                 {course.isCorporate ? (course.rateCard?.eyebrow || 'CORPORATE TRAINING') : c.labels.sidebarOverviewLabel}
               </span>
 
@@ -1275,14 +1374,14 @@ export function CourseDetailView({ course, preview = false }) {
                 <>
                   <Link
                     to="/contact"
-                    className="w-full block text-center bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-150 shadow-xs hover:shadow-md cursor-pointer"
+                    className="w-full block text-center bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-5 rounded-full text-xs uppercase tracking-wider transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 cursor-pointer"
                   >
                     {course.ctaLabel || 'Request a Corporate Quote'}
                   </Link>
 
                   <Link
                     to="/contact"
-                    className="w-full block text-center bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-xs transition-colors cursor-pointer"
+                    className="w-full block text-center bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold py-3 px-4 rounded-full text-xs transition-colors cursor-pointer"
                   >
                     {course.rateCard?.secondaryCtaLabel || 'Contact Training Team'}
                   </Link>
@@ -1290,8 +1389,8 @@ export function CourseDetailView({ course, preview = false }) {
               ) : (
                 <>
                   <Link
-                    to={`/courses/${course.slug}/enroll`}
-                    className="w-full block text-center bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-150 shadow-xs hover:shadow-md cursor-pointer"
+                    to={enrollHref}
+                    className="w-full block text-center bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold py-3.5 px-5 rounded-full text-xs uppercase tracking-wider transition-all duration-150 shadow-[0_4px_20px_rgba(52,224,110,0.35)] hover:-translate-y-0.5 cursor-pointer"
                   >
                     {c.labels.sidebarEnrollLabel}
                   </Link>
@@ -1300,7 +1399,7 @@ export function CourseDetailView({ course, preview = false }) {
                     href="https://wa.me/41782273103"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/90 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-xs transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200/80 text-emerald-950 font-bold py-3 px-4 rounded-full text-xs transition-colors cursor-pointer"
                   >
                     <RiWhatsappFill className="w-4 h-4 text-[#25D366]" />
                     <span>{c.labels.sidebarWhatsappLabel}</span>
@@ -1383,7 +1482,7 @@ export function CourseDetailView({ course, preview = false }) {
 
             {/* Trust Badge at bottom of sidebar */}
             {course.isCorporate && (
-              <div className="rounded-xl bg-emerald-50/90 text-emerald-900 border border-emerald-200/90 p-3 text-center text-xs font-bold">
+              <div className="rounded-2xl bg-emerald-50/90 text-emerald-900 border border-emerald-200/90 p-3 text-center text-xs font-bold">
                 {course.rateCard?.trustBadge || 'Delivered to 70+ operators worldwide'}
               </div>
             )}
@@ -1432,4 +1531,5 @@ export function CourseDetailView({ course, preview = false }) {
 }
 
 export default CourseDetailView
+
 

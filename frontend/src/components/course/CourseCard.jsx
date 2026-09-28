@@ -34,6 +34,23 @@ const CATEGORY_IMG = {
 // Treat "" / null / undefined as "not set" so blank admin fields fall back.
 const first = (...vals) => vals.find((v) => v !== '' && v !== null && v !== undefined)
 
+// Tablet-mockup banners for the two initial dispatcher programmes. Used as the
+// programme-overview thumbnail and the registration-form thumbnail.
+const PROGRAMME_BANNER = {
+  'flight-dispatcher-initial-certification': bannerDispatcher,
+  'aircraft-dispatcher-training-faa-part-65': bannerPart65
+}
+
+export function programmeBanner(course = {}) {
+  return PROGRAMME_BANNER[course.slug] || null
+}
+
+// Only these programmes have a published registration form; every other
+// course's enroll CTA goes to the contact page instead.
+export function hasEnrollmentForm(course = {}) {
+  return course.slug in PROGRAMME_BANNER
+}
+
 export function resolveCard(course = {}) {
   const c = course.card || {}
   const isGround = course.category === 'ground' || course.category === 'ramp'
@@ -51,8 +68,8 @@ export function resolveCard(course = {}) {
 
   const resolvedImage = isDgr
     ? (c.image?.url && !c.image?.url?.includes('ground') && !c.image?.url?.includes('dispatcher')
-        ? c.image.url
-        : course.heroImage?.url && !course.heroImage?.url?.includes('ground') && !course.heroImage?.url?.includes('dispatcher')
+      ? c.image.url
+      : course.heroImage?.url && !course.heroImage?.url?.includes('ground') && !course.heroImage?.url?.includes('dispatcher')
         ? course.heroImage.url
         : imgDgr)
     : first(c.image?.url, course.heroImage?.url, defaultBanner)
@@ -86,7 +103,7 @@ export function CourseCard({ course, preview = false }) {
   const title = course.title || 'Untitled course'
 
   const Banner = (
-    <div className="relative h-[220px] sm:h-[240px] overflow-hidden bg-slate-950 select-none border-b border-slate-100 flex items-center justify-center">
+    <div className="relative h-[220px] sm:h-[230px] overflow-hidden bg-slate-950 select-none border-b border-slate-100 flex items-center justify-center">
       <img
         src={v.image}
         alt={title}
@@ -96,22 +113,22 @@ export function CourseCard({ course, preview = false }) {
   )
 
   return (
-    <div className="group rounded-3xl overflow-hidden border border-slate-200/80 bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+    <div className="group rounded-[2rem] overflow-hidden border border-slate-200/90 bg-white hover:border-[#34E06E]/40 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5">
       {Banner}
 
-      <div className="p-5 sm:p-6 text-left bg-white flex-1 flex flex-col justify-between">
-        <div className="space-y-3 flex-1 flex flex-col">
+      <div className="p-6 sm:p-7 text-left bg-white flex-1 flex flex-col justify-between space-y-5">
+        <div className="space-y-3.5 flex-1 flex flex-col">
           {/* Top Scope / Tag & Duration row */}
           <div className="flex items-center justify-between gap-2 min-h-[1.75rem]">
             {v.badge ? (
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200 pb-0.5 inline-block truncate max-w-[150px]">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 inline-block truncate max-w-[150px]">
                 {v.badge}
               </span>
             ) : <span />}
 
             {/* Clean Duration Tag */}
             {v.duration && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-100/90 px-2.5 py-0.5 rounded-full shrink-0">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full shrink-0">
                 <TbClockHour4 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span className="truncate max-w-[140px] sm:max-w-[170px]">{v.duration}</span>
               </span>
@@ -119,7 +136,7 @@ export function CourseCard({ course, preview = false }) {
           </div>
 
           <div className="min-h-[3.25rem] flex items-start">
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-950 leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
               {title}
             </h3>
           </div>
@@ -133,19 +150,19 @@ export function CourseCard({ course, preview = false }) {
 
         <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
           {preview ? (
-            <div className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 transition-colors py-1">
+            <div className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-950 transition-colors py-1">
               <span>View Course Details</span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
+              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-950 group-hover:text-white flex items-center justify-center transition-all shrink-0 shadow-xs">
                 <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
             </div>
           ) : (
             <Link
               to={`/courses/${course.slug}`}
-              className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-900 transition-colors py-1"
+              className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-bold text-slate-950 transition-colors py-1"
             >
               <span>View Course Details</span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
+              <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-slate-950 group-hover:text-white flex items-center justify-center transition-all shrink-0 shadow-xs">
                 <HiArrowUpRight className="w-4 h-4 text-slate-700 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
             </Link>

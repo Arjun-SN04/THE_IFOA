@@ -168,7 +168,7 @@ export function FoxtrotDeltaPage() {
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-20">
 
           {/* Clean Integrated Bookshelf Container */}
-          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-[0_16px_45px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="relative rounded-[2rem] bg-white border border-slate-200/90 shadow-[0_16px_45px_rgba(0,0,0,0.05)] overflow-hidden">
             {/* Embedded Responsive HTML5 Bookshelf */}
             <div className="w-full bg-white relative">
               <iframe
@@ -188,7 +188,7 @@ export function FoxtrotDeltaPage() {
                 <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
                   <CmsText path="collection.eyebrow" value={c.collection.eyebrow} />
                 </span>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
                   <CmsText path="collection.title" value={c.collection.title} />
                 </h3>
                 <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
@@ -198,7 +198,7 @@ export function FoxtrotDeltaPage() {
 
               <button
                 onClick={scrollToBookshelf}
-                className="inline-flex items-center gap-1.5 text-xs font-bold font-mono uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors self-start md:self-auto cursor-pointer group"
+                className="inline-flex items-center gap-1.5 text-xs font-bold font-mono uppercase tracking-wider text-slate-950 hover:text-[#34E06E] transition-colors self-start md:self-auto cursor-pointer group"
               >
                 <span>
                   <CmsText path="collection.viewAllLabel" value={c.collection.viewAllLabel} />
@@ -211,11 +211,11 @@ export function FoxtrotDeltaPage() {
               {featuredEditions.map((issue) => (
                 <div
                   key={issue.id}
-                  className="group rounded-3xl bg-white border border-slate-200/90 hover:border-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between space-y-5 hover:-translate-y-1 text-left"
+                  className="group rounded-[2rem] bg-white border border-slate-200/90 hover:border-[#34E06E]/40 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-300 p-7 flex flex-col justify-between space-y-6 hover:-translate-y-1.5 text-left"
                 >
                   <div className="space-y-4">
                     {/* Clean Magazine Cover Visual */}
-                    <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shadow-[0_4px_16px_rgba(0,0,0,0.04)] group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.08)] transition-all duration-500">
+                    <div className="relative aspect-[3/4] w-full rounded-[1.25rem] overflow-hidden bg-slate-50 border border-slate-100 shadow-[0_4px_16px_rgba(0,0,0,0.04)] group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.08)] transition-all duration-500">
                       <img
                         src={EDITION_COVERS[issue.id]}
                         alt={`Foxtrot Delta ${issue.number}`}
@@ -226,7 +226,7 @@ export function FoxtrotDeltaPage() {
                     {/* Metadata & Title */}
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between gap-2 min-h-[1.75rem]">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-200/90">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-100 text-slate-950 border border-slate-200/90">
                           <CmsText path={`${issue._path}.number`} value={issue.number} />
                         </span>
                         <span className="text-xs text-slate-500 font-medium font-mono">
@@ -234,7 +234,7 @@ export function FoxtrotDeltaPage() {
                         </span>
                       </div>
 
-                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug min-h-[3.25rem] flex items-start">
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug min-h-[3.25rem] flex items-start">
                         <CmsText path={`${issue._path}.title`} value={issue.title} />
                       </h3>
 
@@ -252,7 +252,7 @@ export function FoxtrotDeltaPage() {
                         {issue.highlights.map((item, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50/80 border border-slate-100 text-xs text-slate-700"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50/80 border border-slate-100 text-xs text-slate-700"
                           >
                             <span className="w-1.5 h-1.5 rounded-full bg-[#34E06E] shrink-0" />
                             <span className="font-semibold text-slate-800 truncate">
@@ -267,9 +267,9 @@ export function FoxtrotDeltaPage() {
                   <div className="mt-auto pt-3 border-t border-slate-100">
                     <button
                       onClick={scrollToBookshelf}
-                      className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md group/btn"
+                      className="w-full bg-slate-950 hover:bg-[#34E06E] hover:text-slate-950 text-white font-bold py-3.5 px-5 rounded-full text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(52,224,110,0.35)] group/btn"
                     >
-                      <RiBookOpenFill className="w-4 h-4 text-[#34E06E] transition-colors" />
+                      <RiBookOpenFill className="w-4 h-4 text-[#34E06E] group-hover/btn:text-slate-950 transition-colors" />
                       <span>
                         <CmsText path={`${issue._path}.readLabel`} value={issue.readLabel} />
                       </span>
@@ -283,36 +283,38 @@ export function FoxtrotDeltaPage() {
         </div>
       </Reveal>
 
-      {/* 6. FINAL CTA */}
-      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/70 text-center border-t border-slate-200/80" data-purpose="foxtrot-final-cta">
-        <div className="max-w-[760px] mx-auto px-6 space-y-6">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 leading-tight">
-            <CmsText path="finalCta.title" value={c.finalCta.title} />
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto leading-relaxed">
-            <CmsText path="finalCta.desc" value={c.finalCta.desc} />
-          </p>
+      {/* 3. FINAL CTA */}
+      <Reveal as="section" className="py-20 sm:py-28 bg-slate-50/70 text-center border-t border-slate-200/80" data-purpose="foxtrot-final-cta">
+        <div className="max-w-[1000px] mx-auto px-6 sm:px-8">
+          <div className="relative rounded-[2.5rem] bg-[#020617] border border-white/10 p-10 sm:p-16 text-center text-white overflow-hidden shadow-2xl space-y-6">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight max-w-2xl mx-auto">
+              <CmsText path="finalCta.title" value={c.finalCta.title} />
+            </h2>
+            <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+              <CmsText path="finalCta.desc" value={c.finalCta.desc} />
+            </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <Link
-              to="/services"
-              className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:shadow-[0_0_20px_rgba(52,224,110,0.4)] hover:scale-105 flex items-center gap-2"
-            >
-              <PiAirplaneTiltFill className="w-4 h-4 text-slate-950" />
-              <span>
-                <CmsText path="finalCta.exploreLabel" value={c.finalCta.exploreLabel} />
-              </span>
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-900 font-bold px-7 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-sm"
-            >
-              <MdOutlineMail className="w-4 h-4 text-slate-500" />
-              <span>
-                <CmsText path="finalCta.contactLabel" value={c.finalCta.contactLabel} />
-              </span>
-              <HiArrowRight className="w-3.5 h-3.5 text-slate-400" />
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+              <Link
+                to="/services"
+                className="bg-[#34E06E] hover:bg-[#28c85e] text-slate-950 font-extrabold px-9 py-4 rounded-full text-xs uppercase tracking-widest transition-all duration-200 shadow-xl hover:shadow-[0_0_24px_rgba(52,224,110,0.45)] hover:scale-105 flex items-center gap-2"
+              >
+                <PiAirplaneTiltFill className="w-4 h-4 text-slate-950" />
+                <span>
+                  <CmsText path="finalCta.exploreLabel" value={c.finalCta.exploreLabel} />
+                </span>
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-8 py-4 rounded-full text-xs uppercase tracking-widest transition-all duration-200"
+              >
+                <MdOutlineMail className="w-4 h-4 text-slate-300" />
+                <span>
+                  <CmsText path="finalCta.contactLabel" value={c.finalCta.contactLabel} />
+                </span>
+                <HiArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              </Link>
+            </div>
           </div>
         </div>
       </Reveal>

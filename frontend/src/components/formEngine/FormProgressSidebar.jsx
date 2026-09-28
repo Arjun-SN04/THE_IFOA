@@ -5,7 +5,7 @@ export function FormProgressSidebar({ sections, currentActiveId, onSectionClick 
   const overallPercentage = Math.round((completedSections / totalSections) * 100);
 
   return (
-    <aside className="sticky top-20 flex flex-col gap-5">
+    <aside className="lg:sticky lg:top-20 flex flex-col gap-5">
       {/* Overall Progress Card */}
       <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs">
         <div className="flex items-center justify-between">

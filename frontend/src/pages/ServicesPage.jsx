@@ -397,13 +397,13 @@ export function ServicesPage() {
 
             {/* Search Input */}
             <div className="relative w-full md:w-80 shrink-0">
-              <RiSearchLine className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <RiSearchLine className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder={c.specialist.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 shadow-2xs transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-[#34E06E] focus:ring-1 focus:ring-[#34E06E] shadow-2xs transition-all"
               />
             </div>
           </div>
@@ -415,10 +415,10 @@ export function ServicesPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedDiscipline(cat.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                   selectedDiscipline === cat.id
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:bg-slate-50'
+                    ? 'bg-slate-950 text-white shadow-sm'
+                    : 'bg-white text-slate-600 hover:text-slate-950 border border-slate-200/90 hover:bg-slate-50'
                 }`}
               >
                 {cat.label}
@@ -427,11 +427,11 @@ export function ServicesPage() {
           </div>
 
           {/* Clean & Organized 3-Column Luxury Card Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredDisciplines.map((item) => (
               <div
                 key={item.id}
-                className="group relative rounded-3xl bg-white border border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                className="group relative rounded-[2rem] bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
                 <CmsRemoveItem listPath="specialist.disciplines" index={item._originalIndex} label="Remove discipline" />
                 {/* Top Media Container */}
@@ -453,13 +453,13 @@ export function ServicesPage() {
                         {item.id}
                       </span>
                       {item.tag && (
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md">
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
                           {item.tag}
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors pt-0.5">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-950 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors pt-0.5">
                       <CmsText path={`${item._path}.title`} value={item.title} />
                     </h3>
 
@@ -489,7 +489,7 @@ export function ServicesPage() {
                           <Link
                             key={choice.courseSlug}
                             to={`/courses/${choice.courseSlug}`}
-                            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer group/btn"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-[#34E06E] transition-colors cursor-pointer group/btn"
                           >
                             <span>{choice.label}</span>
                             <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
@@ -499,7 +499,7 @@ export function ServicesPage() {
                     ) : (
                       <Link
                         to={item.courseSlug ? `/courses/${item.courseSlug}` : '/events'}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn self-start sm:self-auto"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-[#34E06E] transition-colors cursor-pointer shrink-0 group/btn self-start sm:self-auto"
                       >
                         <span>{item.linkText || (item.courseSlug ? 'View Course' : c.specialist.disciplineCtaLabel)}</span>
                         <HiArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform text-slate-700 group-hover/btn:text-[#34E06E]" />
@@ -528,13 +528,13 @@ export function ServicesPage() {
       </Reveal>
 
       {/* 3. CHOOSE YOUR CERTIFICATION PATH */}
-      <Reveal as="section" className="py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200/80" data-purpose="certification-pathways">
-        <div className="max-w-[1280px] mx-auto px-6 space-y-10">
-          <div className="max-w-2xl space-y-2">
+      <Reveal as="section" className="py-20 sm:py-24 bg-slate-50/70 border-b border-slate-200/80" data-purpose="certification-pathways">
+        <div className="max-w-[1280px] mx-auto px-6 space-y-12">
+          <div className="max-w-2xl space-y-2.5">
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
               <CmsText path="pathways.eyebrow" value={c.pathways.eyebrow} />
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-rocket-dark leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
               <CmsText path="pathways.title" value={c.pathways.title} />
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
@@ -546,13 +546,13 @@ export function ServicesPage() {
             {certificationPathways.map((card, idx) => (
               <div
                 key={idx}
-                className="group relative rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1.5 p-7 flex flex-col justify-between transition-all duration-300 h-full"
+                className="group relative rounded-[2rem] bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#34E06E]/40 hover:-translate-y-1.5 p-7 flex flex-col justify-between transition-all duration-300 h-full"
               >
                 <CmsRemoveItem listPath="pathways.cards" index={card._index} label="Remove card" />
                 <div className="flex flex-col flex-1">
                   {/* Standardized Header Row */}
                   <div className="flex items-start justify-between gap-2 min-h-[2.5rem] mb-3">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 line-clamp-2 leading-tight flex-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 line-clamp-2 leading-tight flex-1">
                       <CmsText path={`${card._path}.region`} value={card.region} />
                     </span>
                     <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-950 border-b-2 border-[#34E06E] pb-0.5 whitespace-nowrap shrink-0 ml-2">
@@ -580,7 +580,7 @@ export function ServicesPage() {
 
                   {/* Standardized Title Heading */}
                   <div className="min-h-[3.25rem] flex items-start shrink-0 mb-3">
-                    <h3 className="text-xl font-bold text-rocket-dark tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
+                    <h3 className="text-xl font-bold text-slate-950 tracking-tight leading-snug group-hover:text-[#34E06E] transition-colors line-clamp-2">
                       <CmsText path={`${card._path}.title`} value={card.title} />
                     </h3>
                   </div>
@@ -600,12 +600,12 @@ export function ServicesPage() {
                   </span>
                   <button
                     onClick={() => navigate('/contact')}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-rocket-dark group-hover:text-slate-900 transition-colors cursor-pointer group/btn"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-[#34E06E] transition-colors cursor-pointer group/btn"
                   >
                     <span>
                       <CmsText path={`${card._path}.action`} value={card.action} />
                     </span>
-                    <HiArrowRight className="w-3.5 h-3.5 text-rocket-dark group-hover/btn:translate-x-1 transition-transform" />
+                    <HiArrowRight className="w-3.5 h-3.5 text-slate-950 group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -627,7 +627,7 @@ export function ServicesPage() {
             <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-widest text-slate-950 border-b-2 border-[#34E06E] pb-1 inline-block">
               <CmsText path="cbta.eyebrow" value={c.cbta.eyebrow} />
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
               <CmsText path="cbta.title" value={c.cbta.title} />
             </h2>
             <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
@@ -640,25 +640,25 @@ export function ServicesPage() {
             {cbtaPillars.map((p, idx) => (
               <div
                 key={idx}
-                className="group relative rounded-3xl bg-slate-50/70 border border-slate-200/90 hover:bg-white hover:border-slate-300 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between space-y-5"
+                className="group relative rounded-[2rem] bg-slate-50/70 border border-slate-200/90 hover:bg-white hover:border-[#34E06E]/40 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 p-7 flex flex-col justify-between space-y-5"
               >
                 <CmsRemoveItem listPath="cbta.pillars" index={p._index} label="Remove pillar" />
                 <div className="space-y-4">
                   {/* Top Step & Icon */}
                   <div className="flex items-center justify-between gap-2">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 group-hover:bg-slate-900 group-hover:text-white transition-colors flex items-center justify-center shadow-2xs">
+                    <div className="w-12 h-12 rounded-full bg-slate-950 text-[#34E06E] group-hover:scale-110 transition-transform duration-300 flex items-center justify-center shadow-md">
                       <AviationIcon name={p.iconName} className="w-6 h-6" />
                     </div>
-                    <span className="text-xs font-mono font-bold text-slate-400 group-hover:text-slate-900 transition-colors">
+                    <span className="text-xs font-mono font-bold text-slate-500">
                       {p.idx}
                     </span>
                   </div>
 
                   <div className="space-y-1">
-                    <span className="text-[11px] font-mono font-semibold text-slate-500 uppercase tracking-wider block min-h-[1.25rem]">
+                    <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider block min-h-[1.25rem]">
                       <CmsText path={`${p._path}.subtitle`} value={p.subtitle} />
                     </span>
-                    <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-snug min-h-[3.25rem] flex items-start">
+                    <h3 className="text-lg font-bold text-slate-950 tracking-tight leading-snug min-h-[3.25rem] flex items-start">
                       <CmsText path={`${p._path}.title`} value={p.title} />
                     </h3>
                   </div>
@@ -677,42 +677,42 @@ export function ServicesPage() {
           </div>
 
           {/* Integrated Standards & Compliance Bar */}
-          <div className="rounded-3xl bg-slate-50 border border-slate-200/90 p-6 sm:p-8 space-y-6">
+          <div className="rounded-[2rem] bg-slate-50/80 border border-slate-200/90 p-8 sm:p-10 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
               <div>
-                <h4 className="text-base font-bold text-slate-900">
+                <h4 className="text-base font-bold text-slate-950">
                   <CmsText path="cbta.complianceTitle" value={c.cbta.complianceTitle} />
                 </h4>
                 <p className="text-xs text-slate-500">
                   <CmsText path="cbta.complianceDesc" value={c.cbta.complianceDesc} />
                 </p>
               </div>
-              <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-fit">
+              <span className="text-xs font-mono font-bold text-slate-950 bg-white border border-slate-200 px-3.5 py-1.5 rounded-full w-fit">
                 Verified Global Curricula
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all">
+              <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
                 <img src={logoFaa} alt="FAA" className="h-8 w-auto object-contain shrink-0" />
                 <div className="min-w-0">
-                  <strong className="text-xs sm:text-sm font-bold text-slate-900 block truncate">FAA Part 65</strong>
+                  <strong className="text-xs sm:text-sm font-bold text-slate-950 block truncate">FAA Part 65</strong>
                   <span className="text-[11px] text-slate-500 font-mono">Approved School #IPIN</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all">
+              <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
                 <img src={logoEasa} alt="EASA" className="h-8 w-auto object-contain shrink-0" />
                 <div className="min-w-0">
-                  <strong className="text-xs sm:text-sm font-bold text-slate-900 block truncate">EASA Standards</strong>
+                  <strong className="text-xs sm:text-sm font-bold text-slate-950 block truncate">EASA Standards</strong>
                   <span className="text-[11px] text-slate-500 font-mono">ORO.GEN 110 Aligned</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all">
+              <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
                 <img src={logoIcao} alt="ICAO" className="h-8 w-auto object-contain shrink-0" />
                 <div className="min-w-0">
-                  <strong className="text-xs sm:text-sm font-bold text-slate-900 block truncate">ICAO Standards</strong>
+                  <strong className="text-xs sm:text-sm font-bold text-slate-950 block truncate">ICAO Standards</strong>
                   <span className="text-[11px] text-slate-500 font-mono">Doc 10106 Framework</span>
                 </div>
               </div>
@@ -721,7 +721,7 @@ export function ServicesPage() {
             {/* Integrated Contact & Advisory CTA Row */}
             <div className="pt-4 border-t border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="space-y-1 text-center md:text-left">
-                <h5 className="text-sm sm:text-base font-bold text-slate-900">
+                <h5 className="text-sm sm:text-base font-bold text-slate-950">
                   <CmsText path="specialist.moreTitle" value={c.specialist.moreTitle} />
                 </h5>
                 <p className="text-xs text-slate-600">
@@ -738,9 +738,9 @@ export function ServicesPage() {
                 </button>
                 <a
                   href="mailto:info@theifoa.com"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all duration-200 shadow-2xs"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-900 font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all duration-200 shadow-2xs"
                 >
-                  <MdOutlineMail className="w-4 h-4 text-slate-500" />
+                  <MdOutlineMail className="w-4 h-4 text-slate-600" />
                   <span>info@theifoa.com</span>
                 </a>
               </div>

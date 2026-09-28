@@ -4,8 +4,75 @@ const FormSchema = require('../models/FormSchema')
 const Submission = require('../models/Submission')
 const { asyncHandler } = require('../middleware/error')
 const { validateAnswers, findIntakeFieldId } = require('../utils/validateAnswers')
+const { sendMail } = require('../utils/mailer')
 
 const STATUSES = ['new', 'contacted', 'confirmed', 'rejected']
+
+const escapeHtml = (s) =>
+  String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+
+const formatAnswer = (field, value) => {
+  if (field.type === 'checkbox') return value === true ? 'Yes' : 'No'
+  if (field.type === 'checkboxGroup') return Array.isArray(value) && value.length ? value.join(', ') : '—'
+  if (value === undefined || value === null || value === '') return '—'
+  return String(value)
+}
+
+// Best-effort notification to the office inbox with the full submission -
+// mirrors contactController's pattern (save first, email is not required to succeed).
+async function notifySubmission({ course, intake, sections, answers }) {
+  let replyTo
+  const rows = []
+
+  for (const section of sections) {
+    const sectionAnswers = (answers && answers[section.id]) || {}
+    const fields = [...section.fields].sort((a, b) => (a.order || 0) - (b.order || 0))
+    for (const field of fields) {
+      if (field.type === 'staticText') continue
+      const value = sectionAnswers[field.id]
+      if (field.type === 'email' && !replyTo && typeof value === 'string' && value) replyTo = value
+      rows.push({ section: section.title, label: field.label || field.id, value: formatAnswer(field, value) })
+    }
+  }
+
+  const text = [
+    `Course: ${course.title}`,
+    `Intake: ${intake || 'Not specified'}`,
+    '',
+    ...rows.map((r) => `${r.section} - ${r.label}: ${r.value}`)
+  ].join('\n')
+
+  const html = `
+    <p><strong>Course:</strong> ${escapeHtml(course.title)}</p>
+    <p><strong>Intake:</strong> ${escapeHtml(intake || 'Not specified')}</p>
+    ${Object.entries(
+      rows.reduce((acc, r) => {
+        ;(acc[r.section] = acc[r.section] || []).push(r)
+        return acc
+      }, {})
+    )
+      .map(
+        ([sectionTitle, sectionRows]) => `
+          <h3 style="margin:18px 0 6px">${escapeHtml(sectionTitle)}</h3>
+          ${sectionRows
+            .map(
+              (r) =>
+                `<p style="margin:2px 0"><strong>${escapeHtml(r.label)}:</strong> ${escapeHtml(r.value)}</p>`
+            )
+            .join('')}
+        `
+      )
+      .join('')}
+  `
+
+  await sendMail({
+    to: 'info@theifoa.com',
+    replyTo,
+    subject: `New enrollment: ${course.title}${intake ? ` (${intake})` : ''}`,
+    text,
+    html
+  })
+}
 
 // ---------- Public ----------
 
@@ -56,6 +123,12 @@ const create = asyncHandler(async (req, res) => {
     intake,
     answers
   })
+
+  try {
+    await notifySubmission({ course, intake, sections, answers })
+  } catch (err) {
+    console.error('submissionController.create: notifySubmission failed', err)
+  }
 
   res.status(201).json({
     message:

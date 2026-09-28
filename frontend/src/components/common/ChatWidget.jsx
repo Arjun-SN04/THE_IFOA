@@ -514,12 +514,15 @@ export function ChatWidget() {
   const [unread, setUnread] = useState(0)
   const [initialQuestion, setInitialQuestion] = useState(null)
   const [scrolledPastHero, setScrolledPastHero] = useState(false)
+  const [pastHeroNow, setPastHeroNow] = useState(false)
 
   const { pathname } = useLocation()
   const isAdminPage = pathname.startsWith('/admin')
+  const isHomePage = pathname === '/'
 
   // Sticky one-way reveal: once the visitor has scrolled past the hero on
-  // any page, keep the launcher visible for the rest of the session. This
+  // any page, keep the launcher visible for the rest of the session - except
+  // on the landing page, where it hides again whenever the hero is in view. This
   // widget persists across route changes (it doesn't remount), but
   // ScrollToTop resets window.scrollY to 0 on every navigation - a two-way
   // toggle here would re-hide the launcher on every page change, which reads
@@ -530,6 +533,7 @@ export function ChatWidget() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const isPast = window.scrollY > Math.min(window.innerHeight * 0.7, 450)
+          setPastHeroNow(isPast)
           if (isPast) setScrolledPastHero(true)
           ticking = false
         })
@@ -591,7 +595,7 @@ export function ChatWidget() {
   return (
     <div
       className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60] transition-all duration-300 ease-out ${
-        scrolledPastHero || open
+        (isHomePage ? pastHeroNow : scrolledPastHero) || open
           ? 'opacity-100 translate-y-0 pointer-events-auto'
           : 'opacity-0 translate-y-6 pointer-events-none'
       }`}

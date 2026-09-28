@@ -220,15 +220,6 @@ const SCHEMAS = {
         ]
       },
       {
-        k: 'newsletter',
-        label: 'Newsletter strip',
-        fields: [
-          f('title', 'Title'),
-          f('desc', 'Description', 'textarea'),
-          f('successMessage', 'Subscribe success message')
-        ]
-      },
-      {
         k: 'faq',
         label: 'FAQ',
         fields: [f('eyebrow', 'Eyebrow'), f('title', 'Title'), f('intro', 'Intro', 'textarea')],
@@ -704,10 +695,10 @@ const DEFAULTS = {
   home: {
     hero: {
       eyebrow: 'International Flight Operations Academy',
-      title: 'Trained for the moment',
-      titleHighlight: 'nothing goes to plan.',
+      title: 'Training for',
+      titleHighlight: 'Real-World Operations',
       subtitle:
-        'IFOA prepares flight dispatchers and OCC teams for the decisions that matter at 3am not just the ones covered on the exam.',
+        'IFOA prepares Flight Dispatchers and OCC teams to anticipate change, make sound decisions, and keep operations moving, because real operations don’t simply follow an exam syllabus.',
       primaryLabel: 'Explore Programs',
       secondaryLabel: 'Our Services',
       stats: [
@@ -750,9 +741,9 @@ const DEFAULTS = {
         },
         {
           category: 'FAA Part 65',
-          title: 'Aircraft Dispatcher Training',
+          title: 'Aircraft Dispatcher Certification',
           desc: 'FAA-approved 200-hour programme developing the knowledge, procedures and practical skills required to become an Aircraft Dispatcher.',
-          hours: '200 Hours',
+          hours: '200 Hours · Hybrid',
           linkText: 'View Course Details',
           courseSlug: 'aircraft-dispatcher-training-faa-part-65'
         },
@@ -773,14 +764,14 @@ const DEFAULTS = {
         {
           category: 'Professional Development',
           title: 'Advanced Training',
-          desc: 'Scenario-driven development for experienced dispatchers and OCC professionals.',
-          hours: 'Scenario-Driven',
+          desc: 'Advanced scenario-driven development for experienced dispatchers and OCC professionals.',
+          hours: 'Tailored Program for Air Operators',
           linkText: 'Advanced Programs'
         },
         {
           category: 'Operational Teams',
           title: 'Specialist Training',
-          desc: 'Crew Control, Ground Operations, Dangerous Goods and Train-the-Trainer programs.',
+          desc: 'Crew Control, Human Factors of OCC, Dangerous Goods and Train-the-Trainer programs.',
           hours: 'CBTA Modular Tracks',
           linkText: 'All Specialist Training'
         }
@@ -873,10 +864,16 @@ const DEFAULTS = {
       topics: [
         'Training my OCC / dispatch team',
         'Individual dispatcher certification',
-        'Consulting services',
+        'Flight Dispatch',
+        'Dangerous Goods',
+        'Train the Trainer',
+        'Human Factors for OCC',
+        'Crew Control',
+        'Consulting Services',
         'Foxtrot Delta / press',
         'Something else'
-      ]
+      ],
+      flightDispatchPathways: ['EASA', 'FAA Part 65']
     },
     offices: {
       eyebrow: 'DIRECT LINES',
@@ -904,11 +901,6 @@ const DEFAULTS = {
           email: 'info@theifoa.com'
         }
       ]
-    },
-    newsletter: {
-      title: 'Prefer to just get the newsletter?',
-      desc: 'One email a month: aviation insight worth reading, plus Foxtrot Delta, free.',
-      successMessage: 'Subscribed! Check your inbox for confirmation.'
     },
     faq: {
       eyebrow: 'FAQ',

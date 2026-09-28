@@ -13,7 +13,7 @@ export function Footer() {
   return (
     <footer className="bg-[#020617] pt-16 pb-12 border-t border-white/10 text-white select-none" data-purpose="main-footer">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-14 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 gap-10 lg:gap-8 mb-14 items-start">
           {/* Brand Info & Mission */}
           <div className="lg:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-3">
@@ -24,21 +24,21 @@ export function Footer() {
               />
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm font-normal">
-              International Flight Operations Academy. Professional education and development for Flight Dispatch and Operational Control.
+              International Flight Operations Academy. World-class flight dispatch education, FAA Part 65 certification, and EASA ORO.GEN.110 operational compliance.
             </p>
 
-            {/* Social Media Links */}
-            <div className="flex items-center gap-3 pt-2">
+            {/* Circular Social Media Links matching reference */}
+            <div className="flex items-center gap-2.5 pt-2">
               {/* LinkedIn */}
               <a
                 href="https://www.linkedin.com/company/71556135/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#0077B5] flex items-center justify-center text-white transition-all shadow-sm group"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#34E06E] text-slate-300 hover:text-slate-950 flex items-center justify-center transition-all duration-200 shadow-sm"
                 aria-label="LinkedIn"
                 title="LinkedIn"
               >
-                <RiLinkedinFill className="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" />
+                <RiLinkedinFill className="w-4 h-4" />
               </a>
 
               {/* Facebook */}
@@ -46,11 +46,11 @@ export function Footer() {
                 href="https://www.facebook.com/profile.php?id=100069215447113"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#1877F2] flex items-center justify-center text-white transition-all shadow-sm group"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#34E06E] text-slate-300 hover:text-slate-950 flex items-center justify-center transition-all duration-200 shadow-sm"
                 aria-label="Facebook"
                 title="Facebook"
               >
-                <RiFacebookFill className="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" />
+                <RiFacebookFill className="w-4 h-4" />
               </a>
 
               {/* Instagram */}
@@ -58,11 +58,11 @@ export function Footer() {
                 href="https://www.instagram.com/theifoa/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-gradient-to-tr hover:from-amber-500 hover:to-rose-500 flex items-center justify-center text-white transition-all shadow-sm group"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#34E06E] text-slate-300 hover:text-slate-950 flex items-center justify-center transition-all duration-200 shadow-sm"
                 aria-label="Instagram"
                 title="Instagram"
               >
-                <RiInstagramLine className="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" />
+                <RiInstagramLine className="w-4 h-4" />
               </a>
 
               {/* YouTube */}
@@ -70,58 +70,73 @@ export function Footer() {
                 href="https://www.youtube.com/channel/UCH2vo2z3uLuPOTI1TwFaT7A"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#FF0000] flex items-center justify-center text-white transition-all shadow-sm group"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#34E06E] text-slate-300 hover:text-slate-950 flex items-center justify-center transition-all duration-200 shadow-sm"
                 aria-label="YouTube"
                 title="YouTube"
               >
-                <RiYoutubeFill className="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" />
+                <RiYoutubeFill className="w-4 h-4" />
               </a>
             </div>
           </div>
 
-          {/* Training Links */}
-          <div className="lg:col-span-3 space-y-4">
+          {/* Quick Links */}
+          <div className="lg:col-span-2 space-y-4">
             <h4 className="font-bold text-sm text-white tracking-tight">
-              Training
+              Quick Links
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <Link to="/services" className="hover:text-white transition-colors">
-                  Initial
+                <Link to="/" className="hover:text-white transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-[#34E06E] transition-colors">
+                  About
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="hover:text-white transition-colors">
-                  Recurrent
+                  Services
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-white transition-colors">
-                  Advanced
+                <Link to="/foxtrot-delta" className="hover:text-[#34E06E] transition-colors font-medium">
+                  Foxtrot Delta
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-white transition-colors">
-                  Specialist
+                <Link to="/contact" className="hover:text-white transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* IFOA Links */}
+          {/* Services Links */}
           <div className="lg:col-span-2 space-y-4">
             <h4 className="font-bold text-sm text-white tracking-tight">
-              IFOA
+              Services
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <Link to="/about" className="hover:text-white transition-colors">
-                  About
+                <Link to="/services" className="hover:text-white transition-colors">
+                  Initial Dispatch
                 </Link>
               </li>
               <li>
-                <Link to="/foxtrot-delta" className="hover:text-[#34E06E] transition-colors font-medium">
-                  Foxtrot Delta Magazine
+                <Link to="/services" className="hover:text-white transition-colors">
+                  Recurrent Refresher
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="hover:text-white transition-colors">
+                  Dangerous Goods
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="hover:text-white transition-colors">
+                  OCC Consulting
                 </Link>
               </li>
               <li>
@@ -133,40 +148,6 @@ export function Footer() {
                 >
                   Agent for Service
                 </a>
-              </li>
-              <li>
-                <Link to="/services" className="hover:text-white transition-colors">
-                  Instructors & Services
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-white transition-colors">
-                  Locations & Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Locations */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="font-bold text-sm text-white tracking-tight">
-              Locations
-            </h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li className="flex items-center gap-2">
-                <span>Basel</span>
-                <span className="text-slate-600">·</span>
-                <span className="text-slate-300">Switzerland</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span>Daytona Beach</span>
-                <span className="text-slate-600">·</span>
-                <span className="text-slate-300">USA</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span>New Delhi</span>
-                <span className="text-slate-600">·</span>
-                <span className="text-slate-300">India</span>
               </li>
             </ul>
           </div>
